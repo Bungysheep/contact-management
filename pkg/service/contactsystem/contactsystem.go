@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/bungysheep/contact-management/pkg/api/v1/contactsystem"
+	"github.com/bungysheep/contact-management/pkg/common/message"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
@@ -17,17 +18,17 @@ func NewContactSystemService() contactsystem.ContactSystemServiceServer {
 }
 
 func (cntsys *contactSystemService) DoRead(ctx context.Context, req *contactsystem.DoReadRequest) (*contactsystem.DoReadResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "DoRead has not been implemented.")
+	return nil, status.Errorf(codes.Unimplemented, message.Unimplemented("DoRead"))
 }
 
 func (cntsys *contactSystemService) DoReadAll(ctx context.Context, req *contactsystem.DoReadAllRequest) (*contactsystem.DoReadAllResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "DoReadAll has not been implemented.")
+	return nil, status.Errorf(codes.Unimplemented, message.Unimplemented("DoReadAll"))
 }
 
 func (cntsys *contactSystemService) DoSave(ctx context.Context, req *contactsystem.DoSaveRequest) (*contactsystem.DoSaveResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "DoSave has not been implemented.")
+	return nil, status.Errorf(codes.Unimplemented, message.Unimplemented("DoSave"))
 }
 
 func (cntsys *contactSystemService) DoDelete(ctx context.Context, req *contactsystem.DoDeleteRequest) (*contactsystem.DoDeleteResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "DoDelete has not been implemented.")
+	return nil, status.Errorf(codes.Unimplemented, message.Unimplemented("DoDelete"))
 }
