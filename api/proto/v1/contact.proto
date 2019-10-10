@@ -2,16 +2,16 @@ syntax = "proto3";
 
 package v1;
 
-option go_package = "github.com/bungysheep/contact-management/pkg/api/v1/contactsystem";
+option go_package = "github.com/bungysheep/contact-management/pkg/api/v1/contact";
 
 import "audit.proto";
 
-message ContactSystem {
-    string contact_system_code = 1;
+message Contact {
+    int64 contact_id = 1;
 
-    string description = 2;
+    string first_name = 2;
 
-    string details = 3;
+    string last_name = 3;
 
     string status = 4;
 
@@ -19,21 +19,21 @@ message ContactSystem {
 }
 
 message DoReadRequest {
-    string contact_system_code = 1;
+    int64 contact_id = 1;
 }
 
 message DoReadResponse {
-    ContactSystem contact_system = 1;
+    Contact contact = 1;
 }
 
 message DoReadAllRequest { }
 
 message DoReadAllResponse {
-    repeated ContactSystem contact_systems = 1;
+    repeated Contact contact = 1;
 }
 
 message DoSaveRequest { 
-    ContactSystem contact_system = 1;
+    Contact contact = 1;
 }
 
 message DoSaveResponse {
@@ -41,14 +41,14 @@ message DoSaveResponse {
 }
 
 message DoDeleteRequest {
-    string contact_system_code = 1;
+    int64 contact_id = 1;
 }
 
 message DoDeleteResponse {
     bool result = 1;
 }
 
-service ContactSystemService { 
+service ContactService { 
     rpc DoRead (DoReadRequest) returns (DoReadResponse);
 
     rpc DoReadAll (DoReadAllRequest) returns (DoReadAllResponse);
