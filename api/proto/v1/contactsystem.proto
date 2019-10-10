@@ -1,0 +1,21 @@
+syntax = "proto3";
+
+package v1;
+
+option go_package = "github.com/bungysheep/contact-management/pkg/api/v1/contactsystem";
+
+import "audit.proto";
+
+message ContactSystem {
+    string contact_system_code = 1;
+
+    string description = 2;
+
+    string details = 3;
+
+    string status = 4;
+
+    v1.Audit audit = 5;
+}
+
+service ContactSystemService { }
