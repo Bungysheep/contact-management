@@ -1,0 +1,65 @@
+syntax = "proto3";
+
+package v1;
+
+option go_package = "github.com/bungysheep/contact-management/pkg/api/v1/communicationmethod";
+
+import "audit.proto";
+
+message CommunicationMethod {
+    string contact_system_code = 1;
+
+    string communication_method_code = 2;
+
+    string description = 3;
+
+    string details = 4;
+
+    string status = 5;
+
+    v1.Audit audit = 6;
+}
+
+message DoReadRequest {
+    string contact_system_code = 1;
+
+    string communication_method_code = 2;
+}
+
+message DoReadResponse {
+    CommunicationMethod communication_method = 1;
+}
+
+message DoReadAllRequest { }
+
+message DoReadAllResponse {
+    repeated CommunicationMethod communication_method = 1;
+}
+
+message DoSaveRequest { 
+    CommunicationMethod communication_method = 1;
+}
+
+message DoSaveResponse {
+    bool result = 1;
+}
+
+message DoDeleteRequest {
+    string contact_system_code = 1;
+
+    string communication_method_code = 2;
+}
+
+message DoDeleteResponse {
+    bool result = 1;
+}
+
+service CommunicationMethodService { 
+    rpc DoRead (DoReadRequest) returns (DoReadResponse);
+
+    rpc DoReadAll (DoReadAllRequest) returns (DoReadAllResponse);
+
+    rpc DoSave (DoSaveRequest) returns (DoSaveResponse);
+
+    rpc DoDelete (DoDeleteRequest) returns (DoDeleteResponse);
+}
