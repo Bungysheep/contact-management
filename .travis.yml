@@ -21,7 +21,7 @@ script:
 
 after_success:
 # Build images
-- docker build -t jamese/contact-management:latest -t jamese/contact-management:$IMG_VERS
+- docker build -t jamese/contact-management:latest -t jamese/contact-management:$IMG_VERS .
 # Login to docker
 - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
 # Push latest image to docker hub
