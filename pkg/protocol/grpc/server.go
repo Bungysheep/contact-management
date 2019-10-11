@@ -8,10 +8,12 @@ import (
 	communicationmethodapi "github.com/bungysheep/contact-management/pkg/api/v1/communicationmethod"
 	communicationmethodfieldapi "github.com/bungysheep/contact-management/pkg/api/v1/communicationmethodfield"
 	contactapi "github.com/bungysheep/contact-management/pkg/api/v1/contact"
+	contactcommunicationmethodapi "github.com/bungysheep/contact-management/pkg/api/v1/contactcommunicationmethod"
 	contactsystemapi "github.com/bungysheep/contact-management/pkg/api/v1/contactsystem"
 	communicationmethodservice "github.com/bungysheep/contact-management/pkg/service/v1/communicationmethod"
 	communicationmethodfieldservice "github.com/bungysheep/contact-management/pkg/service/v1/communicationmethodfield"
 	contactservice "github.com/bungysheep/contact-management/pkg/service/v1/contact"
+	contactcommunicationmethodservice "github.com/bungysheep/contact-management/pkg/service/v1/contactcommunicationmethod"
 	contactsystemservice "github.com/bungysheep/contact-management/pkg/service/v1/contactsystem"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
@@ -52,6 +54,7 @@ func (s *Server) RunServer(ctx context.Context) error {
 	communicationmethodfieldapi.RegisterCommunicationMethodFieldServiceServer(server, communicationmethodfieldservice.NewCommunicationMethodFieldService())
 	contactsystemapi.RegisterContactSystemServiceServer(server, contactsystemservice.NewContactSystemService())
 	contactapi.RegisterContactServiceServer(server, contactservice.NewContactService())
+	contactcommunicationmethodapi.RegisterContactCommunicationMethodServiceServer(server, contactcommunicationmethodservice.NewContactCommunicationMethodService())
 
 	// Register reflection
 	reflection.Register(server)
