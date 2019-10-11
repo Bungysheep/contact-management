@@ -7,32 +7,38 @@ option go_package = "github.com/bungysheep/contact-management/pkg/api/v1/contact
 import "audit.proto";
 
 message Contact {
-    int64 contact_id = 1;
+    string contact_system_code = 1;
 
-    string first_name = 2;
+    int64 contact_id = 2;
 
-    string last_name = 3;
+    string first_name = 3;
 
-    string status = 4;
+    string last_name = 4;
 
-    v1.Audit audit = 5;
+    string status = 5;
+
+    v1.Audit audit = 6;
 }
 
 message DoReadRequest {
-    int64 contact_id = 1;
+    string contact_system_code = 1;
+
+    int64 contact_id = 2;
 }
 
 message DoReadResponse {
     Contact contact = 1;
 }
 
-message DoReadAllRequest { }
+message DoReadAllRequest { 
+    string contact_system_code = 1;
+}
 
 message DoReadAllResponse {
     repeated Contact contact = 1;
 }
 
-message DoSaveRequest { 
+message DoSaveRequest {
     Contact contact = 1;
 }
 
@@ -41,7 +47,9 @@ message DoSaveResponse {
 }
 
 message DoDeleteRequest {
-    int64 contact_id = 1;
+    string contact_system_code = 1;
+
+    int64 contact_id = 2;
 }
 
 message DoDeleteResponse {

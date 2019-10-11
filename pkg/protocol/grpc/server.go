@@ -5,7 +5,13 @@ import (
 	"log"
 	"net"
 
+	communicationmethodapi "github.com/bungysheep/contact-management/pkg/api/v1/communicationmethod"
+	communicationmethodfieldapi "github.com/bungysheep/contact-management/pkg/api/v1/communicationmethodfield"
+	contactapi "github.com/bungysheep/contact-management/pkg/api/v1/contact"
 	contactsystemapi "github.com/bungysheep/contact-management/pkg/api/v1/contactsystem"
+	communicationmethodservice "github.com/bungysheep/contact-management/pkg/service/communicationmethod"
+	communicationmethodfieldservice "github.com/bungysheep/contact-management/pkg/service/communicationmethodfield"
+	contactservice "github.com/bungysheep/contact-management/pkg/service/contact"
 	contactsystemservice "github.com/bungysheep/contact-management/pkg/service/contactsystem"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
@@ -42,7 +48,10 @@ func (s *Server) RunServer(ctx context.Context) error {
 	server := grpc.NewServer(opts...)
 
 	// Register services
+	communicationmethodapi.RegisterCommunicationMethodServiceServer(server, communicationmethodservice.NewCommunicationMethodService())
+	communicationmethodfieldapi.RegisterCommunicationMethodFieldServiceServer(server, communicationmethodfieldservice.NewCommunicationMethodFieldService())
 	contactsystemapi.RegisterContactSystemServiceServer(server, contactsystemservice.NewContactSystemService())
+	contactapi.RegisterContactServiceServer(server, contactservice.NewContactService())
 
 	// Register reflection
 	reflection.Register(server)

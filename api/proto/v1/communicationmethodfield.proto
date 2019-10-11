@@ -2,20 +2,20 @@ syntax = "proto3";
 
 package v1;
 
-option go_package = "github.com/bungysheep/contact-management/pkg/api/v1/communicationmethod";
+option go_package = "github.com/bungysheep/contact-management/pkg/api/v1/communicationmethodfield";
 
 import "audit.proto";
 
-message CommunicationMethod {
+message CommunicationMethodField {
     string contact_system_code = 1;
 
     string communication_method_code = 2;
 
-    string description = 3;
+    string field_code = 3;
 
-    string details = 4;
+    string caption = 4;
 
-    string status = 5;
+    int64 sort_index = 5;
 
     v1.Audit audit = 6;
 }
@@ -24,22 +24,26 @@ message DoReadRequest {
     string contact_system_code = 1;
 
     string communication_method_code = 2;
+
+    string field_code = 3;
 }
 
 message DoReadResponse {
-    CommunicationMethod communication_method = 1;
+    CommunicationMethodField communication_method_field = 1;
 }
 
-message DoReadAllRequest { 
+message DoReadAllRequest {
     string contact_system_code = 1;
+
+    string communication_method_code = 2;
 }
 
 message DoReadAllResponse {
-    repeated CommunicationMethod communication_method = 1;
+    repeated CommunicationMethodField communication_method_field = 1;
 }
 
 message DoSaveRequest { 
-    CommunicationMethod communication_method = 1;
+    CommunicationMethodField communication_method_field = 1;
 }
 
 message DoSaveResponse {
@@ -50,13 +54,15 @@ message DoDeleteRequest {
     string contact_system_code = 1;
 
     string communication_method_code = 2;
+
+    string field_code = 3;
 }
 
 message DoDeleteResponse {
     bool result = 1;
 }
 
-service CommunicationMethodService { 
+service CommunicationMethodFieldService { 
     rpc DoRead (DoReadRequest) returns (DoReadResponse);
 
     rpc DoReadAll (DoReadAllRequest) returns (DoReadAllResponse);
