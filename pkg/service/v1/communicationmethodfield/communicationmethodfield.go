@@ -12,7 +12,7 @@ import (
 type communicationMethodFieldService struct {
 }
 
-// NewCommunicationMethodFieldService - Communication Method service implementation
+// NewCommunicationMethodFieldService - Communication Method Field service implementation
 func NewCommunicationMethodFieldService() communicationmethodfield.CommunicationMethodFieldServiceServer {
 	return &communicationMethodFieldService{}
 }
