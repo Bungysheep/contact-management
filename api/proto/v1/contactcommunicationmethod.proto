@@ -5,6 +5,7 @@ package v1;
 option go_package = "github.com/bungysheep/contact-management/pkg/api/v1/contactcommunicationmethod";
 
 import "audit.proto";
+import "contactcommunicationmethodfield.proto";
 
 message ContactCommunicationMethod {
     string contact_system_code = 1;
@@ -14,6 +15,8 @@ message ContactCommunicationMethod {
     int64 contact_communication_method_id = 3;
 
     string communication_method_code = 4;
+
+    repeated v1.ContactCommunicationMethodField contact_communication_method_field = 5;
 
     v1.Audit audit = 6;
 }

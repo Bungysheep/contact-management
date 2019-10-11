@@ -15,7 +15,7 @@ message CommunicationMethodField {
 
     string caption = 4;
 
-    int64 sort_index = 5;
+    int64 sequence = 5;
 
     v1.Audit audit = 6;
 }
