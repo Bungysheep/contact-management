@@ -2,21 +2,52 @@ package contactsystem
 
 import (
 	"context"
+	"database/sql"
+	"fmt"
 	"os"
 	"testing"
+	"time"
 
+	"github.com/DATA-DOG/go-sqlmock"
+	"github.com/bungysheep/contact-management/pkg/api/v1/audit"
 	"github.com/bungysheep/contact-management/pkg/api/v1/contactsystem"
+	"github.com/golang/protobuf/ptypes"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 )
 
 var (
-	ctx context.Context
-	svc contactsystem.ContactSystemServiceServer
+	ctx  context.Context
+	svc  contactsystem.ContactSystemServiceServer
+	db   *sql.DB
+	mock sqlmock.Sqlmock
+	data []*contactsystem.ContactSystem
 )
 
 func TestMain(m *testing.M) {
 	ctx = context.TODO()
 
-	svc = NewContactSystemService()
+	db, mock, _ = sqlmock.New()
+	defer db.Close()
+
+	svc = NewContactSystemService(db)
+
+	data = append(data, &contactsystem.ContactSystem{
+		ContactSystemCode: "CNTSYS001",
+		Description:       "Contact System 1",
+		Details:           "Contact System 1",
+		Status:            "A",
+	}, &contactsystem.ContactSystem{
+		ContactSystemCode: "CNTSYS002",
+		Description:       "Contact System 2",
+		Details:           "Contact System 2",
+		Status:            "A",
+	}, &contactsystem.ContactSystem{
+		ContactSystemCode: "CNTSYS003",
+		Description:       "Contact System 3",
+		Details:           "Contact System 3",
+		Status:            "A",
+	})
 
 	exitCode := m.Run()
 
@@ -26,45 +57,470 @@ func TestMain(m *testing.M) {
 func TestContactSystemService(t *testing.T) {
 	t.Run("DoRead Contact System", doRead(ctx))
 
-	t.Run("DoReadAll Contact System", doRead(ctx))
+	t.Run("DoReadAll Contact System", doReadAll(ctx))
 
-	t.Run("DoSave Contact System", doRead(ctx))
+	t.Run("DoSave Contact System", doSave(ctx))
 
-	t.Run("DoDelete Contact System", doRead(ctx))
+	t.Run("DoDelete Contact System", doDelete(ctx))
 }
 
 func doRead(ctx context.Context) func(t *testing.T) {
 	return func(t *testing.T) {
-		_, err := svc.DoRead(ctx, &contactsystem.DoReadRequest{})
-		if err == nil {
-			t.Errorf("Should be failed due to unimplemented.")
-		}
+		t.Run("DoRead fail", doReadFailContactSystem(ctx, data[0]))
+
+		t.Run("DoRead unexisting", doReadUnexistingContactSystem(ctx, data[0]))
+
+		t.Run("DoRead row error", doReadRowErrorContactSystem(ctx, data[0]))
+
+		t.Run("DoRead existing", doReadExistingContactSystem(ctx, data[0]))
 	}
 }
 
 func doReadAll(ctx context.Context) func(t *testing.T) {
 	return func(t *testing.T) {
-		_, err := svc.DoReadAll(ctx, &contactsystem.DoReadAllRequest{})
-		if err == nil {
-			t.Errorf("Should be failed due to unimplemented.")
-		}
+		t.Run("DoReadAll fail", doReadAllFailContactSystems(ctx, data[0]))
+
+		t.Run("DoReadAll unexisting", doReadAllUnexistingContactSystems(ctx, data[0]))
+
+		t.Run("DoReadAll row error", doReadAllRowErrorContactSystems(ctx, data[0]))
+
+		t.Run("DoReadAll existing", doReadAllExistingContactSystems(ctx, data[0]))
 	}
 }
 
 func doSave(ctx context.Context) func(t *testing.T) {
 	return func(t *testing.T) {
-		_, err := svc.DoSave(ctx, &contactsystem.DoSaveRequest{})
-		if err == nil {
-			t.Errorf("Should be failed due to unimplemented.")
-		}
+		t.Run("DoSave new fail", doSaveNewFailContactSystem(ctx, data[0]))
+
+		t.Run("DoSave new", doSaveNewContactSystem(ctx, data[0]))
+
+		t.Run("DoSave existing fail", doSaveExistingFailContactSystem(ctx, data[0]))
+
+		t.Run("DoSave existing", doSaveExistingContactSystem(ctx, data[0]))
 	}
 }
 
 func doDelete(ctx context.Context) func(t *testing.T) {
 	return func(t *testing.T) {
-		_, err := svc.DoDelete(ctx, &contactsystem.DoDeleteRequest{})
-		if err == nil {
-			t.Errorf("Should be failed due to unimplemented.")
+		t.Run("DoDelete fail", doDeleteFailContactSystem(ctx, data[0]))
+
+		t.Run("DoDelete unexisting", doDeleteUnexistingContactSystem(ctx, data[0]))
+
+		t.Run("DoDelete existing", doDeleteExistingContactSystem(ctx, data[0]))
+	}
+}
+
+func doReadFailContactSystem(ctx context.Context, input *contactsystem.ContactSystem) func(t *testing.T) {
+	return func(t *testing.T) {
+		expQuery := mock.ExpectPrepare("SELECT contact_system_code, description, details, status, created_at, modified_at, vers FROM contact_system").ExpectQuery()
+		expQuery.WithArgs(input.GetContactSystemCode()).WillReturnError(fmt.Errorf("DoRead contact system failed"))
+
+		res, err := svc.DoRead(ctx, &contactsystem.DoReadRequest{ContactSystemCode: input.GetContactSystemCode()})
+		if err != nil {
+			s, ok := status.FromError(err)
+			if ok {
+				if s.Code() != codes.Unknown {
+					t.Fatalf("Expect a Unknown error, but got %s", s.Code())
+				}
+			}
+		} else {
+			t.Errorf("Expect error is not nil")
+		}
+
+		if res != nil {
+			t.Errorf("Expect contact system is nil")
+		}
+	}
+}
+
+func doReadUnexistingContactSystem(ctx context.Context, input *contactsystem.ContactSystem) func(t *testing.T) {
+	return func(t *testing.T) {
+		rows := sqlmock.NewRows([]string{"contact_system_code", "description", "details", "status", "created_at", "modified_at", "vers"})
+
+		expQuery := mock.ExpectPrepare("SELECT contact_system_code, description, details, status, created_at, modified_at, vers FROM contact_system").ExpectQuery()
+		expQuery.WithArgs(input.GetContactSystemCode()).WillReturnRows(rows)
+
+		res, err := svc.DoRead(ctx, &contactsystem.DoReadRequest{ContactSystemCode: input.GetContactSystemCode()})
+		if err != nil {
+			s, ok := status.FromError(err)
+			if ok {
+				if s.Code() != codes.NotFound {
+					t.Fatalf("Expect a NotFound error, but got %s", s.Code())
+				}
+			}
+		} else {
+			t.Errorf("Expect error is not nil")
+		}
+
+		if res != nil {
+			t.Errorf("Expect contact system is nil")
+		}
+	}
+}
+
+func doReadRowErrorContactSystem(ctx context.Context, input *contactsystem.ContactSystem) func(t *testing.T) {
+	return func(t *testing.T) {
+		tmNow := time.Now().In(time.UTC)
+
+		rows := sqlmock.NewRows([]string{"contact_system_code", "description", "details", "status", "created_at", "modified_at", "vers"}).
+			AddRow(input.GetContactSystemCode(), input.GetDescription(), input.GetDetails(), input.GetStatus(), tmNow, tmNow, 1).
+			RowError(0, fmt.Errorf("DoRead row error"))
+
+		expQuery := mock.ExpectPrepare("SELECT contact_system_code, description, details, status, created_at, modified_at, vers FROM contact_system").ExpectQuery()
+		expQuery.WithArgs(input.GetContactSystemCode()).WillReturnRows(rows)
+
+		res, err := svc.DoRead(ctx, &contactsystem.DoReadRequest{ContactSystemCode: input.GetContactSystemCode()})
+		if err != nil {
+			s, ok := status.FromError(err)
+			if ok {
+				if s.Code() != codes.Unknown {
+					t.Fatalf("Expect a Unknown error, but got %s", s.Code())
+				}
+			}
+		} else {
+			t.Errorf("Expect error is not nil")
+		}
+
+		if res != nil {
+			t.Errorf("Expect contact system is nil")
+		}
+	}
+}
+
+func doReadExistingContactSystem(ctx context.Context, input *contactsystem.ContactSystem) func(t *testing.T) {
+	return func(t *testing.T) {
+		tmNow := time.Now().In(time.UTC)
+
+		rows := sqlmock.NewRows([]string{"contact_system_code", "description", "details", "status", "created_at", "modified_at", "vers"}).
+			AddRow(input.GetContactSystemCode(), input.GetDescription(), input.GetDetails(), input.GetStatus(), tmNow, tmNow, 1)
+
+		expQuery := mock.ExpectPrepare("SELECT contact_system_code, description, details, status, created_at, modified_at, vers FROM contact_system").ExpectQuery()
+		expQuery.WithArgs(input.GetContactSystemCode()).WillReturnRows(rows)
+
+		res, err := svc.DoRead(ctx, &contactsystem.DoReadRequest{ContactSystemCode: input.GetContactSystemCode()})
+		if err != nil {
+			t.Errorf("Failed to read contact system: %v", err)
+		}
+
+		if res.ContactSystem == nil {
+			t.Errorf("Expect contact system is not nil")
+		}
+
+		if res.ContactSystem.GetContactSystemCode() != input.GetContactSystemCode() {
+			t.Errorf("Expect contact system code %s, but got %s", input.GetContactSystemCode(), res.ContactSystem.GetContactSystemCode())
+		}
+
+		if res.ContactSystem.GetDescription() != input.GetDescription() {
+			t.Errorf("Expect description %s, but got %s", input.GetDescription(), res.ContactSystem.GetDescription())
+		}
+
+		if res.ContactSystem.GetDetails() != input.GetDetails() {
+			t.Errorf("Expect details %s, but got %s", input.GetDetails(), res.ContactSystem.GetDetails())
+		}
+
+		if res.ContactSystem.GetStatus() != input.GetStatus() {
+			t.Errorf("Expect status %s, but got %s", input.GetStatus(), res.ContactSystem.GetStatus())
+		}
+	}
+}
+
+func doReadAllFailContactSystems(ctx context.Context, input *contactsystem.ContactSystem) func(t *testing.T) {
+	return func(t *testing.T) {
+		expQuery := mock.ExpectPrepare("SELECT contact_system_code, description, details, status, created_at, modified_at, vers FROM contact_system").ExpectQuery()
+		expQuery.WillReturnError(fmt.Errorf("DoReadAll contact system failed"))
+
+		res, err := svc.DoReadAll(ctx, &contactsystem.DoReadAllRequest{})
+		if err != nil {
+			s, ok := status.FromError(err)
+			if ok {
+				if s.Code() != codes.Unknown {
+					t.Fatalf("Expect a Unknown error, but got %s", s.Code())
+				}
+			}
+		} else {
+			t.Errorf("Expect error is not nil")
+		}
+
+		if res != nil {
+			t.Errorf("Expect response is nil")
+		}
+	}
+}
+
+func doReadAllUnexistingContactSystems(ctx context.Context, input *contactsystem.ContactSystem) func(t *testing.T) {
+	return func(t *testing.T) {
+		rows := sqlmock.NewRows([]string{"contact_system_code", "description", "details", "status", "created_at", "modified_at", "vers"})
+
+		expQuery := mock.ExpectPrepare("SELECT contact_system_code, description, details, status, created_at, modified_at, vers FROM contact_system").ExpectQuery()
+		expQuery.WillReturnRows(rows)
+
+		res, err := svc.DoReadAll(ctx, &contactsystem.DoReadAllRequest{})
+		if err != nil {
+			t.Errorf("Failed to read all contact systems: %v", err)
+		}
+
+		if res.ContactSystems == nil {
+			t.Errorf("Expect contact systems is not nil")
+		}
+
+		if len(res.ContactSystems) != 0 {
+			t.Errorf("Expect no contact systems retrieved")
+		}
+	}
+}
+
+func doReadAllRowErrorContactSystems(ctx context.Context, input *contactsystem.ContactSystem) func(t *testing.T) {
+	return func(t *testing.T) {
+		tmNow := time.Now().In(time.UTC)
+
+		rows := sqlmock.NewRows([]string{"contact_system_code", "description", "details", "status", "created_at", "modified_at", "vers"}).
+			AddRow(data[0].GetContactSystemCode(), data[0].GetDescription(), data[0].GetDetails(), data[0].GetStatus(), tmNow, tmNow, 1).
+			RowError(0, fmt.Errorf("DoReadAll row error")).
+			AddRow(data[1].GetContactSystemCode(), data[1].GetDescription(), data[1].GetDetails(), data[1].GetStatus(), tmNow, tmNow, 1).
+			AddRow(data[2].GetContactSystemCode(), data[2].GetDescription(), data[2].GetDetails(), data[2].GetStatus(), tmNow, tmNow, 1)
+
+		expQuery := mock.ExpectPrepare("SELECT contact_system_code, description, details, status, created_at, modified_at, vers FROM contact_system").ExpectQuery()
+		expQuery.WillReturnRows(rows)
+
+		res, err := svc.DoReadAll(ctx, &contactsystem.DoReadAllRequest{})
+		if err != nil {
+			s, ok := status.FromError(err)
+			if ok {
+				if s.Code() != codes.Unknown {
+					t.Fatalf("Expect a Unknown error, but got %s", s.Code())
+				}
+			}
+		} else {
+			t.Errorf("Expect error is not nil")
+		}
+
+		if res != nil {
+			t.Errorf("Expect response is nil")
+		}
+	}
+}
+
+func doReadAllExistingContactSystems(ctx context.Context, input *contactsystem.ContactSystem) func(t *testing.T) {
+	return func(t *testing.T) {
+		tmNow := time.Now().In(time.UTC)
+
+		rows := sqlmock.NewRows([]string{"contact_system_code", "description", "details", "status", "created_at", "modified_at", "vers"}).
+			AddRow(data[0].GetContactSystemCode(), data[0].GetDescription(), data[0].GetDetails(), data[0].GetStatus(), tmNow, tmNow, 1).
+			AddRow(data[1].GetContactSystemCode(), data[1].GetDescription(), data[1].GetDetails(), data[1].GetStatus(), tmNow, tmNow, 1).
+			AddRow(data[2].GetContactSystemCode(), data[2].GetDescription(), data[2].GetDetails(), data[2].GetStatus(), tmNow, tmNow, 1)
+
+		expQuery := mock.ExpectPrepare("SELECT contact_system_code, description, details, status, created_at, modified_at, vers FROM contact_system").ExpectQuery()
+		expQuery.WillReturnRows(rows)
+
+		res, err := svc.DoReadAll(ctx, &contactsystem.DoReadAllRequest{})
+		if err != nil {
+			t.Errorf("Failed to read all contact systems: %v", err)
+		}
+
+		if res.ContactSystems == nil {
+			t.Errorf("Expect contact systems is not nil")
+		}
+
+		if len(res.ContactSystems) < 3 {
+			t.Errorf("Expect there are contact systems retrieved")
+		}
+
+		if res.ContactSystems[0].GetContactSystemCode() != input.GetContactSystemCode() {
+			t.Errorf("Expect contact system code %s, but got %s", input.GetContactSystemCode(), res.ContactSystems[0].GetContactSystemCode())
+		}
+
+		if res.ContactSystems[0].GetDescription() != input.GetDescription() {
+			t.Errorf("Expect description %s, but got %s", input.GetDescription(), res.ContactSystems[0].GetDescription())
+		}
+
+		if res.ContactSystems[0].GetDetails() != input.GetDetails() {
+			t.Errorf("Expect details %s, but got %s", input.GetDetails(), res.ContactSystems[0].GetDetails())
+		}
+
+		if res.ContactSystems[0].GetStatus() != input.GetStatus() {
+			t.Errorf("Expect status %s, but got %s", input.GetStatus(), res.ContactSystems[0].GetStatus())
+		}
+	}
+}
+
+func doSaveNewFailContactSystem(ctx context.Context, input *contactsystem.ContactSystem) func(t *testing.T) {
+	return func(t *testing.T) {
+		tmNow := time.Now().In(time.UTC)
+		tmstpNow, _ := ptypes.TimestampProto(tmNow)
+
+		input.Audit = &audit.Audit{
+			CreatedAt:  tmstpNow,
+			ModifiedAt: tmstpNow,
+			Vers:       1,
+		}
+
+		expUpdQuery := mock.ExpectPrepare("UPDATE contact_system").ExpectExec()
+		expUpdQuery.WithArgs(input.GetContactSystemCode(), input.GetDescription(), input.GetDetails(), input.GetStatus(), tmNow).WillReturnResult(sqlmock.NewResult(0, 0))
+
+		expInsQuery := mock.ExpectPrepare("INSERT INTO contact_system").ExpectExec()
+		expInsQuery.WithArgs(input.GetContactSystemCode(), input.GetDescription(), input.GetDetails(), input.GetStatus(), tmNow, tmNow).WillReturnError(fmt.Errorf("DoInsert contact system faileds"))
+
+		res, err := svc.DoSave(ctx, &contactsystem.DoSaveRequest{ContactSystem: input})
+		if err != nil {
+			s, ok := status.FromError(err)
+			if ok {
+				if s.Code() != codes.Unknown {
+					t.Fatalf("Expect a Unknown error, but got %s", s.Code())
+				}
+			}
+		} else {
+			t.Errorf("Expect error is not nil")
+		}
+
+		if res.GetResult() {
+			t.Errorf("Expect the result is not successful")
+		}
+	}
+}
+
+func doSaveNewContactSystem(ctx context.Context, input *contactsystem.ContactSystem) func(t *testing.T) {
+	return func(t *testing.T) {
+		tmNow := time.Now().In(time.UTC)
+		tmstpNow, _ := ptypes.TimestampProto(tmNow)
+
+		input.Audit = &audit.Audit{
+			CreatedAt:  tmstpNow,
+			ModifiedAt: tmstpNow,
+			Vers:       1,
+		}
+
+		expUpdQuery := mock.ExpectPrepare("UPDATE contact_system").ExpectExec()
+		expUpdQuery.WithArgs(input.GetContactSystemCode(), input.GetDescription(), input.GetDetails(), input.GetStatus(), tmNow).WillReturnResult(sqlmock.NewResult(0, 0))
+
+		expInsQuery := mock.ExpectPrepare("INSERT INTO contact_system").ExpectExec()
+		expInsQuery.WithArgs(input.GetContactSystemCode(), input.GetDescription(), input.GetDetails(), input.GetStatus(), tmNow, tmNow).WillReturnResult(sqlmock.NewResult(0, 1))
+
+		res, err := svc.DoSave(ctx, &contactsystem.DoSaveRequest{ContactSystem: input})
+		if err != nil {
+			t.Errorf("Failed to save contact system: %v", err)
+		}
+
+		if !res.GetResult() {
+			t.Errorf("Expect the result is successful")
+		}
+	}
+}
+
+func doSaveExistingFailContactSystem(ctx context.Context, input *contactsystem.ContactSystem) func(t *testing.T) {
+	return func(t *testing.T) {
+		tmNow := time.Now().In(time.UTC)
+		tmstpNow, _ := ptypes.TimestampProto(tmNow)
+
+		input.Audit = &audit.Audit{
+			CreatedAt:  tmstpNow,
+			ModifiedAt: tmstpNow,
+			Vers:       2,
+		}
+
+		expUpdQuery := mock.ExpectPrepare("UPDATE contact_system").ExpectExec()
+		expUpdQuery.WithArgs(input.GetContactSystemCode(), input.GetDescription(), input.GetDetails(), input.GetStatus(), tmNow).WillReturnError(fmt.Errorf("DoUpdate contact system failed"))
+
+		res, err := svc.DoSave(ctx, &contactsystem.DoSaveRequest{ContactSystem: input})
+		if err != nil {
+			s, ok := status.FromError(err)
+			if ok {
+				if s.Code() != codes.Unknown {
+					t.Fatalf("Expect a Unknown error, but got %s", s.Code())
+				}
+			}
+		} else {
+			t.Errorf("Expect error is not nil")
+		}
+
+		if res.GetResult() {
+			t.Errorf("Expect the result is not successful")
+		}
+	}
+}
+
+func doSaveExistingContactSystem(ctx context.Context, input *contactsystem.ContactSystem) func(t *testing.T) {
+	return func(t *testing.T) {
+		tmNow := time.Now().In(time.UTC)
+		tmstpNow, _ := ptypes.TimestampProto(tmNow)
+
+		input.Audit = &audit.Audit{
+			CreatedAt:  tmstpNow,
+			ModifiedAt: tmstpNow,
+			Vers:       2,
+		}
+
+		expUpdQuery := mock.ExpectPrepare("UPDATE contact_system").ExpectExec()
+		expUpdQuery.WithArgs(input.GetContactSystemCode(), input.GetDescription(), input.GetDetails(), input.GetStatus(), tmNow).WillReturnResult(sqlmock.NewResult(0, 1))
+
+		res, err := svc.DoSave(ctx, &contactsystem.DoSaveRequest{ContactSystem: input})
+		if err != nil {
+			t.Errorf("Failed to save contact system: %v", err)
+		}
+
+		if !res.GetResult() {
+			t.Errorf("Expect the result is successful")
+		}
+	}
+}
+
+func doDeleteFailContactSystem(ctx context.Context, input *contactsystem.ContactSystem) func(t *testing.T) {
+	return func(t *testing.T) {
+		expQuery := mock.ExpectPrepare("DELETE FROM contact_system").ExpectExec()
+		expQuery.WithArgs(input.GetContactSystemCode()).WillReturnError(fmt.Errorf("Delete contact system failed"))
+
+		res, err := svc.DoDelete(ctx, &contactsystem.DoDeleteRequest{ContactSystemCode: input.GetContactSystemCode()})
+		if err != nil {
+			s, ok := status.FromError(err)
+			if ok {
+				if s.Code() != codes.Unknown {
+					t.Fatalf("Expect a Unknown error, but got %s", s.Code())
+				}
+			}
+		} else {
+			t.Errorf("Expect error is not nil")
+		}
+
+		if res.GetResult() {
+			t.Errorf("Expect the result is not successful")
+		}
+	}
+}
+
+func doDeleteUnexistingContactSystem(ctx context.Context, input *contactsystem.ContactSystem) func(t *testing.T) {
+	return func(t *testing.T) {
+		expQuery := mock.ExpectPrepare("DELETE FROM contact_system").ExpectExec()
+		expQuery.WithArgs(input.GetContactSystemCode()).WillReturnResult(sqlmock.NewResult(0, 0))
+
+		res, err := svc.DoDelete(ctx, &contactsystem.DoDeleteRequest{ContactSystemCode: input.GetContactSystemCode()})
+		if err != nil {
+			s, ok := status.FromError(err)
+			if ok {
+				if s.Code() != codes.NotFound {
+					t.Fatalf("Expect a NotFound error, but got %s", s.Code())
+				}
+			}
+		} else {
+			t.Errorf("Expect error is not nil")
+		}
+
+		if res.GetResult() {
+			t.Errorf("Expect the result is not successful")
+		}
+	}
+}
+
+func doDeleteExistingContactSystem(ctx context.Context, input *contactsystem.ContactSystem) func(t *testing.T) {
+	return func(t *testing.T) {
+		expQuery := mock.ExpectPrepare("DELETE FROM contact_system").ExpectExec()
+		expQuery.WithArgs(input.GetContactSystemCode()).WillReturnResult(sqlmock.NewResult(0, 1))
+
+		res, err := svc.DoDelete(ctx, &contactsystem.DoDeleteRequest{ContactSystemCode: input.GetContactSystemCode()})
+		if err != nil {
+			t.Errorf("Failed to delete contact system: %v", err)
+		}
+
+		if !res.GetResult() {
+			t.Errorf("Expect the result is successful")
 		}
 	}
 }
