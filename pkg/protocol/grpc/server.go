@@ -2,6 +2,7 @@ package grpc
 
 import (
 	"context"
+	"database/sql"
 	"log"
 	"net"
 
@@ -36,7 +37,7 @@ func (s *Server) GetListener() net.Listener {
 }
 
 // RunServer - Run gRpc server
-func (s *Server) RunServer(ctx context.Context) error {
+func (s *Server) RunServer(ctx context.Context, db *sql.DB) error {
 	log.Printf("gRpc server is starting...\n")
 
 	lis, err := net.Listen("tcp", "0.0.0.0:50051")
@@ -52,7 +53,7 @@ func (s *Server) RunServer(ctx context.Context) error {
 	// Register services
 	communicationmethodapi.RegisterCommunicationMethodServiceServer(server, communicationmethodservice.NewCommunicationMethodService())
 	communicationmethodfieldapi.RegisterCommunicationMethodFieldServiceServer(server, communicationmethodfieldservice.NewCommunicationMethodFieldService())
-	contactsystemapi.RegisterContactSystemServiceServer(server, contactsystemservice.NewContactSystemService())
+	contactsystemapi.RegisterContactSystemServiceServer(server, contactsystemservice.NewContactSystemService(db))
 	contactapi.RegisterContactServiceServer(server, contactservice.NewContactService())
 	contactcommunicationmethodapi.RegisterContactCommunicationMethodServiceServer(server, contactcommunicationmethodservice.NewContactCommunicationMethodService())
 

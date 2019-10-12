@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"database/sql"
 	"log"
 	"os"
 	"os/signal"
@@ -18,6 +19,9 @@ func main() {
 
 func runServer() error {
 	ctx := context.Background()
+
+	// Temporary variable
+	var db *sql.DB
 
 	grpcServer := &grpc.Server{}
 
@@ -36,7 +40,7 @@ func runServer() error {
 		}
 	}()
 
-	if err := grpcServer.RunServer(ctx); err != nil {
+	if err := grpcServer.RunServer(ctx, db); err != nil {
 		return err
 	}
 

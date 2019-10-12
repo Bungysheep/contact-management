@@ -9,7 +9,7 @@ import "google/protobuf/timestamp.proto";
 message Audit {
     google.protobuf.Timestamp created_at = 1;
 
-    google.protobuf.Timestamp updated_at = 2;
+    google.protobuf.Timestamp modified_at = 2;
     
     int64 vers = 3;
 }
