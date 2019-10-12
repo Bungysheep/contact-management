@@ -2,134 +2,41 @@ package contactsystem
 
 import (
 	"context"
-	"database/sql"
-	"time"
 
-	"github.com/bungysheep/contact-management/pkg/api/v1/audit"
-	"github.com/bungysheep/contact-management/pkg/api/v1/contactsystem"
-	"github.com/bungysheep/contact-management/pkg/common/message"
-	"github.com/golang/protobuf/ptypes"
+	contactsystemapi "github.com/bungysheep/contact-management/pkg/api/v1/contactsystem"
+	contactsystemrepository "github.com/bungysheep/contact-management/pkg/repository/v1/contactsystem"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
 
 type contactSystemService struct {
-	db *sql.DB
+	repo contactsystemrepository.IContactSystemRepository
 }
 
 // NewContactSystemService - Contact System service implementation
-func NewContactSystemService(db *sql.DB) contactsystem.ContactSystemServiceServer {
-	return &contactSystemService{db: db}
+func NewContactSystemService(repo contactsystemrepository.IContactSystemRepository) contactsystemapi.ContactSystemServiceServer {
+	return &contactSystemService{repo: repo}
 }
 
-func (cntsys *contactSystemService) DoRead(ctx context.Context, req *contactsystem.DoReadRequest) (*contactsystem.DoReadResponse, error) {
-	conn, err := cntsys.db.Conn(ctx)
-	if err != nil {
-		return nil, status.Errorf(codes.Unknown, message.FailedConnectToDatabase(err))
-	}
-	defer conn.Close()
+func (cntsys *contactSystemService) DoRead(ctx context.Context, req *contactsystemapi.DoReadRequest) (*contactsystemapi.DoReadResponse, error) {
+	result, err := cntsys.repo.DoRead(ctx, req.GetContactSystemCode())
 
-	stmt, err := conn.PrepareContext(ctx, "SELECT contact_system_code, description, details, status, created_at, modified_at, vers FROM contact_system WHERE contact_system_code=$1")
-	if err != nil {
-		return nil, status.Errorf(codes.Unknown, message.FailedPrepareRead("Contact System", err))
-	}
-
-	rows, err := stmt.QueryContext(ctx, req.GetContactSystemCode())
-	if err != nil {
-		return nil, status.Errorf(codes.Unknown, message.FailedRead("Contact System", err))
-	}
-	defer rows.Close()
-
-	if !rows.Next() {
-		if err := rows.Err(); err != nil {
-			return nil, status.Errorf(codes.Unknown, message.FailedRetrieveRow("Contact System", err))
-		}
-		return nil, status.Errorf(codes.NotFound, message.DoesNotExist("Contact System"))
-	}
-
-	var createdAt, modifiedAt time.Time
-	resp := &contactsystem.DoReadResponse{ContactSystem: &contactsystem.ContactSystem{Audit: &audit.Audit{}}}
-
-	if err := rows.Scan(
-		&resp.GetContactSystem().ContactSystemCode,
-		&resp.GetContactSystem().Description,
-		&resp.GetContactSystem().Details,
-		&resp.GetContactSystem().Status,
-		&createdAt,
-		&modifiedAt,
-		&resp.GetContactSystem().GetAudit().Vers); err != nil {
-		return nil, status.Errorf(codes.Unknown, message.FailedRetrieveValues("Contact System", err))
-	}
-
-	resp.GetContactSystem().GetAudit().CreatedAt, _ = ptypes.TimestampProto(createdAt)
-	resp.GetContactSystem().GetAudit().ModifiedAt, _ = ptypes.TimestampProto(modifiedAt)
-
-	return resp, nil
+	return &contactsystemapi.DoReadResponse{ContactSystem: result}, err
 }
 
-func (cntsys *contactSystemService) DoReadAll(ctx context.Context, req *contactsystem.DoReadAllRequest) (*contactsystem.DoReadAllResponse, error) {
-	conn, err := cntsys.db.Conn(ctx)
-	if err != nil {
-		return nil, status.Errorf(codes.Unknown, message.FailedConnectToDatabase(err))
-	}
-	defer conn.Close()
+func (cntsys *contactSystemService) DoReadAll(ctx context.Context, req *contactsystemapi.DoReadAllRequest) (*contactsystemapi.DoReadAllResponse, error) {
+	result, err := cntsys.repo.DoReadAll(ctx)
 
-	stmt, err := conn.PrepareContext(ctx, "SELECT contact_system_code, description, details, status, created_at, modified_at, vers FROM contact_system")
-	if err != nil {
-		return nil, status.Errorf(codes.Unknown, message.FailedPrepareRead("Contact System", err))
-	}
-
-	rows, err := stmt.QueryContext(ctx)
-	if err != nil {
-		return nil, status.Errorf(codes.Unknown, message.FailedRead("Contact System", err))
-	}
-	defer rows.Close()
-
-	var createdAt, modifiedAt time.Time
-	contactSystems := []*contactsystem.ContactSystem{}
-
-	for {
-		if !rows.Next() {
-			if err := rows.Err(); err != nil {
-				return nil, status.Errorf(codes.Unknown, message.FailedRetrieveRow("Contact System", err))
-			}
-			break
-		}
-
-		contactSystem := &contactsystem.ContactSystem{Audit: &audit.Audit{}}
-		if err := rows.Scan(
-			&contactSystem.ContactSystemCode,
-			&contactSystem.Description,
-			&contactSystem.Details,
-			&contactSystem.Status,
-			&createdAt,
-			&modifiedAt,
-			&contactSystem.GetAudit().Vers); err != nil {
-			return nil, status.Errorf(codes.Unknown, message.FailedRetrieveValues("Contact System", err))
-		}
-
-		contactSystem.GetAudit().CreatedAt, _ = ptypes.TimestampProto(createdAt)
-		contactSystem.GetAudit().ModifiedAt, _ = ptypes.TimestampProto(modifiedAt)
-
-		contactSystems = append(contactSystems, contactSystem)
-	}
-
-	return &contactsystem.DoReadAllResponse{ContactSystems: contactSystems}, nil
+	return &contactsystemapi.DoReadAllResponse{ContactSystems: result}, err
 }
 
-func (cntsys *contactSystemService) DoSave(ctx context.Context, req *contactsystem.DoSaveRequest) (*contactsystem.DoSaveResponse, error) {
-	conn, err := cntsys.db.Conn(ctx)
-	if err != nil {
-		return nil, status.Errorf(codes.Unknown, message.FailedConnectToDatabase(err))
-	}
-	defer conn.Close()
-
-	res, err := doUpdate(conn)(ctx, req)
+func (cntsys *contactSystemService) DoSave(ctx context.Context, req *contactsystemapi.DoSaveRequest) (*contactsystemapi.DoSaveResponse, error) {
+	res, err := doUpdate(ctx, cntsys.repo, req)
 	if err != nil {
 		s, ok := status.FromError(err)
 		if ok {
 			if s.Code() == codes.NotFound {
-				return doInsert(conn)(ctx, req)
+				return doInsert(ctx, cntsys.repo, req)
 			}
 		}
 	}
@@ -137,74 +44,20 @@ func (cntsys *contactSystemService) DoSave(ctx context.Context, req *contactsyst
 	return res, err
 }
 
-func (cntsys *contactSystemService) DoDelete(ctx context.Context, req *contactsystem.DoDeleteRequest) (*contactsystem.DoDeleteResponse, error) {
-	conn, err := cntsys.db.Conn(ctx)
-	if err != nil {
-		return &contactsystem.DoDeleteResponse{Result: false}, status.Errorf(codes.Unknown, message.FailedConnectToDatabase(err))
-	}
-	defer conn.Close()
+func (cntsys *contactSystemService) DoDelete(ctx context.Context, req *contactsystemapi.DoDeleteRequest) (*contactsystemapi.DoDeleteResponse, error) {
+	err := cntsys.repo.DoDelete(ctx, req.GetContactSystemCode())
 
-	stmt, err := conn.PrepareContext(ctx, "DELETE FROM contact_system WHERE contact_system_code=$1")
-	if err != nil {
-		return &contactsystem.DoDeleteResponse{Result: false}, status.Errorf(codes.Unknown, message.FailedPrepareDelete("Contact System", err))
-	}
-
-	result, err := stmt.ExecContext(ctx, req.GetContactSystemCode())
-	if err != nil {
-		return &contactsystem.DoDeleteResponse{Result: false}, status.Errorf(codes.Unknown, message.FailedDelete("Contact System", err))
-	}
-
-	rows, _ := result.RowsAffected()
-	if rows == 0 {
-		return &contactsystem.DoDeleteResponse{Result: false}, status.Errorf(codes.NotFound, message.DoesNotExist("Contact System"))
-	}
-
-	return &contactsystem.DoDeleteResponse{Result: true}, nil
+	return &contactsystemapi.DoDeleteResponse{Result: err == nil}, err
 }
 
-func doInsert(conn *sql.Conn) func(ctx context.Context, req *contactsystem.DoSaveRequest) (*contactsystem.DoSaveResponse, error) {
-	return func(ctx context.Context, req *contactsystem.DoSaveRequest) (*contactsystem.DoSaveResponse, error) {
-		createdAt, _ := ptypes.Timestamp(req.GetContactSystem().GetAudit().GetCreatedAt())
-		modifiedAt, _ := ptypes.Timestamp(req.GetContactSystem().GetAudit().GetModifiedAt())
+func doInsert(ctx context.Context, repo contactsystemrepository.IContactSystemRepository, req *contactsystemapi.DoSaveRequest) (*contactsystemapi.DoSaveResponse, error) {
+	err := repo.DoInsert(ctx, req.GetContactSystem())
 
-		stmt, err := conn.PrepareContext(ctx, "INSERT INTO contact_system (contact_system_code, description, details, status, created_at, modified_at, vers) VALUES ($1, $2, $3, $4, $5, $6, 1)")
-		if err != nil {
-			return &contactsystem.DoSaveResponse{Result: false}, status.Errorf(codes.Unknown, message.FailedPrepareInsert("Contact System", err))
-		}
-
-		result, err := stmt.ExecContext(ctx, req.ContactSystem.GetContactSystemCode(), req.ContactSystem.GetDescription(), req.ContactSystem.GetDetails(), req.ContactSystem.GetStatus(), createdAt, modifiedAt)
-		if err != nil {
-			return &contactsystem.DoSaveResponse{Result: false}, status.Errorf(codes.Unknown, message.FailedInsert("Contact System", err))
-		}
-
-		rows, _ := result.RowsAffected()
-		if rows == 0 {
-			return &contactsystem.DoSaveResponse{Result: false}, status.Errorf(codes.Unknown, message.NoRowInserted())
-		}
-
-		return &contactsystem.DoSaveResponse{Result: true}, nil
-	}
+	return &contactsystemapi.DoSaveResponse{Result: err == nil}, err
 }
 
-func doUpdate(conn *sql.Conn) func(ctx context.Context, req *contactsystem.DoSaveRequest) (*contactsystem.DoSaveResponse, error) {
-	return func(ctx context.Context, req *contactsystem.DoSaveRequest) (*contactsystem.DoSaveResponse, error) {
-		modifiedAt, _ := ptypes.Timestamp(req.GetContactSystem().GetAudit().GetModifiedAt())
+func doUpdate(ctx context.Context, repo contactsystemrepository.IContactSystemRepository, req *contactsystemapi.DoSaveRequest) (*contactsystemapi.DoSaveResponse, error) {
+	err := repo.DoUpdate(ctx, req.GetContactSystem())
 
-		stmt, err := conn.PrepareContext(ctx, "UPDATE contact_system SET description=$2, details=$3, status=$4, modified_at=$5, vers=vers+1 WHERE contact_system_code=$1")
-		if err != nil {
-			return &contactsystem.DoSaveResponse{Result: false}, status.Errorf(codes.Unknown, message.FailedPrepareUpdate("Contact System", err))
-		}
-
-		result, err := stmt.ExecContext(ctx, req.ContactSystem.GetContactSystemCode(), req.ContactSystem.GetDescription(), req.ContactSystem.GetDetails(), req.ContactSystem.GetStatus(), modifiedAt)
-		if err != nil {
-			return &contactsystem.DoSaveResponse{Result: false}, status.Errorf(codes.Unknown, message.FailedUpdate("Contact System", err))
-		}
-
-		rows, _ := result.RowsAffected()
-		if rows == 0 {
-			return &contactsystem.DoSaveResponse{Result: false}, status.Errorf(codes.NotFound, message.DoesNotExist("Contact System"))
-		}
-
-		return &contactsystem.DoSaveResponse{Result: true}, nil
-	}
+	return &contactsystemapi.DoSaveResponse{Result: err == nil}, err
 }
