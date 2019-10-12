@@ -11,6 +11,7 @@ import (
 	contactapi "github.com/bungysheep/contact-management/pkg/api/v1/contact"
 	contactcommunicationmethodapi "github.com/bungysheep/contact-management/pkg/api/v1/contactcommunicationmethod"
 	contactsystemapi "github.com/bungysheep/contact-management/pkg/api/v1/contactsystem"
+	contactsystemrepository "github.com/bungysheep/contact-management/pkg/repository/v1/contactsystem"
 	communicationmethodservice "github.com/bungysheep/contact-management/pkg/service/v1/communicationmethod"
 	communicationmethodfieldservice "github.com/bungysheep/contact-management/pkg/service/v1/communicationmethodfield"
 	contactservice "github.com/bungysheep/contact-management/pkg/service/v1/contact"
@@ -53,7 +54,7 @@ func (s *Server) RunServer(ctx context.Context, db *sql.DB) error {
 	// Register services
 	communicationmethodapi.RegisterCommunicationMethodServiceServer(server, communicationmethodservice.NewCommunicationMethodService())
 	communicationmethodfieldapi.RegisterCommunicationMethodFieldServiceServer(server, communicationmethodfieldservice.NewCommunicationMethodFieldService())
-	contactsystemapi.RegisterContactSystemServiceServer(server, contactsystemservice.NewContactSystemService(db))
+	contactsystemapi.RegisterContactSystemServiceServer(server, contactsystemservice.NewContactSystemService(contactsystemrepository.NewContactSystemRepository(db)))
 	contactapi.RegisterContactServiceServer(server, contactservice.NewContactService())
 	contactcommunicationmethodapi.RegisterContactCommunicationMethodServiceServer(server, contactcommunicationmethodservice.NewContactCommunicationMethodService())
 
