@@ -6,17 +6,40 @@ import (
 	"testing"
 
 	"github.com/bungysheep/contact-management/pkg/api/v1/communicationmethod"
+	"github.com/bungysheep/contact-management/pkg/common/message"
+	"github.com/bungysheep/contact-management/pkg/repository/v1/communicationmethod/mock_communicationmethod"
+	"github.com/golang/mock/gomock"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 )
 
 var (
-	ctx context.Context
-	svc communicationmethod.CommunicationMethodServiceServer
+	ctx  context.Context
+	data []*communicationmethod.CommunicationMethod
 )
 
 func TestMain(m *testing.M) {
 	ctx = context.TODO()
 
-	svc = NewCommunicationMethodService()
+	data = append(data, &communicationmethod.CommunicationMethod{
+		ContactSystemCode:       "CNTSYS001",
+		CommunicationMethodCode: "Email",
+		Description:             "Email",
+		Details:                 "Email",
+		Status:                  "A",
+	}, &communicationmethod.CommunicationMethod{
+		ContactSystemCode:       "CNTSYS001",
+		CommunicationMethodCode: "Mobile",
+		Description:             "Mobile",
+		Details:                 "Mobile",
+		Status:                  "A",
+	}, &communicationmethod.CommunicationMethod{
+		ContactSystemCode:       "CNTSYS001",
+		CommunicationMethodCode: "Fax",
+		Description:             "Fax",
+		Details:                 "Fax",
+		Status:                  "A",
+	})
 
 	exitCode := m.Run()
 
@@ -24,47 +47,169 @@ func TestMain(m *testing.M) {
 }
 
 func TestCommunicationMethodService(t *testing.T) {
-	t.Run("DoRead Communication Method", doRead(ctx))
+	t.Run("DoRead Communication Method", doRead(ctx, data[0]))
 
-	t.Run("DoReadAll Communication Method", doRead(ctx))
+	t.Run("DoReadAll Communication Method", doReadAll(ctx, data[0]))
 
-	t.Run("DoSave Communication Method", doRead(ctx))
+	t.Run("DoSave new Communication Method", doSaveNew(ctx, data[0]))
 
-	t.Run("DoDelete Communication Method", doRead(ctx))
+	t.Run("DoSave existing Communication Method", doSaveExisting(ctx, data[0]))
+
+	t.Run("DoDelete Communication Method", doDelete(ctx, data[0]))
 }
 
-func doRead(ctx context.Context) func(t *testing.T) {
+func doRead(ctx context.Context, input *communicationmethod.CommunicationMethod) func(t *testing.T) {
 	return func(t *testing.T) {
-		_, err := svc.DoRead(ctx, &communicationmethod.DoReadRequest{})
-		if err == nil {
-			t.Errorf("Should be failed due to unimplemented.")
+		ctl := gomock.NewController(t)
+		defer ctl.Finish()
+
+		repo := mock_communicationmethod.NewMockICommunicationMethodRepository(ctl)
+
+		repo.EXPECT().DoRead(ctx, input.GetContactSystemCode(), input.GetCommunicationMethodCode()).Return(input, nil)
+
+		svc := NewCommunicationMethodService(repo)
+
+		resp, err := svc.DoRead(ctx, &communicationmethod.DoReadRequest{ContactSystemCode: input.GetContactSystemCode(), CommunicationMethodCode: input.GetCommunicationMethodCode()})
+		if err != nil {
+			t.Errorf("Expect error is nil")
+		}
+
+		if resp == nil {
+			t.Errorf("Expect contact system is not nil")
+		}
+
+		if resp.GetCommunicationMethod().GetContactSystemCode() != input.GetContactSystemCode() {
+			t.Errorf("Expect contact system code %s, but got %s", input.GetContactSystemCode(), resp.GetCommunicationMethod().GetContactSystemCode())
+		}
+
+		if resp.GetCommunicationMethod().GetCommunicationMethodCode() != input.GetCommunicationMethodCode() {
+			t.Errorf("Expect communication method code %s, but got %s", input.GetContactSystemCode(), resp.GetCommunicationMethod().GetCommunicationMethodCode())
+		}
+
+		if resp.GetCommunicationMethod().GetDescription() != input.GetDescription() {
+			t.Errorf("Expect description %s, but got %s", input.GetDescription(), resp.GetCommunicationMethod().GetDescription())
+		}
+
+		if resp.GetCommunicationMethod().GetDetails() != input.GetDetails() {
+			t.Errorf("Expect details %s, but got %s", input.GetDetails(), resp.GetCommunicationMethod().GetDetails())
+		}
+
+		if resp.GetCommunicationMethod().GetStatus() != input.GetStatus() {
+			t.Errorf("Expect status %s, but got %s", input.GetStatus(), resp.GetCommunicationMethod().GetStatus())
 		}
 	}
 }
 
-func doReadAll(ctx context.Context) func(t *testing.T) {
+func doReadAll(ctx context.Context, input *communicationmethod.CommunicationMethod) func(t *testing.T) {
 	return func(t *testing.T) {
-		_, err := svc.DoReadAll(ctx, &communicationmethod.DoReadAllRequest{})
-		if err == nil {
-			t.Errorf("Should be failed due to unimplemented.")
+		ctl := gomock.NewController(t)
+		defer ctl.Finish()
+
+		repo := mock_communicationmethod.NewMockICommunicationMethodRepository(ctl)
+
+		repo.EXPECT().DoReadAll(ctx).Return(data, nil)
+
+		svc := NewCommunicationMethodService(repo)
+
+		resp, err := svc.DoReadAll(ctx, &communicationmethod.DoReadAllRequest{})
+		if err != nil {
+			t.Errorf("Expect error is nil")
+		}
+
+		if resp.GetCommunicationMethod() == nil {
+			t.Errorf("Expect contact system is not nil")
+		}
+
+		if len(resp.GetCommunicationMethod()) < 3 {
+			t.Errorf("Expect there are contact systems retrieved")
+		}
+
+		if resp.GetCommunicationMethod()[0].GetContactSystemCode() != input.GetContactSystemCode() {
+			t.Errorf("Expect contact system code %s, but got %s", input.GetContactSystemCode(), resp.GetCommunicationMethod()[0].GetContactSystemCode())
+		}
+
+		if resp.GetCommunicationMethod()[0].GetCommunicationMethodCode() != input.GetCommunicationMethodCode() {
+			t.Errorf("Expect communication method code %s, but got %s", input.GetContactSystemCode(), resp.GetCommunicationMethod()[0].GetCommunicationMethodCode())
+		}
+
+		if resp.GetCommunicationMethod()[0].GetDescription() != input.GetDescription() {
+			t.Errorf("Expect description %s, but got %s", input.GetDescription(), resp.GetCommunicationMethod()[0].GetDescription())
+		}
+
+		if resp.GetCommunicationMethod()[0].GetDetails() != input.GetDetails() {
+			t.Errorf("Expect details %s, but got %s", input.GetDetails(), resp.GetCommunicationMethod()[0].GetDetails())
+		}
+
+		if resp.GetCommunicationMethod()[0].GetStatus() != input.GetStatus() {
+			t.Errorf("Expect status %s, but got %s", input.GetStatus(), resp.GetCommunicationMethod()[0].GetStatus())
 		}
 	}
 }
 
-func doSave(ctx context.Context) func(t *testing.T) {
+func doSaveNew(ctx context.Context, input *communicationmethod.CommunicationMethod) func(t *testing.T) {
 	return func(t *testing.T) {
-		_, err := svc.DoSave(ctx, &communicationmethod.DoSaveRequest{})
-		if err == nil {
-			t.Errorf("Should be failed due to unimplemented.")
+		ctl := gomock.NewController(t)
+		defer ctl.Finish()
+
+		repo := mock_communicationmethod.NewMockICommunicationMethodRepository(ctl)
+
+		repo.EXPECT().DoUpdate(ctx, input).Return(status.Errorf(codes.NotFound, message.DoesNotExist("Communication Methos")))
+
+		repo.EXPECT().DoInsert(ctx, input).Return(nil)
+
+		svc := NewCommunicationMethodService(repo)
+
+		resp, err := svc.DoSave(ctx, &communicationmethod.DoSaveRequest{CommunicationMethod: input})
+		if err != nil {
+			t.Errorf("Expect error is nil")
+		}
+
+		if !resp.GetResult() {
+			t.Errorf("Expect the result is successful")
 		}
 	}
 }
 
-func doDelete(ctx context.Context) func(t *testing.T) {
+func doSaveExisting(ctx context.Context, input *communicationmethod.CommunicationMethod) func(t *testing.T) {
 	return func(t *testing.T) {
-		_, err := svc.DoDelete(ctx, &communicationmethod.DoDeleteRequest{})
-		if err == nil {
-			t.Errorf("Should be failed due to unimplemented.")
+		ctl := gomock.NewController(t)
+		defer ctl.Finish()
+
+		repo := mock_communicationmethod.NewMockICommunicationMethodRepository(ctl)
+
+		repo.EXPECT().DoUpdate(ctx, input).Return(nil)
+
+		svc := NewCommunicationMethodService(repo)
+
+		resp, err := svc.DoSave(ctx, &communicationmethod.DoSaveRequest{CommunicationMethod: input})
+		if err != nil {
+			t.Errorf("Expect error is nil")
+		}
+
+		if !resp.GetResult() {
+			t.Errorf("Expect the result is successful")
+		}
+	}
+}
+
+func doDelete(ctx context.Context, input *communicationmethod.CommunicationMethod) func(t *testing.T) {
+	return func(t *testing.T) {
+		ctl := gomock.NewController(t)
+		defer ctl.Finish()
+
+		repo := mock_communicationmethod.NewMockICommunicationMethodRepository(ctl)
+
+		repo.EXPECT().DoDelete(ctx, input.GetContactSystemCode(), input.GetCommunicationMethodCode()).Return(nil)
+
+		svc := NewCommunicationMethodService(repo)
+
+		resp, err := svc.DoDelete(ctx, &communicationmethod.DoDeleteRequest{ContactSystemCode: input.GetContactSystemCode(), CommunicationMethodCode: input.GetCommunicationMethodCode()})
+		if err != nil {
+			t.Errorf("Expect error is nil")
+		}
+
+		if !resp.GetResult() {
+			t.Errorf("Expect the result is successful")
 		}
 	}
 }
