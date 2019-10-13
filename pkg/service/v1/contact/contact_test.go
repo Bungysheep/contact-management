@@ -153,7 +153,7 @@ func doSaveNew(ctx context.Context, input *contact.Contact) func(t *testing.T) {
 
 		repo := mock_contact.NewMockIContactRepository(ctl)
 
-		repo.EXPECT().DoUpdate(ctx, input).Return(status.Errorf(codes.NotFound, message.DoesNotExist("Communication Method")))
+		repo.EXPECT().DoUpdate(ctx, input).Return(status.Errorf(codes.NotFound, message.DoesNotExist("Contact")))
 
 		repo.EXPECT().DoInsert(ctx, input).Return(nil)
 
