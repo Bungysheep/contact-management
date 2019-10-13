@@ -75,7 +75,7 @@ func doRead(ctx context.Context, input *communicationmethod.CommunicationMethod)
 		}
 
 		if resp == nil {
-			t.Errorf("Expect contact system is not nil")
+			t.Errorf("Expect communication method is not nil")
 		}
 
 		if resp.GetCommunicationMethod().GetContactSystemCode() != input.GetContactSystemCode() {
@@ -83,7 +83,7 @@ func doRead(ctx context.Context, input *communicationmethod.CommunicationMethod)
 		}
 
 		if resp.GetCommunicationMethod().GetCommunicationMethodCode() != input.GetCommunicationMethodCode() {
-			t.Errorf("Expect communication method code %s, but got %s", input.GetContactSystemCode(), resp.GetCommunicationMethod().GetCommunicationMethodCode())
+			t.Errorf("Expect communication method code %s, but got %s", input.GetCommunicationMethodCode(), resp.GetCommunicationMethod().GetCommunicationMethodCode())
 		}
 
 		if resp.GetCommunicationMethod().GetDescription() != input.GetDescription() {
@@ -117,11 +117,11 @@ func doReadAll(ctx context.Context, input *communicationmethod.CommunicationMeth
 		}
 
 		if resp.GetCommunicationMethod() == nil {
-			t.Errorf("Expect contact system is not nil")
+			t.Errorf("Expect communication method is not nil")
 		}
 
 		if len(resp.GetCommunicationMethod()) < 3 {
-			t.Errorf("Expect there are contact systems retrieved")
+			t.Errorf("Expect there are communication methods retrieved")
 		}
 
 		if resp.GetCommunicationMethod()[0].GetContactSystemCode() != input.GetContactSystemCode() {
@@ -129,7 +129,7 @@ func doReadAll(ctx context.Context, input *communicationmethod.CommunicationMeth
 		}
 
 		if resp.GetCommunicationMethod()[0].GetCommunicationMethodCode() != input.GetCommunicationMethodCode() {
-			t.Errorf("Expect communication method code %s, but got %s", input.GetContactSystemCode(), resp.GetCommunicationMethod()[0].GetCommunicationMethodCode())
+			t.Errorf("Expect communication method code %s, but got %s", input.GetCommunicationMethodCode(), resp.GetCommunicationMethod()[0].GetCommunicationMethodCode())
 		}
 
 		if resp.GetCommunicationMethod()[0].GetDescription() != input.GetDescription() {
@@ -153,7 +153,7 @@ func doSaveNew(ctx context.Context, input *communicationmethod.CommunicationMeth
 
 		repo := mock_communicationmethod.NewMockICommunicationMethodRepository(ctl)
 
-		repo.EXPECT().DoUpdate(ctx, input).Return(status.Errorf(codes.NotFound, message.DoesNotExist("Communication Methos")))
+		repo.EXPECT().DoUpdate(ctx, input).Return(status.Errorf(codes.NotFound, message.DoesNotExist("Communication Method")))
 
 		repo.EXPECT().DoInsert(ctx, input).Return(nil)
 
