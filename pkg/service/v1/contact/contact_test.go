@@ -74,7 +74,7 @@ func doRead(ctx context.Context, input *contact.Contact) func(t *testing.T) {
 			t.Errorf("Expect error is nil")
 		}
 
-		if resp == nil {
+		if resp.GetContact() == nil {
 			t.Errorf("Expect contact is not nil")
 		}
 

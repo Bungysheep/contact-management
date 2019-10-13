@@ -74,7 +74,7 @@ func doRead(ctx context.Context, input *communicationmethodfield.CommunicationMe
 			t.Errorf("Expect error is nil")
 		}
 
-		if resp == nil {
+		if resp.GetCommunicationMethodField() == nil {
 			t.Errorf("Expect communication method field is not nil")
 		}
 

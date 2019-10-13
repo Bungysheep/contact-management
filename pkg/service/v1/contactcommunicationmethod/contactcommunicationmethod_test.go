@@ -71,24 +71,24 @@ func doRead(ctx context.Context, input *contactcommunicationmethod.ContactCommun
 			t.Errorf("Expect error is nil")
 		}
 
-		if resp == nil {
-			t.Errorf("Expect communication method is not nil")
+		if resp.GetContactCommunicationMethod() == nil {
+			t.Errorf("Expect contact communication method is not nil")
 		}
 
-		if resp.GetCommunicationMethod().GetContactSystemCode() != input.GetContactSystemCode() {
-			t.Errorf("Expect contact system code %s, but got %s", input.GetContactSystemCode(), resp.GetCommunicationMethod().GetContactSystemCode())
+		if resp.GetContactCommunicationMethod().GetContactSystemCode() != input.GetContactSystemCode() {
+			t.Errorf("Expect contact system code %s, but got %s", input.GetContactSystemCode(), resp.GetContactCommunicationMethod().GetContactSystemCode())
 		}
 
-		if resp.GetCommunicationMethod().GetContactId() != input.GetContactId() {
-			t.Errorf("Expect contact id %d, but got %d", input.GetContactId(), resp.GetCommunicationMethod().GetContactId())
+		if resp.GetContactCommunicationMethod().GetContactId() != input.GetContactId() {
+			t.Errorf("Expect contact id %d, but got %d", input.GetContactId(), resp.GetContactCommunicationMethod().GetContactId())
 		}
 
-		if resp.GetCommunicationMethod().GetContactCommunicationMethodId() != input.GetContactCommunicationMethodId() {
-			t.Errorf("Expect contact communication method id %d, but got %d", input.GetContactCommunicationMethodId(), resp.GetCommunicationMethod().GetContactCommunicationMethodId())
+		if resp.GetContactCommunicationMethod().GetContactCommunicationMethodId() != input.GetContactCommunicationMethodId() {
+			t.Errorf("Expect contact communication method id %d, but got %d", input.GetContactCommunicationMethodId(), resp.GetContactCommunicationMethod().GetContactCommunicationMethodId())
 		}
 
-		if resp.GetCommunicationMethod().GetCommunicationMethodCode() != input.GetCommunicationMethodCode() {
-			t.Errorf("Expect communication method code %s, but got %s", input.GetCommunicationMethodCode(), resp.GetCommunicationMethod().GetCommunicationMethodCode())
+		if resp.GetContactCommunicationMethod().GetCommunicationMethodCode() != input.GetCommunicationMethodCode() {
+			t.Errorf("Expect communication method code %s, but got %s", input.GetCommunicationMethodCode(), resp.GetContactCommunicationMethod().GetCommunicationMethodCode())
 		}
 	}
 }
@@ -109,28 +109,28 @@ func doReadAll(ctx context.Context, input *contactcommunicationmethod.ContactCom
 			t.Errorf("Expect error is nil")
 		}
 
-		if resp.GetCommunicationMethod() == nil {
-			t.Errorf("Expect communication method is not nil")
+		if resp.GetContactCommunicationMethod() == nil {
+			t.Errorf("Expect contact communication method is not nil")
 		}
 
-		if len(resp.GetCommunicationMethod()) < 3 {
-			t.Errorf("Expect there are communication methods retrieved")
+		if len(resp.GetContactCommunicationMethod()) < 3 {
+			t.Errorf("Expect there are contact communication methods retrieved")
 		}
 
-		if resp.GetCommunicationMethod()[0].GetContactSystemCode() != input.GetContactSystemCode() {
-			t.Errorf("Expect contact system code %s, but got %s", input.GetContactSystemCode(), resp.GetCommunicationMethod()[0].GetContactSystemCode())
+		if resp.GetContactCommunicationMethod()[0].GetContactSystemCode() != input.GetContactSystemCode() {
+			t.Errorf("Expect contact system code %s, but got %s", input.GetContactSystemCode(), resp.GetContactCommunicationMethod()[0].GetContactSystemCode())
 		}
 
-		if resp.GetCommunicationMethod()[0].GetContactId() != input.GetContactId() {
-			t.Errorf("Expect contact id %d, but got %d", input.GetContactId(), resp.GetCommunicationMethod()[0].GetContactId())
+		if resp.GetContactCommunicationMethod()[0].GetContactId() != input.GetContactId() {
+			t.Errorf("Expect contact id %d, but got %d", input.GetContactId(), resp.GetContactCommunicationMethod()[0].GetContactId())
 		}
 
-		if resp.GetCommunicationMethod()[0].GetContactCommunicationMethodId() != input.GetContactCommunicationMethodId() {
-			t.Errorf("Expect contact communication method id %d, but got %d", input.GetContactCommunicationMethodId(), resp.GetCommunicationMethod()[0].GetContactCommunicationMethodId())
+		if resp.GetContactCommunicationMethod()[0].GetContactCommunicationMethodId() != input.GetContactCommunicationMethodId() {
+			t.Errorf("Expect contact communication method id %d, but got %d", input.GetContactCommunicationMethodId(), resp.GetContactCommunicationMethod()[0].GetContactCommunicationMethodId())
 		}
 
-		if resp.GetCommunicationMethod()[0].GetCommunicationMethodCode() != input.GetCommunicationMethodCode() {
-			t.Errorf("Expect communication method code %s, but got %s", input.GetCommunicationMethodCode(), resp.GetCommunicationMethod()[0].GetCommunicationMethodCode())
+		if resp.GetContactCommunicationMethod()[0].GetCommunicationMethodCode() != input.GetCommunicationMethodCode() {
+			t.Errorf("Expect communication method code %s, but got %s", input.GetCommunicationMethodCode(), resp.GetContactCommunicationMethod()[0].GetCommunicationMethodCode())
 		}
 	}
 }
@@ -148,7 +148,7 @@ func doSaveNew(ctx context.Context, input *contactcommunicationmethod.ContactCom
 
 		svc := NewContactCommunicationMethodService(repo)
 
-		resp, err := svc.DoSave(ctx, &contactcommunicationmethod.DoSaveRequest{CommunicationMethod: input})
+		resp, err := svc.DoSave(ctx, &contactcommunicationmethod.DoSaveRequest{ContactCommunicationMethod: input})
 		if err != nil {
 			t.Errorf("Expect error is nil")
 		}
@@ -170,7 +170,7 @@ func doSaveExisting(ctx context.Context, input *contactcommunicationmethod.Conta
 
 		svc := NewContactCommunicationMethodService(repo)
 
-		resp, err := svc.DoSave(ctx, &contactcommunicationmethod.DoSaveRequest{CommunicationMethod: input})
+		resp, err := svc.DoSave(ctx, &contactcommunicationmethod.DoSaveRequest{ContactCommunicationMethod: input})
 		if err != nil {
 			t.Errorf("Expect error is nil")
 		}

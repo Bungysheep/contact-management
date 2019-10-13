@@ -74,7 +74,7 @@ func doRead(ctx context.Context, input *communicationmethod.CommunicationMethod)
 			t.Errorf("Expect error is nil")
 		}
 
-		if resp == nil {
+		if resp.GetCommunicationMethod() == nil {
 			t.Errorf("Expect communication method is not nil")
 		}
 
