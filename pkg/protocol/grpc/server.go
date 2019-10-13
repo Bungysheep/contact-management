@@ -11,6 +11,8 @@ import (
 	contactapi "github.com/bungysheep/contact-management/pkg/api/v1/contact"
 	contactcommunicationmethodapi "github.com/bungysheep/contact-management/pkg/api/v1/contactcommunicationmethod"
 	contactsystemapi "github.com/bungysheep/contact-management/pkg/api/v1/contactsystem"
+	communicationmethodrepository "github.com/bungysheep/contact-management/pkg/repository/v1/communicationmethod"
+	communicationmethodfieldrepository "github.com/bungysheep/contact-management/pkg/repository/v1/communicationmethodfield"
 	contactsystemrepository "github.com/bungysheep/contact-management/pkg/repository/v1/contactsystem"
 	communicationmethodservice "github.com/bungysheep/contact-management/pkg/service/v1/communicationmethod"
 	communicationmethodfieldservice "github.com/bungysheep/contact-management/pkg/service/v1/communicationmethodfield"
@@ -52,8 +54,8 @@ func (s *Server) RunServer(ctx context.Context, db *sql.DB) error {
 	server := grpc.NewServer(opts...)
 
 	// Register services
-	communicationmethodapi.RegisterCommunicationMethodServiceServer(server, communicationmethodservice.NewCommunicationMethodService())
-	communicationmethodfieldapi.RegisterCommunicationMethodFieldServiceServer(server, communicationmethodfieldservice.NewCommunicationMethodFieldService())
+	communicationmethodapi.RegisterCommunicationMethodServiceServer(server, communicationmethodservice.NewCommunicationMethodService(communicationmethodrepository.NewCommunicationMethodRepository(db)))
+	communicationmethodfieldapi.RegisterCommunicationMethodFieldServiceServer(server, communicationmethodfieldservice.NewCommunicationMethodFieldService(communicationmethodfieldrepository.NewCommunicationMethodFieldRepository(db)))
 	contactsystemapi.RegisterContactSystemServiceServer(server, contactsystemservice.NewContactSystemService(contactsystemrepository.NewContactSystemRepository(db)))
 	contactapi.RegisterContactServiceServer(server, contactservice.NewContactService())
 	contactcommunicationmethodapi.RegisterContactCommunicationMethodServiceServer(server, contactcommunicationmethodservice.NewContactCommunicationMethodService())

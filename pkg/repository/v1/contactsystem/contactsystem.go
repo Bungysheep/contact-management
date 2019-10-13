@@ -26,7 +26,7 @@ type contactSystemRepository struct {
 	db *sql.DB
 }
 
-// NewContactSystemRepository - Contact System repository implemenetation
+// NewContactSystemRepository - Contact System repository implementation
 func NewContactSystemRepository(db *sql.DB) IContactSystemRepository {
 	return &contactSystemRepository{db: db}
 }
