@@ -30,7 +30,7 @@ message DoReadRequest {
 }
 
 message DoReadResponse {
-    ContactCommunicationMethod communication_method = 1;
+    ContactCommunicationMethod contact_communication_method = 1;
 }
 
 message DoReadAllRequest { 
@@ -38,11 +38,11 @@ message DoReadAllRequest {
 }
 
 message DoReadAllResponse {
-    repeated ContactCommunicationMethod communication_method = 1;
+    repeated ContactCommunicationMethod contact_communication_method = 1;
 }
 
 message DoSaveRequest { 
-    ContactCommunicationMethod communication_method = 1;
+    ContactCommunicationMethod contact_communication_method = 1;
 }
 
 message DoSaveResponse {

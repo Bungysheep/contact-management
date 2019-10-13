@@ -71,7 +71,7 @@ func doRead(ctx context.Context, input *contactsystem.ContactSystem) func(t *tes
 			t.Errorf("Expect error is nil")
 		}
 
-		if resp == nil {
+		if resp.GetContactSystem() == nil {
 			t.Errorf("Expect contact system is not nil")
 		}
 
