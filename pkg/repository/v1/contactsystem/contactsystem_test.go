@@ -362,7 +362,7 @@ func doSaveNewFailContactSystem(ctx context.Context, input *contactsystem.Contac
 		}
 
 		expInsQuery := mock.ExpectPrepare("INSERT INTO contact_system").ExpectExec()
-		expInsQuery.WithArgs(input.GetContactSystemCode(), input.GetDescription(), input.GetDetails(), input.GetStatus(), tmNow, tmNow).WillReturnError(fmt.Errorf("DoInsert contact system faileds"))
+		expInsQuery.WithArgs(input.GetContactSystemCode(), input.GetDescription(), input.GetDetails(), input.GetStatus(), tmNow, tmNow).WillReturnError(fmt.Errorf("DoInsert contact system failed"))
 
 		err := repo.DoInsert(ctx, input)
 		if err != nil {
