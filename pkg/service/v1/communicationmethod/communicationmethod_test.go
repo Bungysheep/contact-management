@@ -23,19 +23,19 @@ func TestMain(m *testing.M) {
 
 	data = append(data, &communicationmethod.CommunicationMethod{
 		ContactSystemCode:       "CNTSYS001",
-		CommunicationMethodCode: "Email",
+		CommunicationMethodCode: "EMAIL",
 		Description:             "Email",
 		Details:                 "Email",
 		Status:                  "A",
 	}, &communicationmethod.CommunicationMethod{
 		ContactSystemCode:       "CNTSYS001",
-		CommunicationMethodCode: "Mobile",
+		CommunicationMethodCode: "MOBILE",
 		Description:             "Mobile",
 		Details:                 "Mobile",
 		Status:                  "A",
 	}, &communicationmethod.CommunicationMethod{
 		ContactSystemCode:       "CNTSYS001",
-		CommunicationMethodCode: "Fax",
+		CommunicationMethodCode: "FAX",
 		Description:             "Fax",
 		Details:                 "Fax",
 		Status:                  "A",
@@ -107,11 +107,11 @@ func doReadAll(ctx context.Context, input *communicationmethod.CommunicationMeth
 
 		repo := mock_communicationmethod.NewMockICommunicationMethodRepository(ctl)
 
-		repo.EXPECT().DoReadAll(ctx).Return(data, nil)
+		repo.EXPECT().DoReadAll(ctx, input.GetContactSystemCode()).Return(data, nil)
 
 		svc := NewCommunicationMethodService(repo)
 
-		resp, err := svc.DoReadAll(ctx, &communicationmethod.DoReadAllRequest{})
+		resp, err := svc.DoReadAll(ctx, &communicationmethod.DoReadAllRequest{ContactSystemCode: input.GetContactSystemCode()})
 		if err != nil {
 			t.Errorf("Expect error is nil")
 		}

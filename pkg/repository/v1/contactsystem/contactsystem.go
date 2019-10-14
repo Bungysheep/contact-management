@@ -86,7 +86,7 @@ func (cntsys *contactSystemRepository) DoReadAll(ctx context.Context) ([]*contac
 	}
 	defer conn.Close()
 
-	stmt, err := conn.PrepareContext(ctx, "SELECT contact_system_code, description, details, status, created_at, modified_at, vers FROM contact_system WHERE contact_system_code=$1")
+	stmt, err := conn.PrepareContext(ctx, "SELECT contact_system_code, description, details, status, created_at, modified_at, vers FROM contact_system")
 	if err != nil {
 		return result, status.Errorf(codes.Unknown, message.FailedPrepareRead("Contact System", err))
 	}
