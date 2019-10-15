@@ -25,7 +25,7 @@ func (cmm *contactcommunicationmethodService) DoRead(ctx context.Context, req *c
 }
 
 func (cmm *contactcommunicationmethodService) DoReadAll(ctx context.Context, req *contactcommunicationmethodapi.DoReadAllRequest) (*contactcommunicationmethodapi.DoReadAllResponse, error) {
-	result, err := cmm.repo.DoReadAll(ctx)
+	result, err := cmm.repo.DoReadAll(ctx, req.GetContactSystemCode())
 
 	return &contactcommunicationmethodapi.DoReadAllResponse{ContactCommunicationMethod: result}, err
 }

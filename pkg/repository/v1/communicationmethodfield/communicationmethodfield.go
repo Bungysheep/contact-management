@@ -10,7 +10,7 @@ import (
 // ICommunicationMethodFieldRepository - Communication Method Field repository interface
 type ICommunicationMethodFieldRepository interface {
 	DoRead(context.Context, string, string, string) (*communicationmethodfield.CommunicationMethodField, error)
-	DoReadAll(context.Context) ([]*communicationmethodfield.CommunicationMethodField, error)
+	DoReadAll(context.Context, string, string) ([]*communicationmethodfield.CommunicationMethodField, error)
 	DoInsert(context.Context, *communicationmethodfield.CommunicationMethodField) error
 	DoUpdate(context.Context, *communicationmethodfield.CommunicationMethodField) error
 	DoDelete(context.Context, string, string, string) error
@@ -29,7 +29,7 @@ func (cmf *communicationMethodFieldRepository) DoRead(ctx context.Context, conta
 	return nil, nil
 }
 
-func (cmf *communicationMethodFieldRepository) DoReadAll(ctx context.Context) ([]*communicationmethodfield.CommunicationMethodField, error) {
+func (cmf *communicationMethodFieldRepository) DoReadAll(ctx context.Context, contactSystemCode string, communicationMethodCode string) ([]*communicationmethodfield.CommunicationMethodField, error) {
 	return nil, nil
 }
 

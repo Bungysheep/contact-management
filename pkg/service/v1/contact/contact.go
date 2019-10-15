@@ -25,7 +25,7 @@ func (cnt *contactService) DoRead(ctx context.Context, req *contactapi.DoReadReq
 }
 
 func (cnt *contactService) DoReadAll(ctx context.Context, req *contactapi.DoReadAllRequest) (*contactapi.DoReadAllResponse, error) {
-	result, err := cnt.repo.DoReadAll(ctx)
+	result, err := cnt.repo.DoReadAll(ctx, req.GetContactSystemCode())
 
 	return &contactapi.DoReadAllResponse{Contact: result}, err
 }

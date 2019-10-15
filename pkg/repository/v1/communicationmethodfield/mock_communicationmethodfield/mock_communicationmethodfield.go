@@ -50,18 +50,18 @@ func (mr *MockICommunicationMethodFieldRepositoryMockRecorder) DoRead(arg0, arg1
 }
 
 // DoReadAll mocks base method
-func (m *MockICommunicationMethodFieldRepository) DoReadAll(arg0 context.Context) ([]*communicationmethodfield.CommunicationMethodField, error) {
+func (m *MockICommunicationMethodFieldRepository) DoReadAll(arg0 context.Context, arg1, arg2 string) ([]*communicationmethodfield.CommunicationMethodField, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "DoReadAll", arg0)
+	ret := m.ctrl.Call(m, "DoReadAll", arg0, arg1, arg2)
 	ret0, _ := ret[0].([]*communicationmethodfield.CommunicationMethodField)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // DoReadAll indicates an expected call of DoReadAll
-func (mr *MockICommunicationMethodFieldRepositoryMockRecorder) DoReadAll(arg0 interface{}) *gomock.Call {
+func (mr *MockICommunicationMethodFieldRepositoryMockRecorder) DoReadAll(arg0, arg1, arg2 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DoReadAll", reflect.TypeOf((*MockICommunicationMethodFieldRepository)(nil).DoReadAll), arg0)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DoReadAll", reflect.TypeOf((*MockICommunicationMethodFieldRepository)(nil).DoReadAll), arg0, arg1, arg2)
 }
 
 // DoInsert mocks base method
