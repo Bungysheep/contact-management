@@ -10,7 +10,7 @@ import (
 // IContactCommunicationMethodRepository - Contact Communication Method repository interface
 type IContactCommunicationMethodRepository interface {
 	DoRead(context.Context, string, int64, int64) (*contactcommunicationmethod.ContactCommunicationMethod, error)
-	DoReadAll(context.Context, string) ([]*contactcommunicationmethod.ContactCommunicationMethod, error)
+	DoReadAll(context.Context, string, int64) ([]*contactcommunicationmethod.ContactCommunicationMethod, error)
 	DoInsert(context.Context, *contactcommunicationmethod.ContactCommunicationMethod) error
 	DoUpdate(context.Context, *contactcommunicationmethod.ContactCommunicationMethod) error
 	DoDelete(context.Context, string, int64, int64) error
@@ -29,7 +29,7 @@ func (cm *communicationMethodRepository) DoRead(ctx context.Context, contactSyst
 	return nil, nil
 }
 
-func (cm *communicationMethodRepository) DoReadAll(ctx context.Context, contactSystemCode string) ([]*contactcommunicationmethod.ContactCommunicationMethod, error) {
+func (cm *communicationMethodRepository) DoReadAll(ctx context.Context, contactSystemCode string, contactID int64) ([]*contactcommunicationmethod.ContactCommunicationMethod, error) {
 	return nil, nil
 }
 
