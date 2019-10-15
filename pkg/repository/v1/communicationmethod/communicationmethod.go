@@ -111,23 +111,23 @@ func (cm *communicationMethodRepository) DoReadAll(ctx context.Context, contactS
 			break
 		}
 
-		contactSystem := &communicationmethod.CommunicationMethod{Audit: &audit.Audit{}}
+		communicationMethod := &communicationmethod.CommunicationMethod{Audit: &audit.Audit{}}
 		if err := rows.Scan(
-			&contactSystem.ContactSystemCode,
-			&contactSystem.CommunicationMethodCode,
-			&contactSystem.Description,
-			&contactSystem.Details,
-			&contactSystem.Status,
+			&communicationMethod.ContactSystemCode,
+			&communicationMethod.CommunicationMethodCode,
+			&communicationMethod.Description,
+			&communicationMethod.Details,
+			&communicationMethod.Status,
 			&createdAt,
 			&modifiedAt,
-			&contactSystem.GetAudit().Vers); err != nil {
+			&communicationMethod.GetAudit().Vers); err != nil {
 			return result, status.Errorf(codes.Unknown, message.FailedRetrieveValues("Communication Method", err))
 		}
 
-		contactSystem.GetAudit().CreatedAt, _ = ptypes.TimestampProto(createdAt)
-		contactSystem.GetAudit().ModifiedAt, _ = ptypes.TimestampProto(modifiedAt)
+		communicationMethod.GetAudit().CreatedAt, _ = ptypes.TimestampProto(createdAt)
+		communicationMethod.GetAudit().ModifiedAt, _ = ptypes.TimestampProto(modifiedAt)
 
-		result = append(result, contactSystem)
+		result = append(result, communicationMethod)
 	}
 
 	return result, nil
