@@ -10,7 +10,7 @@ import (
 // IContactRepository - Contact repository interface
 type IContactRepository interface {
 	DoRead(context.Context, string, int64) (*contact.Contact, error)
-	DoReadAll(context.Context) ([]*contact.Contact, error)
+	DoReadAll(context.Context, string) ([]*contact.Contact, error)
 	DoInsert(context.Context, *contact.Contact) error
 	DoUpdate(context.Context, *contact.Contact) error
 	DoDelete(context.Context, string, int64) error
@@ -29,7 +29,7 @@ func (cm *contactRepository) DoRead(ctx context.Context, contactSystemCode strin
 	return nil, nil
 }
 
-func (cm *contactRepository) DoReadAll(ctx context.Context) ([]*contact.Contact, error) {
+func (cm *contactRepository) DoReadAll(ctx context.Context, contactSystemCode string) ([]*contact.Contact, error) {
 	return nil, nil
 }
 
