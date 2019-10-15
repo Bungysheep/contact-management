@@ -100,11 +100,11 @@ func doReadAll(ctx context.Context, input *contactcommunicationmethod.ContactCom
 
 		repo := mock_contactcommunicationmethod.NewMockIContactCommunicationMethodRepository(ctl)
 
-		repo.EXPECT().DoReadAll(ctx, input.GetContactSystemCode()).Return(data, nil)
+		repo.EXPECT().DoReadAll(ctx, input.GetContactSystemCode(), input.GetContactId()).Return(data, nil)
 
 		svc := NewContactCommunicationMethodService(repo)
 
-		resp, err := svc.DoReadAll(ctx, &contactcommunicationmethod.DoReadAllRequest{ContactSystemCode: input.GetContactSystemCode()})
+		resp, err := svc.DoReadAll(ctx, &contactcommunicationmethod.DoReadAllRequest{ContactSystemCode: input.GetContactSystemCode(), ContactId: input.GetContactId()})
 		if err != nil {
 			t.Errorf("Expect error is nil")
 		}
