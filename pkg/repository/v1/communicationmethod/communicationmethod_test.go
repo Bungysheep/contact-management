@@ -58,13 +58,13 @@ func TestMain(m *testing.M) {
 }
 
 func TestCommunicationMethodRepository(t *testing.T) {
-	t.Run("DoRead Contact System", doRead(ctx))
+	t.Run("DoRead Communication Method", doRead(ctx))
 
-	t.Run("DoReadAll Contact System", doReadAll(ctx))
+	t.Run("DoReadAll Communication Method", doReadAll(ctx))
 
-	t.Run("DoSave Contact System", doSave(ctx))
+	t.Run("DoSave Communication Method", doSave(ctx))
 
-	t.Run("DoDelete Contact System", doDelete(ctx))
+	t.Run("DoDelete Communication Method", doDelete(ctx))
 }
 
 func doRead(ctx context.Context) func(t *testing.T) {
