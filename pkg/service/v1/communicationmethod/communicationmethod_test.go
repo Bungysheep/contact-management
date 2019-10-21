@@ -27,18 +27,21 @@ func TestMain(m *testing.M) {
 		Description:             "Email",
 		Details:                 "Email",
 		Status:                  "A",
+		FormatField:             "[EMAIL_ADDRESS]",
 	}, &communicationmethod.CommunicationMethod{
 		ContactSystemCode:       "CNTSYS001",
 		CommunicationMethodCode: "MOBILE",
 		Description:             "Mobile",
 		Details:                 "Mobile",
 		Status:                  "A",
+		FormatField:             "[MOBILE_NO]",
 	}, &communicationmethod.CommunicationMethod{
 		ContactSystemCode:       "CNTSYS001",
 		CommunicationMethodCode: "FAX",
 		Description:             "Fax",
 		Details:                 "Fax",
 		Status:                  "A",
+		FormatField:             "[FAX_NO]",
 	})
 
 	exitCode := m.Run()
@@ -97,6 +100,10 @@ func doRead(ctx context.Context, input *communicationmethod.CommunicationMethod)
 		if resp.GetCommunicationMethod().GetStatus() != input.GetStatus() {
 			t.Errorf("Expect status %s, but got %s", input.GetStatus(), resp.GetCommunicationMethod().GetStatus())
 		}
+
+		if resp.GetCommunicationMethod().GetFormatField() != input.GetFormatField() {
+			t.Errorf("Expect format field %s, but got %s", input.GetFormatField(), resp.GetCommunicationMethod().GetFormatField())
+		}
 	}
 }
 
@@ -142,6 +149,10 @@ func doReadAll(ctx context.Context, input *communicationmethod.CommunicationMeth
 
 		if resp.GetCommunicationMethod()[0].GetStatus() != input.GetStatus() {
 			t.Errorf("Expect status %s, but got %s", input.GetStatus(), resp.GetCommunicationMethod()[0].GetStatus())
+		}
+
+		if resp.GetCommunicationMethod()[0].GetFormatField() != input.GetFormatField() {
+			t.Errorf("Expect format field %s, but got %s", input.GetFormatField(), resp.GetCommunicationMethod()[0].GetFormatField())
 		}
 	}
 }
