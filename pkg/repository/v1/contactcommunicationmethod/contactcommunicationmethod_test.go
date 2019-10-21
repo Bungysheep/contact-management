@@ -38,18 +38,21 @@ func TestMain(m *testing.M) {
 		ContactCommunicationMethodId: 1,
 		CommunicationMethodCode:      "EMAIL",
 		FormatValue:                  "test@gmail.com",
+		IsDefault:                    true,
 	}, &contactcommunicationmethod.ContactCommunicationMethod{
 		ContactSystemCode:            "CNTSYS001",
 		ContactId:                    1,
 		ContactCommunicationMethodId: 2,
 		CommunicationMethodCode:      "MOBILE",
 		FormatValue:                  "62-81234567890",
+		IsDefault:                    true,
 	}, &contactcommunicationmethod.ContactCommunicationMethod{
 		ContactSystemCode:            "CNTSYS001",
 		ContactId:                    1,
 		ContactCommunicationMethodId: 3,
 		CommunicationMethodCode:      "FAX",
 		FormatValue:                  "62-2471234567",
+		IsDefault:                    true,
 	})
 
 	exitCode := m.Run()
@@ -115,7 +118,7 @@ func doDelete(ctx context.Context) func(t *testing.T) {
 
 func doReadFailContactCommunicationMethod(ctx context.Context, input *contactcommunicationmethod.ContactCommunicationMethod) func(t *testing.T) {
 	return func(t *testing.T) {
-		expQuery := mock.ExpectPrepare("SELECT contact_system_code, contact_id, contact_communication_method_id, communication_method_code, format_value, created_at, modified_at, vers FROM contact_communication_method").ExpectQuery()
+		expQuery := mock.ExpectPrepare("SELECT contact_system_code, contact_id, contact_communication_method_id, communication_method_code, format_value, is_default, created_at, modified_at, vers FROM contact_communication_method").ExpectQuery()
 		expQuery.WithArgs(input.GetContactSystemCode(), input.GetContactId(), input.GetContactCommunicationMethodId()).WillReturnError(fmt.Errorf("DoRead contact communication method failed"))
 
 		res, err := repo.DoRead(ctx, input.GetContactSystemCode(), input.GetContactId(), input.GetContactCommunicationMethodId())
@@ -138,9 +141,9 @@ func doReadFailContactCommunicationMethod(ctx context.Context, input *contactcom
 
 func doReadUnexistingContactCommunicationMethod(ctx context.Context, input *contactcommunicationmethod.ContactCommunicationMethod) func(t *testing.T) {
 	return func(t *testing.T) {
-		rows := sqlmock.NewRows([]string{"contact_system_code", "contact_id", "contact_communication_method_id", "communication_method_code", "format_value", "created_at", "modified_at", "vers"})
+		rows := sqlmock.NewRows([]string{"contact_system_code", "contact_id", "contact_communication_method_id", "communication_method_code", "format_value", "is_default", "created_at", "modified_at", "vers"})
 
-		expQuery := mock.ExpectPrepare("SELECT contact_system_code, contact_id, contact_communication_method_id, communication_method_code, format_value, created_at, modified_at, vers FROM contact_communication_method").ExpectQuery()
+		expQuery := mock.ExpectPrepare("SELECT contact_system_code, contact_id, contact_communication_method_id, communication_method_code, format_value, is_default, created_at, modified_at, vers FROM contact_communication_method").ExpectQuery()
 		expQuery.WithArgs(input.GetContactSystemCode(), input.GetContactId(), input.GetContactCommunicationMethodId()).WillReturnRows(rows)
 
 		res, err := repo.DoRead(ctx, input.GetContactSystemCode(), input.GetContactId(), input.GetContactCommunicationMethodId())
@@ -165,11 +168,11 @@ func doReadRowErrorContactCommunicationMethod(ctx context.Context, input *contac
 	return func(t *testing.T) {
 		tmNow := time.Now().In(time.UTC)
 
-		rows := sqlmock.NewRows([]string{"contact_system_code", "contact_id", "contact_communication_method_id", "communication_method_code", "format_value", "created_at", "modified_at", "vers"}).
-			AddRow(input.GetContactSystemCode(), input.GetContactId(), input.GetContactCommunicationMethodId(), input.GetCommunicationMethodCode(), input.GetFormatValue(), tmNow, tmNow, 1).
+		rows := sqlmock.NewRows([]string{"contact_system_code", "contact_id", "contact_communication_method_id", "communication_method_code", "format_value", "is_default", "created_at", "modified_at", "vers"}).
+			AddRow(input.GetContactSystemCode(), input.GetContactId(), input.GetContactCommunicationMethodId(), input.GetCommunicationMethodCode(), input.GetFormatValue(), input.GetIsDefault(), tmNow, tmNow, 1).
 			RowError(0, fmt.Errorf("DoRead row error"))
 
-		expQuery := mock.ExpectPrepare("SELECT contact_system_code, contact_id, contact_communication_method_id, communication_method_code, format_value, created_at, modified_at, vers FROM contact_communication_method").ExpectQuery()
+		expQuery := mock.ExpectPrepare("SELECT contact_system_code, contact_id, contact_communication_method_id, communication_method_code, format_value, is_default, created_at, modified_at, vers FROM contact_communication_method").ExpectQuery()
 		expQuery.WithArgs(input.GetContactSystemCode(), input.GetContactId(), input.GetContactCommunicationMethodId()).WillReturnRows(rows)
 
 		res, err := repo.DoRead(ctx, input.GetContactSystemCode(), input.GetContactId(), input.GetContactCommunicationMethodId())
@@ -194,10 +197,10 @@ func doReadExistingContactCommunicationMethod(ctx context.Context, input *contac
 	return func(t *testing.T) {
 		tmNow := time.Now().In(time.UTC)
 
-		rows := sqlmock.NewRows([]string{"contact_system_code", "contact_id", "contact_communication_method_id", "communication_method_code", "format_value", "created_at", "modified_at", "vers"}).
-			AddRow(input.GetContactSystemCode(), input.GetContactId(), input.GetContactCommunicationMethodId(), input.GetCommunicationMethodCode(), input.GetFormatValue(), tmNow, tmNow, 1)
+		rows := sqlmock.NewRows([]string{"contact_system_code", "contact_id", "contact_communication_method_id", "communication_method_code", "format_value", "is_default", "created_at", "modified_at", "vers"}).
+			AddRow(input.GetContactSystemCode(), input.GetContactId(), input.GetContactCommunicationMethodId(), input.GetCommunicationMethodCode(), input.GetFormatValue(), input.GetIsDefault(), tmNow, tmNow, 1)
 
-		expQuery := mock.ExpectPrepare("SELECT contact_system_code, contact_id, contact_communication_method_id, communication_method_code, format_value, created_at, modified_at, vers FROM contact_communication_method").ExpectQuery()
+		expQuery := mock.ExpectPrepare("SELECT contact_system_code, contact_id, contact_communication_method_id, communication_method_code, format_value, is_default, created_at, modified_at, vers FROM contact_communication_method").ExpectQuery()
 		expQuery.WithArgs(input.GetContactSystemCode(), input.GetContactId(), input.GetContactCommunicationMethodId()).WillReturnRows(rows)
 
 		res, err := repo.DoRead(ctx, input.GetContactSystemCode(), input.GetContactId(), input.GetContactCommunicationMethodId())
@@ -228,12 +231,16 @@ func doReadExistingContactCommunicationMethod(ctx context.Context, input *contac
 		if res.GetFormatValue() != input.GetFormatValue() {
 			t.Errorf("Expect format value %s, but got %s", input.GetFormatValue(), res.GetFormatValue())
 		}
+
+		if res.GetIsDefault() != input.GetIsDefault() {
+			t.Errorf("Expect default %v, but got %v", input.GetIsDefault(), res.GetIsDefault())
+		}
 	}
 }
 
 func doReadAllFailContactCommunicationMethods(ctx context.Context, input *contactcommunicationmethod.ContactCommunicationMethod) func(t *testing.T) {
 	return func(t *testing.T) {
-		expQuery := mock.ExpectPrepare("SELECT contact_system_code, contact_id, contact_communication_method_id, communication_method_code, format_value, created_at, modified_at, vers FROM contact_communication_method").ExpectQuery()
+		expQuery := mock.ExpectPrepare("SELECT contact_system_code, contact_id, contact_communication_method_id, communication_method_code, format_value, is_default, created_at, modified_at, vers FROM contact_communication_method").ExpectQuery()
 		expQuery.WithArgs(input.GetContactSystemCode(), input.GetContactId()).WillReturnError(fmt.Errorf("DoReadAll contact communication method failed"))
 
 		res, err := repo.DoReadAll(ctx, input.GetContactSystemCode(), input.GetContactId())
@@ -256,9 +263,9 @@ func doReadAllFailContactCommunicationMethods(ctx context.Context, input *contac
 
 func doReadAllUnexistingContactCommunicationMethods(ctx context.Context, input *contactcommunicationmethod.ContactCommunicationMethod) func(t *testing.T) {
 	return func(t *testing.T) {
-		rows := sqlmock.NewRows([]string{"contact_system_code", "contact_id", "contact_communication_method_id", "communication_method_code", "format_value", "created_at", "modified_at", "vers"})
+		rows := sqlmock.NewRows([]string{"contact_system_code", "contact_id", "contact_communication_method_id", "communication_method_code", "format_value", "is_default", "created_at", "modified_at", "vers"})
 
-		expQuery := mock.ExpectPrepare("SELECT contact_system_code, contact_id, contact_communication_method_id, communication_method_code, format_value, created_at, modified_at, vers FROM contact_communication_method").ExpectQuery()
+		expQuery := mock.ExpectPrepare("SELECT contact_system_code, contact_id, contact_communication_method_id, communication_method_code, format_value, is_default, created_at, modified_at, vers FROM contact_communication_method").ExpectQuery()
 		expQuery.WithArgs(input.GetContactSystemCode(), input.GetContactId()).WillReturnRows(rows)
 
 		res, err := repo.DoReadAll(ctx, input.GetContactSystemCode(), input.GetContactId())
@@ -287,13 +294,13 @@ func doReadAllRowErrorContactCommunicationMethods(ctx context.Context, input *co
 	return func(t *testing.T) {
 		tmNow := time.Now().In(time.UTC)
 
-		rows := sqlmock.NewRows([]string{"contact_system_code", "contact_id", "contact_communication_method_id", "communication_method_code", "format_value", "created_at", "modified_at", "vers"}).
-			AddRow(data[0].GetContactSystemCode(), data[0].GetContactId(), data[0].GetContactCommunicationMethodId(), data[0].GetCommunicationMethodCode(), data[0].GetFormatValue(), tmNow, tmNow, 1).
+		rows := sqlmock.NewRows([]string{"contact_system_code", "contact_id", "contact_communication_method_id", "communication_method_code", "format_value", "is_default", "created_at", "modified_at", "vers"}).
+			AddRow(data[0].GetContactSystemCode(), data[0].GetContactId(), data[0].GetContactCommunicationMethodId(), data[0].GetCommunicationMethodCode(), data[0].GetFormatValue(), data[0].GetIsDefault(), tmNow, tmNow, 1).
 			RowError(0, fmt.Errorf("DoReadAll row error")).
-			AddRow(data[1].GetContactSystemCode(), data[1].GetContactId(), data[1].GetContactCommunicationMethodId(), data[1].GetCommunicationMethodCode(), data[1].GetFormatValue(), tmNow, tmNow, 1).
-			AddRow(data[2].GetContactSystemCode(), data[2].GetContactId(), data[2].GetContactCommunicationMethodId(), data[2].GetCommunicationMethodCode(), data[2].GetFormatValue(), tmNow, tmNow, 1)
+			AddRow(data[1].GetContactSystemCode(), data[1].GetContactId(), data[1].GetContactCommunicationMethodId(), data[1].GetCommunicationMethodCode(), data[1].GetFormatValue(), data[1].GetIsDefault(), tmNow, tmNow, 1).
+			AddRow(data[2].GetContactSystemCode(), data[2].GetContactId(), data[2].GetContactCommunicationMethodId(), data[2].GetCommunicationMethodCode(), data[2].GetFormatValue(), data[2].GetIsDefault(), tmNow, tmNow, 1)
 
-		expQuery := mock.ExpectPrepare("SELECT contact_system_code, contact_id, contact_communication_method_id, communication_method_code, format_value, created_at, modified_at, vers FROM contact_communication_method").ExpectQuery()
+		expQuery := mock.ExpectPrepare("SELECT contact_system_code, contact_id, contact_communication_method_id, communication_method_code, format_value, is_default, created_at, modified_at, vers FROM contact_communication_method").ExpectQuery()
 		expQuery.WithArgs(input.GetContactSystemCode(), input.GetContactId()).WillReturnRows(rows)
 
 		res, err := repo.DoReadAll(ctx, input.GetContactSystemCode(), input.GetContactId())
@@ -318,12 +325,12 @@ func doReadAllExistingContactCommunicationMethods(ctx context.Context, input *co
 	return func(t *testing.T) {
 		tmNow := time.Now().In(time.UTC)
 
-		rows := sqlmock.NewRows([]string{"contact_system_code", "contact_id", "contact_communication_method_id", "communication_method_code", "format_value", "created_at", "modified_at", "vers"}).
-			AddRow(data[0].GetContactSystemCode(), data[0].GetContactId(), data[0].GetContactCommunicationMethodId(), data[0].GetCommunicationMethodCode(), data[0].GetFormatValue(), tmNow, tmNow, 1).
-			AddRow(data[1].GetContactSystemCode(), data[1].GetContactId(), data[1].GetContactCommunicationMethodId(), data[1].GetCommunicationMethodCode(), data[1].GetFormatValue(), tmNow, tmNow, 1).
-			AddRow(data[2].GetContactSystemCode(), data[2].GetContactId(), data[2].GetContactCommunicationMethodId(), data[2].GetCommunicationMethodCode(), data[2].GetFormatValue(), tmNow, tmNow, 1)
+		rows := sqlmock.NewRows([]string{"contact_system_code", "contact_id", "contact_communication_method_id", "communication_method_code", "format_value", "is_default", "created_at", "modified_at", "vers"}).
+			AddRow(data[0].GetContactSystemCode(), data[0].GetContactId(), data[0].GetContactCommunicationMethodId(), data[0].GetCommunicationMethodCode(), data[0].GetFormatValue(), data[0].GetIsDefault(), tmNow, tmNow, 1).
+			AddRow(data[1].GetContactSystemCode(), data[1].GetContactId(), data[1].GetContactCommunicationMethodId(), data[1].GetCommunicationMethodCode(), data[1].GetFormatValue(), data[1].GetIsDefault(), tmNow, tmNow, 1).
+			AddRow(data[2].GetContactSystemCode(), data[2].GetContactId(), data[2].GetContactCommunicationMethodId(), data[2].GetCommunicationMethodCode(), data[2].GetFormatValue(), data[2].GetIsDefault(), tmNow, tmNow, 1)
 
-		expQuery := mock.ExpectPrepare("SELECT contact_system_code, contact_id, contact_communication_method_id, communication_method_code, format_value, created_at, modified_at, vers FROM contact_communication_method").ExpectQuery()
+		expQuery := mock.ExpectPrepare("SELECT contact_system_code, contact_id, contact_communication_method_id, communication_method_code, format_value, is_default, created_at, modified_at, vers FROM contact_communication_method").ExpectQuery()
 		expQuery.WithArgs(input.GetContactSystemCode(), input.GetContactId()).WillReturnRows(rows)
 
 		res, err := repo.DoReadAll(ctx, input.GetContactSystemCode(), input.GetContactId())
@@ -358,6 +365,10 @@ func doReadAllExistingContactCommunicationMethods(ctx context.Context, input *co
 		if res[0].GetFormatValue() != input.GetFormatValue() {
 			t.Errorf("Expect format value %s, but got %s", input.GetFormatValue(), res[0].GetFormatValue())
 		}
+
+		if res[0].GetIsDefault() != input.GetIsDefault() {
+			t.Errorf("Expect default %v, but got %v", input.GetIsDefault(), res[0].GetIsDefault())
+		}
 	}
 }
 
@@ -373,7 +384,7 @@ func doSaveNewFailContactCommunicationMethod(ctx context.Context, input *contact
 		}
 
 		expInsQuery := mock.ExpectPrepare("INSERT INTO contact_communication_method").ExpectExec()
-		expInsQuery.WithArgs(input.GetContactSystemCode(), input.GetContactId(), input.GetContactCommunicationMethodId(), input.GetCommunicationMethodCode(), input.GetFormatValue(), tmNow, tmNow).WillReturnError(fmt.Errorf("DoInsert contact communication method failed"))
+		expInsQuery.WithArgs(input.GetContactSystemCode(), input.GetContactId(), input.GetContactCommunicationMethodId(), input.GetCommunicationMethodCode(), input.GetFormatValue(), input.GetIsDefault(), tmNow, tmNow).WillReturnError(fmt.Errorf("DoInsert contact communication method failed"))
 
 		err := repo.DoInsert(ctx, input)
 		if err != nil {
@@ -401,7 +412,7 @@ func doSaveNewContactCommunicationMethod(ctx context.Context, input *contactcomm
 		}
 
 		expInsQuery := mock.ExpectPrepare("INSERT INTO contact_communication_method").ExpectExec()
-		expInsQuery.WithArgs(input.GetContactSystemCode(), input.GetContactId(), input.GetContactCommunicationMethodId(), input.GetCommunicationMethodCode(), input.GetFormatValue(), tmNow, tmNow).WillReturnResult(sqlmock.NewResult(0, 1))
+		expInsQuery.WithArgs(input.GetContactSystemCode(), input.GetContactId(), input.GetContactCommunicationMethodId(), input.GetCommunicationMethodCode(), input.GetFormatValue(), input.GetIsDefault(), tmNow, tmNow).WillReturnResult(sqlmock.NewResult(0, 1))
 
 		err := repo.DoInsert(ctx, input)
 		if err != nil {
@@ -422,7 +433,7 @@ func doSaveExistingFailContactCommunicationMethod(ctx context.Context, input *co
 		}
 
 		expUpdQuery := mock.ExpectPrepare("UPDATE contact_communication_method").ExpectExec()
-		expUpdQuery.WithArgs(input.GetContactSystemCode(), input.GetContactId(), input.GetContactCommunicationMethodId(), input.GetCommunicationMethodCode(), input.GetFormatValue(), tmNow).WillReturnError(fmt.Errorf("DoUpdate contact communication method failed"))
+		expUpdQuery.WithArgs(input.GetContactSystemCode(), input.GetContactId(), input.GetContactCommunicationMethodId(), input.GetCommunicationMethodCode(), input.GetFormatValue(), input.GetIsDefault(), tmNow).WillReturnError(fmt.Errorf("DoUpdate contact communication method failed"))
 
 		err := repo.DoUpdate(ctx, input)
 		if err != nil {
@@ -450,7 +461,7 @@ func doSaveExistingContactCommunicationMethod(ctx context.Context, input *contac
 		}
 
 		expUpdQuery := mock.ExpectPrepare("UPDATE contact_communication_method").ExpectExec()
-		expUpdQuery.WithArgs(input.GetContactSystemCode(), input.GetContactId(), input.GetContactCommunicationMethodId(), input.GetCommunicationMethodCode(), input.GetFormatValue(), tmNow).WillReturnResult(sqlmock.NewResult(0, 1))
+		expUpdQuery.WithArgs(input.GetContactSystemCode(), input.GetContactId(), input.GetContactCommunicationMethodId(), input.GetCommunicationMethodCode(), input.GetFormatValue(), input.GetIsDefault(), tmNow).WillReturnResult(sqlmock.NewResult(0, 1))
 
 		err := repo.DoUpdate(ctx, input)
 		if err != nil {

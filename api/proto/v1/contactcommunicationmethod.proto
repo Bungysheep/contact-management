@@ -18,9 +18,11 @@ message ContactCommunicationMethod {
 
     string format_value = 5;
 
-    repeated v1.ContactCommunicationMethodField contact_communication_method_field = 6;
+    bool is_default = 6;
 
-    v1.Audit audit = 7;
+    repeated v1.ContactCommunicationMethodField contact_communication_method_field = 7;
+
+    v1.Audit audit = 8;
 }
 
 message DoReadRequest {
