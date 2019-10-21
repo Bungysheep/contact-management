@@ -40,7 +40,7 @@ func (cm *communicationMethodRepository) DoRead(ctx context.Context, contactSyst
 	}
 	defer conn.Close()
 
-	stmt, err := conn.PrepareContext(ctx, "SELECT contact_system_code, communication_method_code, description, details, status, created_at, modified_at, vers FROM communication_method WHERE contact_system_code=$1 AND communication_method_code=$2")
+	stmt, err := conn.PrepareContext(ctx, "SELECT contact_system_code, communication_method_code, description, details, status, format_field, created_at, modified_at, vers FROM communication_method WHERE contact_system_code=$1 AND communication_method_code=$2")
 	if err != nil {
 		return nil, status.Errorf(codes.Unknown, message.FailedPrepareRead("Communication Method", err))
 	}
@@ -66,6 +66,7 @@ func (cm *communicationMethodRepository) DoRead(ctx context.Context, contactSyst
 		&result.Description,
 		&result.Details,
 		&result.Status,
+		&result.FormatField,
 		&createdAt,
 		&modifiedAt,
 		&result.GetAudit().Vers); err != nil {
@@ -87,7 +88,7 @@ func (cm *communicationMethodRepository) DoReadAll(ctx context.Context, contactS
 	}
 	defer conn.Close()
 
-	stmt, err := conn.PrepareContext(ctx, "SELECT contact_system_code, communication_method_code, description, details, status, created_at, modified_at, vers FROM communication_method WHERE contact_system_code=$1")
+	stmt, err := conn.PrepareContext(ctx, "SELECT contact_system_code, communication_method_code, description, details, status, format_field, created_at, modified_at, vers FROM communication_method WHERE contact_system_code=$1")
 	if err != nil {
 		return result, status.Errorf(codes.Unknown, message.FailedPrepareRead("Communication Method", err))
 	}
@@ -118,6 +119,7 @@ func (cm *communicationMethodRepository) DoReadAll(ctx context.Context, contactS
 			&communicationMethod.Description,
 			&communicationMethod.Details,
 			&communicationMethod.Status,
+			&communicationMethod.FormatField,
 			&createdAt,
 			&modifiedAt,
 			&communicationMethod.GetAudit().Vers); err != nil {
@@ -143,12 +145,12 @@ func (cm *communicationMethodRepository) DoInsert(ctx context.Context, data *com
 	}
 	defer conn.Close()
 
-	stmt, err := conn.PrepareContext(ctx, "INSERT INTO communication_method (contact_system_code, communication_method_code, description, details, status, created_at, modified_at, vers) VALUES ($1, $2, $3, $4, $5, $6, $7, 1)")
+	stmt, err := conn.PrepareContext(ctx, "INSERT INTO communication_method (contact_system_code, communication_method_code, description, details, status, format_field, created_at, modified_at, vers) VALUES ($1, $2, $3, $4, $5, $6, $7, 1)")
 	if err != nil {
 		return status.Errorf(codes.Unknown, message.FailedPrepareInsert("Communication Method", err))
 	}
 
-	result, err := stmt.ExecContext(ctx, data.GetContactSystemCode(), data.GetCommunicationMethodCode(), data.GetDescription(), data.GetDetails(), data.GetStatus(), createdAt, modifiedAt)
+	result, err := stmt.ExecContext(ctx, data.GetContactSystemCode(), data.GetCommunicationMethodCode(), data.GetDescription(), data.GetDetails(), data.GetStatus(), data.GetFormatField(), createdAt, modifiedAt)
 	if err != nil {
 		return status.Errorf(codes.Unknown, message.FailedInsert("Communication Method", err))
 	}
@@ -170,12 +172,12 @@ func (cm *communicationMethodRepository) DoUpdate(ctx context.Context, data *com
 	}
 	defer conn.Close()
 
-	stmt, err := conn.PrepareContext(ctx, "UPDATE communication_method SET description=$3, details=$4, status=$5, modified_at=$6, vers=vers+1 WHERE contact_system_code=$1 AND communication_method_code=$2")
+	stmt, err := conn.PrepareContext(ctx, "UPDATE communication_method SET description=$3, details=$4, status=$5, format_field=$6, modified_at=$7, vers=vers+1 WHERE contact_system_code=$1 AND communication_method_code=$2")
 	if err != nil {
 		return status.Errorf(codes.Unknown, message.FailedPrepareUpdate("Communication Method", err))
 	}
 
-	result, err := stmt.ExecContext(ctx, data.GetContactSystemCode(), data.GetCommunicationMethodCode(), data.GetDescription(), data.GetDetails(), data.GetStatus(), modifiedAt)
+	result, err := stmt.ExecContext(ctx, data.GetContactSystemCode(), data.GetCommunicationMethodCode(), data.GetDescription(), data.GetDetails(), data.GetStatus(), data.GetFormatField(), modifiedAt)
 	if err != nil {
 		return status.Errorf(codes.Unknown, message.FailedUpdate("Communication Method", err))
 	}

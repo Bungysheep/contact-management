@@ -17,7 +17,9 @@ message CommunicationMethod {
 
     string status = 5;
 
-    v1.Audit audit = 6;
+    string format_field = 6;
+
+    v1.Audit audit = 7;
 }
 
 message DoReadRequest {
