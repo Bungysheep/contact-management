@@ -26,16 +26,19 @@ func TestMain(m *testing.M) {
 		ContactId:                    1,
 		ContactCommunicationMethodId: 1,
 		CommunicationMethodCode:      "EMAIL",
+		FormatValue:                  "test@gmail.com",
 	}, &contactcommunicationmethod.ContactCommunicationMethod{
 		ContactSystemCode:            "CNTSYS001",
 		ContactId:                    1,
 		ContactCommunicationMethodId: 2,
 		CommunicationMethodCode:      "MOBILE",
+		FormatValue:                  "62-81234567890",
 	}, &contactcommunicationmethod.ContactCommunicationMethod{
 		ContactSystemCode:            "CNTSYS001",
 		ContactId:                    1,
 		ContactCommunicationMethodId: 3,
 		CommunicationMethodCode:      "FAX",
+		FormatValue:                  "62-2471234567",
 	})
 
 	exitCode := m.Run()
@@ -90,6 +93,10 @@ func doRead(ctx context.Context, input *contactcommunicationmethod.ContactCommun
 		if resp.GetContactCommunicationMethod().GetCommunicationMethodCode() != input.GetCommunicationMethodCode() {
 			t.Errorf("Expect communication method code %s, but got %s", input.GetCommunicationMethodCode(), resp.GetContactCommunicationMethod().GetCommunicationMethodCode())
 		}
+
+		if resp.GetContactCommunicationMethod().GetFormatValue() != input.GetFormatValue() {
+			t.Errorf("Expect format value %s, but got %s", input.GetFormatValue(), resp.GetContactCommunicationMethod().GetFormatValue())
+		}
 	}
 }
 
@@ -131,6 +138,10 @@ func doReadAll(ctx context.Context, input *contactcommunicationmethod.ContactCom
 
 		if resp.GetContactCommunicationMethod()[0].GetCommunicationMethodCode() != input.GetCommunicationMethodCode() {
 			t.Errorf("Expect communication method code %s, but got %s", input.GetCommunicationMethodCode(), resp.GetContactCommunicationMethod()[0].GetCommunicationMethodCode())
+		}
+
+		if resp.GetContactCommunicationMethod()[0].GetFormatValue() != input.GetFormatValue() {
+			t.Errorf("Expect format value %s, but got %s", input.GetFormatValue(), resp.GetContactCommunicationMethod()[0].GetFormatValue())
 		}
 	}
 }
