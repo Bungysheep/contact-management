@@ -56,7 +56,7 @@ message DoDeleteResponse {
     bool result = 1;
 }
 
-service CommunicationMethodService { 
+service CommunicationMethodLabelService { 
     rpc DoRead (DoReadRequest) returns (DoReadResponse);
 
     rpc DoReadAll (DoReadAllRequest) returns (DoReadAllResponse);

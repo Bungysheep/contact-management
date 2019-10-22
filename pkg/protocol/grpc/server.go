@@ -8,16 +8,19 @@ import (
 
 	communicationmethodapi "github.com/bungysheep/contact-management/pkg/api/v1/communicationmethod"
 	communicationmethodfieldapi "github.com/bungysheep/contact-management/pkg/api/v1/communicationmethodfield"
+	communicationmethodlabelapi "github.com/bungysheep/contact-management/pkg/api/v1/communicationmethodlabel"
 	contactapi "github.com/bungysheep/contact-management/pkg/api/v1/contact"
 	contactcommunicationmethodapi "github.com/bungysheep/contact-management/pkg/api/v1/contactcommunicationmethod"
 	contactsystemapi "github.com/bungysheep/contact-management/pkg/api/v1/contactsystem"
 	communicationmethodrepository "github.com/bungysheep/contact-management/pkg/repository/v1/communicationmethod"
 	communicationmethodfieldrepository "github.com/bungysheep/contact-management/pkg/repository/v1/communicationmethodfield"
-	contactcommunicationmethodrepository "github.com/bungysheep/contact-management/pkg/repository/v1/contactcommunicationmethod"
+	communicationmethodlabelrepository "github.com/bungysheep/contact-management/pkg/repository/v1/communicationmethodlabel"
 	contactrepository "github.com/bungysheep/contact-management/pkg/repository/v1/contact"
+	contactcommunicationmethodrepository "github.com/bungysheep/contact-management/pkg/repository/v1/contactcommunicationmethod"
 	contactsystemrepository "github.com/bungysheep/contact-management/pkg/repository/v1/contactsystem"
 	communicationmethodservice "github.com/bungysheep/contact-management/pkg/service/v1/communicationmethod"
 	communicationmethodfieldservice "github.com/bungysheep/contact-management/pkg/service/v1/communicationmethodfield"
+	communicationmethodlabelservice "github.com/bungysheep/contact-management/pkg/service/v1/communicationmethodlabel"
 	contactservice "github.com/bungysheep/contact-management/pkg/service/v1/contact"
 	contactcommunicationmethodservice "github.com/bungysheep/contact-management/pkg/service/v1/contactcommunicationmethod"
 	contactsystemservice "github.com/bungysheep/contact-management/pkg/service/v1/contactsystem"
@@ -58,6 +61,7 @@ func (s *Server) RunServer(ctx context.Context, db *sql.DB) error {
 	// Register services
 	communicationmethodapi.RegisterCommunicationMethodServiceServer(server, communicationmethodservice.NewCommunicationMethodService(communicationmethodrepository.NewCommunicationMethodRepository(db)))
 	communicationmethodfieldapi.RegisterCommunicationMethodFieldServiceServer(server, communicationmethodfieldservice.NewCommunicationMethodFieldService(communicationmethodfieldrepository.NewCommunicationMethodFieldRepository(db)))
+	communicationmethodlabelapi.RegisterCommunicationMethodLabelServiceServer(server, communicationmethodlabelservice.NewCommunicationMethodLabelService(communicationmethodlabelrepository.NewCommunicationMethodLabelRepository(db)))
 	contactsystemapi.RegisterContactSystemServiceServer(server, contactsystemservice.NewContactSystemService(contactsystemrepository.NewContactSystemRepository(db)))
 	contactapi.RegisterContactServiceServer(server, contactservice.NewContactService(contactrepository.NewContactRepository(db)))
 	contactcommunicationmethodapi.RegisterContactCommunicationMethodServiceServer(server, contactcommunicationmethodservice.NewContactCommunicationMethodService(contactcommunicationmethodrepository.NewContactCommunicationMethodRepository(db)))

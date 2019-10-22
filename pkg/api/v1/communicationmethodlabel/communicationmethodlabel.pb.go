@@ -454,35 +454,35 @@ func init() {
 func init() { proto.RegisterFile("communicationmethodlabel.proto", fileDescriptor_4102a5fd7ad80fc5) }
 
 var fileDescriptor_4102a5fd7ad80fc5 = []byte{
-	// 435 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xd4, 0x54, 0x4d, 0xab, 0xd3, 0x40,
-	0x14, 0x25, 0xad, 0xd4, 0xf6, 0x8a, 0x1f, 0x9d, 0x56, 0x8d, 0xa1, 0xa8, 0x64, 0x55, 0x04, 0x13,
-	0x5a, 0x11, 0xc4, 0x9d, 0xb6, 0xee, 0xaa, 0x8b, 0x74, 0xd7, 0x4d, 0x99, 0x4c, 0x2e, 0x69, 0x68,
-	0x92, 0x89, 0xcd, 0x24, 0xd0, 0x8d, 0x3f, 0x4e, 0xfc, 0x2f, 0x2e, 0xfd, 0x0b, 0x92, 0x99, 0xc4,
-	0x26, 0xda, 0xc8, 0x83, 0xc7, 0xe3, 0xd1, 0x65, 0xe6, 0xde, 0x73, 0xcf, 0x9c, 0x7b, 0x4e, 0x06,
-	0x9e, 0x33, 0x1e, 0x45, 0x59, 0x1c, 0x30, 0x2a, 0x02, 0x1e, 0x47, 0x28, 0x76, 0xdc, 0x0b, 0xa9,
-	0x8b, 0xa1, 0x95, 0x1c, 0xb8, 0xe0, 0xa4, 0x93, 0xcf, 0xcc, 0x9f, 0x1a, 0xe8, 0x8b, 0x7a, 0xdb,
-	0x67, 0xd9, 0xb6, 0x2a, 0xda, 0x88, 0x05, 0x23, 0xc6, 0x63, 0x41, 0x99, 0xd8, 0xa6, 0xc7, 0x54,
-	0x60, 0xb4, 0x65, 0xdc, 0x43, 0x5d, 0x7b, 0xa9, 0x4d, 0x07, 0xce, 0xb0, 0x2c, 0xad, 0x65, 0x65,
-	0xc1, 0x3d, 0x24, 0xef, 0xe1, 0x59, 0x83, 0x72, 0xab, 0x38, 0x15, 0xaa, 0x23, 0x51, 0x4f, 0xd9,
-	0xbf, 0x64, 0x12, 0xfb, 0x09, 0x5e, 0x9c, 0xc5, 0xca, 0x0b, 0xab, 0x09, 0x5d, 0x39, 0x61, 0xc2,
-	0x5a, 0xae, 0x2b, 0xc7, 0xe8, 0x70, 0x97, 0xd1, 0xa4, 0xa8, 0xe8, 0x77, 0x64, 0x7b, 0xf5, 0x69,
-	0x7e, 0xd7, 0xe0, 0xfe, 0x92, 0x3b, 0x48, 0x3d, 0x07, 0xbf, 0x66, 0x98, 0x8a, 0x0b, 0x94, 0x67,
-	0x86, 0xf0, 0xa0, 0xd2, 0x90, 0x26, 0x3c, 0x4e, 0x91, 0x6c, 0xc0, 0x68, 0x1f, 0x2c, 0xb5, 0xdc,
-	0x9b, 0x4f, 0xac, 0x7c, 0x66, 0xb5, 0xb9, 0xec, 0xe8, 0x6d, 0x8c, 0xe6, 0x37, 0x78, 0xa4, 0xd8,
-	0x3e, 0x84, 0xe1, 0x2d, 0x2c, 0xcd, 0xe4, 0x30, 0xac, 0xf1, 0x5f, 0x51, 0x70, 0xf7, 0x1a, 0x82,
-	0xf7, 0x45, 0x44, 0xd6, 0x34, 0xc7, 0x4a, 0xed, 0x4d, 0x6e, 0x77, 0x5a, 0x78, 0xa9, 0xc8, 0x4a,
-	0x69, 0x4f, 0xa0, 0x77, 0xc0, 0x34, 0x0b, 0x85, 0x9c, 0xdc, 0x77, 0xca, 0x2f, 0xf3, 0x87, 0x06,
-	0x0f, 0x97, 0x7c, 0x89, 0x21, 0x0a, 0xbc, 0xe0, 0xf0, 0xbe, 0x2a, 0xe2, 0x54, 0xa9, 0xf8, 0xbf,
-	0xe4, 0xf9, 0x2f, 0x0d, 0x8c, 0x33, 0x3b, 0x5d, 0xe3, 0x21, 0x0f, 0x18, 0x12, 0x1b, 0x7a, 0x2a,
-	0x19, 0x64, 0x58, 0x6c, 0xbf, 0xf1, 0x5f, 0x1b, 0xa4, 0x7e, 0x54, 0xf2, 0xbc, 0x83, 0xc1, 0x9f,
-	0x28, 0x91, 0xf1, 0xa9, 0xe1, 0x94, 0x6c, 0xe3, 0xf1, 0x5f, 0xa7, 0x25, 0x52, 0x52, 0x15, 0x36,
-	0x55, 0x54, 0xb5, 0x7c, 0x54, 0x54, 0x0d, 0x17, 0xdf, 0x42, 0xbf, 0x92, 0x49, 0x46, 0xaa, 0xde,
-	0xb0, 0xce, 0x18, 0x37, 0x0f, 0x15, 0xec, 0xe3, 0x97, 0xcd, 0xca, 0x0f, 0xc4, 0x2e, 0x73, 0x2d,
-	0xc6, 0x23, 0xdb, 0xcd, 0x62, 0xff, 0x98, 0xee, 0x10, 0x13, 0xbb, 0xf4, 0xf2, 0x75, 0x44, 0x63,
-	0xea, 0x63, 0x84, 0xb1, 0xb0, 0x93, 0xbd, 0x6f, 0xd3, 0x24, 0xb0, 0xf3, 0x99, 0xdd, 0xf6, 0xc6,
-	0xbb, 0x3d, 0xf9, 0xc8, 0xbf, 0xf9, 0x1d, 0x00, 0x00, 0xff, 0xff, 0xa7, 0x15, 0x40, 0x04, 0x06,
-	0x06, 0x00, 0x00,
+	// 436 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xd4, 0x54, 0xcd, 0xca, 0xd3, 0x40,
+	0x14, 0x25, 0xad, 0xd4, 0xf6, 0x8a, 0x3f, 0x9d, 0x56, 0x8d, 0xa1, 0x58, 0xc9, 0xaa, 0x08, 0x26,
+	0xb4, 0x22, 0x88, 0x3b, 0x6d, 0xdd, 0x55, 0x17, 0xe9, 0xae, 0x9b, 0x32, 0x99, 0x5c, 0xd2, 0xd0,
+	0x24, 0x13, 0x9b, 0x49, 0xa0, 0x1b, 0x1f, 0x4e, 0x7c, 0x17, 0x5f, 0xc0, 0x07, 0x90, 0xcc, 0x24,
+	0x36, 0x51, 0x23, 0x1f, 0x7c, 0x7c, 0x7c, 0x74, 0x99, 0xb9, 0xf7, 0xdc, 0x33, 0xe7, 0x9e, 0x93,
+	0x81, 0xe7, 0x8c, 0x47, 0x51, 0x16, 0x07, 0x8c, 0x8a, 0x80, 0xc7, 0x11, 0x8a, 0x3d, 0xf7, 0x42,
+	0xea, 0x62, 0x68, 0x25, 0x47, 0x2e, 0x38, 0xe9, 0xe4, 0x73, 0xf3, 0x87, 0x06, 0xfa, 0xb2, 0xde,
+	0xf6, 0x49, 0xb6, 0xad, 0x8b, 0x36, 0x62, 0xc1, 0x88, 0xf1, 0x58, 0x50, 0x26, 0x76, 0xe9, 0x29,
+	0x15, 0x18, 0xed, 0x18, 0xf7, 0x50, 0xd7, 0x5e, 0x68, 0xb3, 0x81, 0x33, 0x2c, 0x4b, 0x1b, 0x59,
+	0x59, 0x72, 0x0f, 0xc9, 0x3b, 0x78, 0xd6, 0xa0, 0xdc, 0x29, 0x4e, 0x85, 0xea, 0x48, 0xd4, 0x53,
+	0xf6, 0x37, 0x99, 0xc4, 0x7e, 0x84, 0xe9, 0x3f, 0xb1, 0xf2, 0xc2, 0x6a, 0x42, 0x57, 0x4e, 0x98,
+	0xb0, 0x96, 0xeb, 0xca, 0x31, 0x3a, 0xdc, 0x65, 0x34, 0x29, 0x2a, 0xfa, 0x1d, 0xd9, 0x5e, 0x7d,
+	0x9a, 0xdf, 0x34, 0xb8, 0xbf, 0xe2, 0x0e, 0x52, 0xcf, 0xc1, 0x2f, 0x19, 0xa6, 0xe2, 0x02, 0xe5,
+	0x99, 0x21, 0x3c, 0xa8, 0x34, 0xa4, 0x09, 0x8f, 0x53, 0x24, 0x5b, 0x30, 0xda, 0x07, 0x4b, 0x2d,
+	0xf7, 0x16, 0x13, 0x2b, 0x9f, 0x5b, 0x6d, 0x2e, 0x3b, 0x7a, 0x1b, 0xa3, 0xf9, 0x15, 0x1e, 0x29,
+	0xb6, 0xf7, 0x61, 0x78, 0x0b, 0x4b, 0x33, 0x39, 0x0c, 0x6b, 0xfc, 0x57, 0x14, 0xdc, 0xbd, 0x86,
+	0xe0, 0x43, 0x11, 0x91, 0x0d, 0xcd, 0xb1, 0x52, 0x7b, 0x93, 0xdb, 0x9d, 0x15, 0x5e, 0x2a, 0xb2,
+	0x52, 0xda, 0x13, 0xe8, 0x1d, 0x31, 0xcd, 0x42, 0x21, 0x27, 0xf7, 0x9d, 0xf2, 0xcb, 0xfc, 0xae,
+	0xc1, 0xc3, 0x15, 0x5f, 0x61, 0x88, 0x02, 0x2f, 0x38, 0xbc, 0x2f, 0x8b, 0x38, 0x55, 0x2a, 0xfe,
+	0x2f, 0x79, 0xf1, 0x53, 0x83, 0x69, 0xdb, 0x4e, 0x37, 0x78, 0xcc, 0x03, 0x86, 0xc4, 0x86, 0x9e,
+	0x8a, 0x07, 0x19, 0x16, 0x16, 0x34, 0x7e, 0x6e, 0x83, 0xd4, 0x8f, 0x4a, 0xb2, 0xb7, 0x30, 0xf8,
+	0x9d, 0x27, 0x32, 0x3e, 0x37, 0x9c, 0xe3, 0x6d, 0x3c, 0xfe, 0xe3, 0xb4, 0x44, 0x4a, 0xaa, 0xc2,
+	0xab, 0x8a, 0xaa, 0x16, 0x92, 0x8a, 0xaa, 0x61, 0xe5, 0x1b, 0xe8, 0x57, 0x5a, 0xc9, 0x48, 0xd5,
+	0x1b, 0xfe, 0x19, 0xe3, 0xe6, 0xa1, 0x82, 0x7d, 0xf8, 0xbc, 0x5d, 0xfb, 0x81, 0xd8, 0x67, 0xae,
+	0xc5, 0x78, 0x64, 0xbb, 0x59, 0xec, 0x9f, 0xd2, 0x3d, 0x62, 0x62, 0x97, 0x86, 0xbe, 0x8a, 0x68,
+	0x4c, 0x7d, 0x8c, 0x30, 0x16, 0x76, 0x72, 0xf0, 0x6d, 0x9a, 0x04, 0x76, 0x3e, 0xb7, 0xdb, 0x1e,
+	0x7a, 0xb7, 0x27, 0x5f, 0xfa, 0xd7, 0xbf, 0x02, 0x00, 0x00, 0xff, 0xff, 0x36, 0x26, 0xda, 0xaa,
+	0x0b, 0x06, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -493,180 +493,180 @@ var _ grpc.ClientConn
 // is compatible with the grpc package it is being compiled against.
 const _ = grpc.SupportPackageIsVersion4
 
-// CommunicationMethodServiceClient is the client API for CommunicationMethodService service.
+// CommunicationMethodLabelServiceClient is the client API for CommunicationMethodLabelService service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
-type CommunicationMethodServiceClient interface {
+type CommunicationMethodLabelServiceClient interface {
 	DoRead(ctx context.Context, in *DoReadRequest, opts ...grpc.CallOption) (*DoReadResponse, error)
 	DoReadAll(ctx context.Context, in *DoReadAllRequest, opts ...grpc.CallOption) (*DoReadAllResponse, error)
 	DoSave(ctx context.Context, in *DoSaveRequest, opts ...grpc.CallOption) (*DoSaveResponse, error)
 	DoDelete(ctx context.Context, in *DoDeleteRequest, opts ...grpc.CallOption) (*DoDeleteResponse, error)
 }
 
-type communicationMethodServiceClient struct {
+type communicationMethodLabelServiceClient struct {
 	cc *grpc.ClientConn
 }
 
-func NewCommunicationMethodServiceClient(cc *grpc.ClientConn) CommunicationMethodServiceClient {
-	return &communicationMethodServiceClient{cc}
+func NewCommunicationMethodLabelServiceClient(cc *grpc.ClientConn) CommunicationMethodLabelServiceClient {
+	return &communicationMethodLabelServiceClient{cc}
 }
 
-func (c *communicationMethodServiceClient) DoRead(ctx context.Context, in *DoReadRequest, opts ...grpc.CallOption) (*DoReadResponse, error) {
+func (c *communicationMethodLabelServiceClient) DoRead(ctx context.Context, in *DoReadRequest, opts ...grpc.CallOption) (*DoReadResponse, error) {
 	out := new(DoReadResponse)
-	err := c.cc.Invoke(ctx, "/v1.CommunicationMethodService/DoRead", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/v1.CommunicationMethodLabelService/DoRead", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *communicationMethodServiceClient) DoReadAll(ctx context.Context, in *DoReadAllRequest, opts ...grpc.CallOption) (*DoReadAllResponse, error) {
+func (c *communicationMethodLabelServiceClient) DoReadAll(ctx context.Context, in *DoReadAllRequest, opts ...grpc.CallOption) (*DoReadAllResponse, error) {
 	out := new(DoReadAllResponse)
-	err := c.cc.Invoke(ctx, "/v1.CommunicationMethodService/DoReadAll", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/v1.CommunicationMethodLabelService/DoReadAll", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *communicationMethodServiceClient) DoSave(ctx context.Context, in *DoSaveRequest, opts ...grpc.CallOption) (*DoSaveResponse, error) {
+func (c *communicationMethodLabelServiceClient) DoSave(ctx context.Context, in *DoSaveRequest, opts ...grpc.CallOption) (*DoSaveResponse, error) {
 	out := new(DoSaveResponse)
-	err := c.cc.Invoke(ctx, "/v1.CommunicationMethodService/DoSave", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/v1.CommunicationMethodLabelService/DoSave", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *communicationMethodServiceClient) DoDelete(ctx context.Context, in *DoDeleteRequest, opts ...grpc.CallOption) (*DoDeleteResponse, error) {
+func (c *communicationMethodLabelServiceClient) DoDelete(ctx context.Context, in *DoDeleteRequest, opts ...grpc.CallOption) (*DoDeleteResponse, error) {
 	out := new(DoDeleteResponse)
-	err := c.cc.Invoke(ctx, "/v1.CommunicationMethodService/DoDelete", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/v1.CommunicationMethodLabelService/DoDelete", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-// CommunicationMethodServiceServer is the server API for CommunicationMethodService service.
-type CommunicationMethodServiceServer interface {
+// CommunicationMethodLabelServiceServer is the server API for CommunicationMethodLabelService service.
+type CommunicationMethodLabelServiceServer interface {
 	DoRead(context.Context, *DoReadRequest) (*DoReadResponse, error)
 	DoReadAll(context.Context, *DoReadAllRequest) (*DoReadAllResponse, error)
 	DoSave(context.Context, *DoSaveRequest) (*DoSaveResponse, error)
 	DoDelete(context.Context, *DoDeleteRequest) (*DoDeleteResponse, error)
 }
 
-// UnimplementedCommunicationMethodServiceServer can be embedded to have forward compatible implementations.
-type UnimplementedCommunicationMethodServiceServer struct {
+// UnimplementedCommunicationMethodLabelServiceServer can be embedded to have forward compatible implementations.
+type UnimplementedCommunicationMethodLabelServiceServer struct {
 }
 
-func (*UnimplementedCommunicationMethodServiceServer) DoRead(ctx context.Context, req *DoReadRequest) (*DoReadResponse, error) {
+func (*UnimplementedCommunicationMethodLabelServiceServer) DoRead(ctx context.Context, req *DoReadRequest) (*DoReadResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DoRead not implemented")
 }
-func (*UnimplementedCommunicationMethodServiceServer) DoReadAll(ctx context.Context, req *DoReadAllRequest) (*DoReadAllResponse, error) {
+func (*UnimplementedCommunicationMethodLabelServiceServer) DoReadAll(ctx context.Context, req *DoReadAllRequest) (*DoReadAllResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DoReadAll not implemented")
 }
-func (*UnimplementedCommunicationMethodServiceServer) DoSave(ctx context.Context, req *DoSaveRequest) (*DoSaveResponse, error) {
+func (*UnimplementedCommunicationMethodLabelServiceServer) DoSave(ctx context.Context, req *DoSaveRequest) (*DoSaveResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DoSave not implemented")
 }
-func (*UnimplementedCommunicationMethodServiceServer) DoDelete(ctx context.Context, req *DoDeleteRequest) (*DoDeleteResponse, error) {
+func (*UnimplementedCommunicationMethodLabelServiceServer) DoDelete(ctx context.Context, req *DoDeleteRequest) (*DoDeleteResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DoDelete not implemented")
 }
 
-func RegisterCommunicationMethodServiceServer(s *grpc.Server, srv CommunicationMethodServiceServer) {
-	s.RegisterService(&_CommunicationMethodService_serviceDesc, srv)
+func RegisterCommunicationMethodLabelServiceServer(s *grpc.Server, srv CommunicationMethodLabelServiceServer) {
+	s.RegisterService(&_CommunicationMethodLabelService_serviceDesc, srv)
 }
 
-func _CommunicationMethodService_DoRead_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _CommunicationMethodLabelService_DoRead_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(DoReadRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(CommunicationMethodServiceServer).DoRead(ctx, in)
+		return srv.(CommunicationMethodLabelServiceServer).DoRead(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/v1.CommunicationMethodService/DoRead",
+		FullMethod: "/v1.CommunicationMethodLabelService/DoRead",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(CommunicationMethodServiceServer).DoRead(ctx, req.(*DoReadRequest))
+		return srv.(CommunicationMethodLabelServiceServer).DoRead(ctx, req.(*DoReadRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _CommunicationMethodService_DoReadAll_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _CommunicationMethodLabelService_DoReadAll_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(DoReadAllRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(CommunicationMethodServiceServer).DoReadAll(ctx, in)
+		return srv.(CommunicationMethodLabelServiceServer).DoReadAll(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/v1.CommunicationMethodService/DoReadAll",
+		FullMethod: "/v1.CommunicationMethodLabelService/DoReadAll",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(CommunicationMethodServiceServer).DoReadAll(ctx, req.(*DoReadAllRequest))
+		return srv.(CommunicationMethodLabelServiceServer).DoReadAll(ctx, req.(*DoReadAllRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _CommunicationMethodService_DoSave_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _CommunicationMethodLabelService_DoSave_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(DoSaveRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(CommunicationMethodServiceServer).DoSave(ctx, in)
+		return srv.(CommunicationMethodLabelServiceServer).DoSave(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/v1.CommunicationMethodService/DoSave",
+		FullMethod: "/v1.CommunicationMethodLabelService/DoSave",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(CommunicationMethodServiceServer).DoSave(ctx, req.(*DoSaveRequest))
+		return srv.(CommunicationMethodLabelServiceServer).DoSave(ctx, req.(*DoSaveRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _CommunicationMethodService_DoDelete_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _CommunicationMethodLabelService_DoDelete_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(DoDeleteRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(CommunicationMethodServiceServer).DoDelete(ctx, in)
+		return srv.(CommunicationMethodLabelServiceServer).DoDelete(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/v1.CommunicationMethodService/DoDelete",
+		FullMethod: "/v1.CommunicationMethodLabelService/DoDelete",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(CommunicationMethodServiceServer).DoDelete(ctx, req.(*DoDeleteRequest))
+		return srv.(CommunicationMethodLabelServiceServer).DoDelete(ctx, req.(*DoDeleteRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-var _CommunicationMethodService_serviceDesc = grpc.ServiceDesc{
-	ServiceName: "v1.CommunicationMethodService",
-	HandlerType: (*CommunicationMethodServiceServer)(nil),
+var _CommunicationMethodLabelService_serviceDesc = grpc.ServiceDesc{
+	ServiceName: "v1.CommunicationMethodLabelService",
+	HandlerType: (*CommunicationMethodLabelServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
 			MethodName: "DoRead",
-			Handler:    _CommunicationMethodService_DoRead_Handler,
+			Handler:    _CommunicationMethodLabelService_DoRead_Handler,
 		},
 		{
 			MethodName: "DoReadAll",
-			Handler:    _CommunicationMethodService_DoReadAll_Handler,
+			Handler:    _CommunicationMethodLabelService_DoReadAll_Handler,
 		},
 		{
 			MethodName: "DoSave",
-			Handler:    _CommunicationMethodService_DoSave_Handler,
+			Handler:    _CommunicationMethodLabelService_DoSave_Handler,
 		},
 		{
 			MethodName: "DoDelete",
-			Handler:    _CommunicationMethodService_DoDelete_Handler,
+			Handler:    _CommunicationMethodLabelService_DoDelete_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
