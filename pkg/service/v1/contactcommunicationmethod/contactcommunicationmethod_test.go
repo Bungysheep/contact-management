@@ -22,26 +22,32 @@ func TestMain(m *testing.M) {
 	ctx = context.TODO()
 
 	data = append(data, &contactcommunicationmethod.ContactCommunicationMethod{
-		ContactSystemCode:            "CNTSYS001",
-		ContactId:                    1,
-		ContactCommunicationMethodId: 1,
-		CommunicationMethodCode:      "EMAIL",
-		FormatValue:                  "test@gmail.com",
-		IsDefault:                    true,
+		ContactSystemCode:               "CNTSYS001",
+		ContactId:                       1,
+		ContactCommunicationMethodId:    1,
+		CommunicationMethodCode:         "EMAIL",
+		CommunicationMethodLabelCode:    "HOME",
+		CommunicationMethodLabelCaption: "Home",
+		FormatValue:                     "test@gmail.com",
+		IsDefault:                       true,
 	}, &contactcommunicationmethod.ContactCommunicationMethod{
-		ContactSystemCode:            "CNTSYS001",
-		ContactId:                    1,
-		ContactCommunicationMethodId: 2,
-		CommunicationMethodCode:      "MOBILE",
-		FormatValue:                  "62-81234567890",
-		IsDefault:                    true,
+		ContactSystemCode:               "CNTSYS001",
+		ContactId:                       1,
+		ContactCommunicationMethodId:    2,
+		CommunicationMethodCode:         "MOBILE",
+		CommunicationMethodLabelCode:    "WORK",
+		CommunicationMethodLabelCaption: "Work",
+		FormatValue:                     "62-81234567890",
+		IsDefault:                       true,
 	}, &contactcommunicationmethod.ContactCommunicationMethod{
-		ContactSystemCode:            "CNTSYS001",
-		ContactId:                    1,
-		ContactCommunicationMethodId: 3,
-		CommunicationMethodCode:      "FAX",
-		FormatValue:                  "62-2471234567",
-		IsDefault:                    true,
+		ContactSystemCode:               "CNTSYS001",
+		ContactId:                       1,
+		ContactCommunicationMethodId:    3,
+		CommunicationMethodCode:         "FAX",
+		CommunicationMethodLabelCode:    "SCHOOL",
+		CommunicationMethodLabelCaption: "School",
+		FormatValue:                     "62-2471234567",
+		IsDefault:                       true,
 	})
 
 	exitCode := m.Run()
@@ -97,6 +103,18 @@ func doRead(ctx context.Context, input *contactcommunicationmethod.ContactCommun
 			t.Errorf("Expect communication method code %s, but got %s", input.GetCommunicationMethodCode(), resp.GetContactCommunicationMethod().GetCommunicationMethodCode())
 		}
 
+		if resp.GetContactCommunicationMethod().GetCommunicationMethodCode() != input.GetCommunicationMethodCode() {
+			t.Errorf("Expect communication method code %s, but got %s", input.GetCommunicationMethodCode(), resp.GetContactCommunicationMethod().GetCommunicationMethodCode())
+		}
+
+		if resp.GetContactCommunicationMethod().GetCommunicationMethodLabelCode() != input.GetCommunicationMethodLabelCode() {
+			t.Errorf("Expect communication method label code %s, but got %s", input.GetCommunicationMethodLabelCode(), resp.GetContactCommunicationMethod().GetCommunicationMethodLabelCode())
+		}
+
+		if resp.GetContactCommunicationMethod().GetCommunicationMethodLabelCaption() != input.GetCommunicationMethodLabelCaption() {
+			t.Errorf("Expect communication method label caption %s, but got %s", input.GetCommunicationMethodLabelCaption(), resp.GetContactCommunicationMethod().GetCommunicationMethodLabelCaption())
+		}
+
 		if resp.GetContactCommunicationMethod().GetFormatValue() != input.GetFormatValue() {
 			t.Errorf("Expect format value %s, but got %s", input.GetFormatValue(), resp.GetContactCommunicationMethod().GetFormatValue())
 		}
@@ -145,6 +163,14 @@ func doReadAll(ctx context.Context, input *contactcommunicationmethod.ContactCom
 
 		if resp.GetContactCommunicationMethod()[0].GetCommunicationMethodCode() != input.GetCommunicationMethodCode() {
 			t.Errorf("Expect communication method code %s, but got %s", input.GetCommunicationMethodCode(), resp.GetContactCommunicationMethod()[0].GetCommunicationMethodCode())
+		}
+
+		if resp.GetContactCommunicationMethod()[0].GetCommunicationMethodLabelCode() != input.GetCommunicationMethodLabelCode() {
+			t.Errorf("Expect communication method label code %s, but got %s", input.GetCommunicationMethodLabelCode(), resp.GetContactCommunicationMethod()[0].GetCommunicationMethodLabelCode())
+		}
+
+		if resp.GetContactCommunicationMethod()[0].GetCommunicationMethodLabelCaption() != input.GetCommunicationMethodLabelCaption() {
+			t.Errorf("Expect communication method label caption %s, but got %s", input.GetCommunicationMethodLabelCaption(), resp.GetContactCommunicationMethod()[0].GetCommunicationMethodLabelCaption())
 		}
 
 		if resp.GetContactCommunicationMethod()[0].GetFormatValue() != input.GetFormatValue() {

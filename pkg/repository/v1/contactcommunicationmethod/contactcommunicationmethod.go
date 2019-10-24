@@ -40,7 +40,7 @@ func (cm *communicationMethodRepository) DoRead(ctx context.Context, contactSyst
 	}
 	defer conn.Close()
 
-	stmt, err := conn.PrepareContext(ctx, "SELECT contact_system_code, contact_id, contact_communication_method_id, communication_method_code, format_value, is_default, created_at, modified_at, vers FROM contact_communication_method WHERE contact_system_code=$1 and contact_id=$2 and contact_communication_method_id=$3")
+	stmt, err := conn.PrepareContext(ctx, "SELECT contact_system_code, contact_id, contact_communication_method_id, communication_method_code, communication_method_label_code, format_value, is_default, created_at, modified_at, vers FROM contact_communication_method WHERE contact_system_code=$1 and contact_id=$2 and contact_communication_method_id=$3")
 	if err != nil {
 		return nil, status.Errorf(codes.Unknown, message.FailedPrepareRead("Contact Communication Method", err))
 	}
@@ -65,6 +65,7 @@ func (cm *communicationMethodRepository) DoRead(ctx context.Context, contactSyst
 		&result.ContactId,
 		&result.ContactCommunicationMethodId,
 		&result.CommunicationMethodCode,
+		&result.CommunicationMethodLabelCode,
 		&result.FormatValue,
 		&result.IsDefault,
 		&createdAt,
@@ -88,7 +89,7 @@ func (cm *communicationMethodRepository) DoReadAll(ctx context.Context, contactS
 	}
 	defer conn.Close()
 
-	stmt, err := conn.PrepareContext(ctx, "SELECT contact_system_code, contact_id, contact_communication_method_id, communication_method_code, format_value, is_default, created_at, modified_at, vers FROM contact_communication_method WHERE contact_system_code=$1 AND contact_id=$2")
+	stmt, err := conn.PrepareContext(ctx, "SELECT contact_system_code, contact_id, contact_communication_method_id, communication_method_code, communication_method_label_code, format_value, is_default, created_at, modified_at, vers FROM contact_communication_method WHERE contact_system_code=$1 AND contact_id=$2")
 	if err != nil {
 		return result, status.Errorf(codes.Unknown, message.FailedPrepareRead("Contact Communication Method", err))
 	}
@@ -118,6 +119,7 @@ func (cm *communicationMethodRepository) DoReadAll(ctx context.Context, contactS
 			&contactCommunicationMethod.ContactId,
 			&contactCommunicationMethod.ContactCommunicationMethodId,
 			&contactCommunicationMethod.CommunicationMethodCode,
+			&contactCommunicationMethod.CommunicationMethodLabelCode,
 			&contactCommunicationMethod.FormatValue,
 			&contactCommunicationMethod.IsDefault,
 			&createdAt,
@@ -145,12 +147,12 @@ func (cm *communicationMethodRepository) DoInsert(ctx context.Context, data *con
 	}
 	defer conn.Close()
 
-	stmt, err := conn.PrepareContext(ctx, "INSERT INTO contact_communication_method (contact_system_code, contact_id, contact_communication_method_id, communication_method_code, format_value, is_default, created_at, modified_at, vers) VALUES ($1, $2, $3, $4, $5, $6, 1)")
+	stmt, err := conn.PrepareContext(ctx, "INSERT INTO contact_communication_method (contact_system_code, contact_id, communication_method_code, communication_method_label_code, format_value, is_default, created_at, modified_at, vers) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, 1)")
 	if err != nil {
 		return status.Errorf(codes.Unknown, message.FailedPrepareInsert("Contact Communication Method", err))
 	}
 
-	result, err := stmt.ExecContext(ctx, data.GetContactSystemCode(), data.GetContactId(), data.GetContactCommunicationMethodId(), data.GetCommunicationMethodCode(), data.GetFormatValue(), data.GetIsDefault(), createdAt, modifiedAt)
+	result, err := stmt.ExecContext(ctx, data.GetContactSystemCode(), data.GetContactId(), data.GetCommunicationMethodCode(), data.GetCommunicationMethodLabelCode(), data.GetFormatValue(), data.GetIsDefault(), createdAt, modifiedAt)
 	if err != nil {
 		return status.Errorf(codes.Unknown, message.FailedInsert("Contact Communication Method", err))
 	}
@@ -172,12 +174,12 @@ func (cm *communicationMethodRepository) DoUpdate(ctx context.Context, data *con
 	}
 	defer conn.Close()
 
-	stmt, err := conn.PrepareContext(ctx, "UPDATE contact_communication_method SET communication_method_code=$4, format_value=$5, is_default=$6, modified_at=$7, vers=vers+1 WHERE contact_system_code=$1 AND contact_id=$2 AND contact_communication_method_id=$3")
+	stmt, err := conn.PrepareContext(ctx, "UPDATE contact_communication_method SET communication_method_code=$4, communication_method_label_code=$5, format_value=$6, is_default=$7, modified_at=$8, vers=vers+1 WHERE contact_system_code=$1 AND contact_id=$2 AND contact_communication_method_id=$3")
 	if err != nil {
 		return status.Errorf(codes.Unknown, message.FailedPrepareUpdate("Contact Communication Method", err))
 	}
 
-	result, err := stmt.ExecContext(ctx, data.GetContactSystemCode(), data.GetContactId(), data.GetContactCommunicationMethodId(), data.GetCommunicationMethodCode(), data.GetFormatValue(), data.GetIsDefault(), modifiedAt)
+	result, err := stmt.ExecContext(ctx, data.GetContactSystemCode(), data.GetContactId(), data.GetContactCommunicationMethodId(), data.GetCommunicationMethodCode(), data.GetCommunicationMethodLabelCode(), data.GetFormatValue(), data.GetIsDefault(), modifiedAt)
 	if err != nil {
 		return status.Errorf(codes.Unknown, message.FailedUpdate("Contact Communication Method", err))
 	}
