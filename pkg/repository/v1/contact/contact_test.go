@@ -373,7 +373,7 @@ func doSaveNewFailContact(ctx context.Context, input *contact.Contact) func(t *t
 		}
 
 		expInsQuery := mock.ExpectPrepare("INSERT INTO contact").ExpectExec()
-		expInsQuery.WithArgs(input.GetContactSystemCode(), input.GetContactId(), input.GetFirstName(), input.GetLastName(), input.GetStatus(), tmNow, tmNow).WillReturnError(fmt.Errorf("DoInsert contact failed"))
+		expInsQuery.WithArgs(input.GetContactSystemCode(), input.GetFirstName(), input.GetLastName(), input.GetStatus(), tmNow, tmNow).WillReturnError(fmt.Errorf("DoInsert contact failed"))
 
 		err := repo.DoInsert(ctx, input)
 		if err != nil {
@@ -401,7 +401,7 @@ func doSaveNewContact(ctx context.Context, input *contact.Contact) func(t *testi
 		}
 
 		expInsQuery := mock.ExpectPrepare("INSERT INTO contact").ExpectExec()
-		expInsQuery.WithArgs(input.GetContactSystemCode(), input.GetContactId(), input.GetFirstName(), input.GetLastName(), input.GetStatus(), tmNow, tmNow).WillReturnResult(sqlmock.NewResult(0, 1))
+		expInsQuery.WithArgs(input.GetContactSystemCode(), input.GetFirstName(), input.GetLastName(), input.GetStatus(), tmNow, tmNow).WillReturnResult(sqlmock.NewResult(0, 1))
 
 		err := repo.DoInsert(ctx, input)
 		if err != nil {

@@ -148,7 +148,7 @@ func (cm *contactRepository) DoInsert(ctx context.Context, data *contact.Contact
 		return status.Errorf(codes.Unknown, message.FailedPrepareInsert("Contact", err))
 	}
 
-	result, err := stmt.ExecContext(ctx, data.GetContactSystemCode(), data.GetContactId(), data.GetFirstName(), data.GetLastName(), data.GetStatus(), createdAt, modifiedAt)
+	result, err := stmt.ExecContext(ctx, data.GetContactSystemCode(), data.GetFirstName(), data.GetLastName(), data.GetStatus(), createdAt, modifiedAt)
 	if err != nil {
 		return status.Errorf(codes.Unknown, message.FailedInsert("Contact", err))
 	}

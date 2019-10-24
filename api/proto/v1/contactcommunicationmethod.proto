@@ -16,13 +16,17 @@ message ContactCommunicationMethod {
 
     string communication_method_code = 4;
 
-    string format_value = 5;
+    string communication_method_label_code = 5;
 
-    bool is_default = 6;
+    string communication_method_label_caption = 6;
 
-    repeated v1.ContactCommunicationMethodField contact_communication_method_field = 7;
+    string format_value = 7;
 
-    v1.Audit audit = 8;
+    bool is_default = 8;
+
+    repeated v1.ContactCommunicationMethodField contact_communication_method_field = 9;
+
+    v1.Audit audit = 10;
 }
 
 message DoReadRequest {

@@ -145,7 +145,7 @@ func (cm *communicationMethodRepository) DoInsert(ctx context.Context, data *com
 	}
 	defer conn.Close()
 
-	stmt, err := conn.PrepareContext(ctx, "INSERT INTO communication_method (contact_system_code, communication_method_code, description, details, status, format_field, created_at, modified_at, vers) VALUES ($1, $2, $3, $4, $5, $6, $7, 1)")
+	stmt, err := conn.PrepareContext(ctx, "INSERT INTO communication_method (contact_system_code, communication_method_code, description, details, status, format_field, created_at, modified_at, vers) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, 1)")
 	if err != nil {
 		return status.Errorf(codes.Unknown, message.FailedPrepareInsert("Communication Method", err))
 	}
