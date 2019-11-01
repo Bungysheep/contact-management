@@ -8,6 +8,8 @@ import (
 	"github.com/bungysheep/contact-management/pkg/api/v1/audit"
 	"github.com/bungysheep/contact-management/pkg/api/v1/communicationmethod"
 	"github.com/bungysheep/contact-management/pkg/common/message"
+	communicationmethodfieldrepository "github.com/bungysheep/contact-management/pkg/repository/v1/communicationmethodfield"
+	communicationmethodlabelrepository "github.com/bungysheep/contact-management/pkg/repository/v1/communicationmethodlabel"
 	"github.com/golang/protobuf/ptypes"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -210,6 +212,18 @@ func (cm *communicationMethodRepository) DoDelete(ctx context.Context, contactSy
 	rows, _ := result.RowsAffected()
 	if rows == 0 {
 		return status.Errorf(codes.NotFound, message.DoesNotExist("Communication Method"))
+	}
+
+	// Delete all related Communication Method Fields
+	cmf := communicationmethodfieldrepository.NewCommunicationMethodFieldRepository(cm.db)
+	if err := cmf.DoDeleteAll(ctx, contactSystemCode, communicationMethodCode); err != nil {
+		return err
+	}
+
+	// Delete all related Communication Method Labels
+	cml := communicationmethodlabelrepository.NewCommunicationMethodLabelRepository(cm.db)
+	if err := cml.DoDeleteAll(ctx, contactSystemCode, communicationMethodCode); err != nil {
+		return err
 	}
 
 	return nil

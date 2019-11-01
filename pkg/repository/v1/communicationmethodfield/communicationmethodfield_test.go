@@ -65,6 +65,8 @@ func TestCommunicationMethodFieldRepository(t *testing.T) {
 	t.Run("DoSave Communication Method Field", doSave(ctx))
 
 	t.Run("DoDelete Communication Method Field", doDelete(ctx))
+
+	t.Run("DoDeleteAll Communication Method Field", doDeleteAll(ctx))
 }
 
 func doRead(ctx context.Context) func(t *testing.T) {
@@ -110,6 +112,16 @@ func doDelete(ctx context.Context) func(t *testing.T) {
 		t.Run("DoDelete unexisting", doDeleteUnexistingCommunicationMethodField(ctx, data[0]))
 
 		t.Run("DoDelete existing", doDeleteExistingCommunicationMethodField(ctx, data[0]))
+	}
+}
+
+func doDeleteAll(ctx context.Context) func(t *testing.T) {
+	return func(t *testing.T) {
+		t.Run("DoDeleteAll fail", doDeleteAllFailCommunicationMethodField(ctx, data[0]))
+
+		t.Run("DoDeleteAll unexisting", doDeleteAllUnexistingCommunicationMethodField(ctx, data[0]))
+
+		t.Run("DoDeleteAll existing", doDeleteAllExistingCommunicationMethodField(ctx, data[0]))
 	}
 }
 
@@ -505,6 +517,54 @@ func doDeleteExistingCommunicationMethodField(ctx context.Context, input *commun
 		err := repo.DoDelete(ctx, input.GetContactSystemCode(), input.GetCommunicationMethodCode(), input.GetFieldCode())
 		if err != nil {
 			t.Errorf("Failed to delete communication method field: %v", err)
+		}
+	}
+}
+
+func doDeleteAllFailCommunicationMethodField(ctx context.Context, input *communicationmethodfield.CommunicationMethodField) func(t *testing.T) {
+	return func(t *testing.T) {
+		expQuery := mock.ExpectPrepare("DELETE FROM communication_method_field").ExpectExec()
+		expQuery.WithArgs(input.GetContactSystemCode(), input.GetCommunicationMethodCode()).WillReturnError(fmt.Errorf("Delete all communication method fields failed"))
+
+		err := repo.DoDeleteAll(ctx, input.GetContactSystemCode(), input.GetCommunicationMethodCode())
+		if err != nil {
+			s, ok := status.FromError(err)
+			if ok {
+				if s.Code() != codes.Unknown {
+					t.Fatalf("Expect a Unknown error, but got %s", s.Code())
+				}
+			}
+		} else {
+			t.Errorf("Expect error is not nil")
+		}
+	}
+}
+
+func doDeleteAllUnexistingCommunicationMethodField(ctx context.Context, input *communicationmethodfield.CommunicationMethodField) func(t *testing.T) {
+	return func(t *testing.T) {
+		expQuery := mock.ExpectPrepare("DELETE FROM communication_method_field").ExpectExec()
+		expQuery.WithArgs(input.GetContactSystemCode(), input.GetCommunicationMethodCode()).WillReturnResult(sqlmock.NewResult(0, 0))
+
+		err := repo.DoDeleteAll(ctx, input.GetContactSystemCode(), input.GetCommunicationMethodCode())
+		if err != nil {
+			s, ok := status.FromError(err)
+			if ok {
+				if s.Code() != codes.NotFound {
+					t.Fatalf("Expect a NotFound error, but got %s", s.Code())
+				}
+			}
+		}
+	}
+}
+
+func doDeleteAllExistingCommunicationMethodField(ctx context.Context, input *communicationmethodfield.CommunicationMethodField) func(t *testing.T) {
+	return func(t *testing.T) {
+		expQuery := mock.ExpectPrepare("DELETE FROM communication_method_field").ExpectExec()
+		expQuery.WithArgs(input.GetContactSystemCode(), input.GetCommunicationMethodCode()).WillReturnResult(sqlmock.NewResult(0, 1))
+
+		err := repo.DoDeleteAll(ctx, input.GetContactSystemCode(), input.GetCommunicationMethodCode())
+		if err != nil {
+			t.Errorf("Failed to delete all communication method fields: %v", err)
 		}
 	}
 }

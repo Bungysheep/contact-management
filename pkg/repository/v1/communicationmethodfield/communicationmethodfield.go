@@ -20,6 +20,7 @@ type ICommunicationMethodFieldRepository interface {
 	DoInsert(context.Context, *communicationmethodfield.CommunicationMethodField) error
 	DoUpdate(context.Context, *communicationmethodfield.CommunicationMethodField) error
 	DoDelete(context.Context, string, string, string) error
+	DoDeleteAll(context.Context, string, string) error
 }
 
 type communicationMethodFieldRepository struct {
@@ -208,6 +209,26 @@ func (cmf *communicationMethodFieldRepository) DoDelete(ctx context.Context, con
 	rows, _ := result.RowsAffected()
 	if rows == 0 {
 		return status.Errorf(codes.NotFound, message.DoesNotExist("Communication Method Field"))
+	}
+
+	return nil
+}
+
+func (cmf *communicationMethodFieldRepository) DoDeleteAll(ctx context.Context, contactSystemCode string, communicationMethodCode string) error {
+	conn, err := cmf.db.Conn(ctx)
+	if err != nil {
+		return status.Errorf(codes.Unknown, message.FailedConnectToDatabase(err))
+	}
+	defer conn.Close()
+
+	stmt, err := conn.PrepareContext(ctx, "DELETE FROM communication_method_field WHERE contact_system_code=$1 AND communication_method_code=$2")
+	if err != nil {
+		return status.Errorf(codes.Unknown, message.FailedPrepareDelete("All Communication Method Fields", err))
+	}
+
+	_, err = stmt.ExecContext(ctx, contactSystemCode, communicationMethodCode)
+	if err != nil {
+		return status.Errorf(codes.Unknown, message.FailedDelete("All Communication Method Fields", err))
 	}
 
 	return nil
