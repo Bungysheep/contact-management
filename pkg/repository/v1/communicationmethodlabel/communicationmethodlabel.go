@@ -17,6 +17,7 @@ type ICommunicationMethodLabelRepository interface {
 	DoInsert(context.Context, *communicationmethodlabel.CommunicationMethodLabel) error
 	DoUpdate(context.Context, *communicationmethodlabel.CommunicationMethodLabel) error
 	DoDelete(context.Context, string, string, string) error
+	DoDeleteAll(context.Context, string, string) error
 }
 
 type communicationMethodLabelRepository struct {
@@ -182,6 +183,26 @@ func (cm *communicationMethodLabelRepository) DoDelete(ctx context.Context, cont
 	rows, _ := result.RowsAffected()
 	if rows == 0 {
 		return status.Errorf(codes.NotFound, message.DoesNotExist("Communication Method Label"))
+	}
+
+	return nil
+}
+
+func (cm *communicationMethodLabelRepository) DoDeleteAll(ctx context.Context, contactSystemCode string, communicationMethodCode string) error {
+	conn, err := cm.db.Conn(ctx)
+	if err != nil {
+		return status.Errorf(codes.Unknown, message.FailedConnectToDatabase(err))
+	}
+	defer conn.Close()
+
+	stmt, err := conn.PrepareContext(ctx, "DELETE FROM communication_method_label WHERE contact_system_code=$1 AND communication_method_code=$2")
+	if err != nil {
+		return status.Errorf(codes.Unknown, message.FailedPrepareDelete("All Communication Method Labels", err))
+	}
+
+	_, err = stmt.ExecContext(ctx, contactSystemCode, communicationMethodCode)
+	if err != nil {
+		return status.Errorf(codes.Unknown, message.FailedDelete("All Communication Method Labels", err))
 	}
 
 	return nil
