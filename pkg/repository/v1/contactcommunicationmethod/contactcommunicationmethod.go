@@ -20,6 +20,7 @@ type IContactCommunicationMethodRepository interface {
 	DoInsert(context.Context, *contactcommunicationmethod.ContactCommunicationMethod) error
 	DoUpdate(context.Context, *contactcommunicationmethod.ContactCommunicationMethod) error
 	DoDelete(context.Context, string, int64, int64) error
+	DoDeleteAll(context.Context, string, int64) error
 }
 
 type communicationMethodRepository struct {
@@ -212,6 +213,26 @@ func (cm *communicationMethodRepository) DoDelete(ctx context.Context, contactSy
 	rows, _ := result.RowsAffected()
 	if rows == 0 {
 		return status.Errorf(codes.NotFound, message.DoesNotExist("Contact Communication Method"))
+	}
+
+	return nil
+}
+
+func (cm *communicationMethodRepository) DoDeleteAll(ctx context.Context, contactSystemCode string, contactID int64) error {
+	conn, err := cm.db.Conn(ctx)
+	if err != nil {
+		return status.Errorf(codes.Unknown, message.FailedConnectToDatabase(err))
+	}
+	defer conn.Close()
+
+	stmt, err := conn.PrepareContext(ctx, "DELETE FROM contact_communication_method WHERE contact_system_code=$1 AND contact_id=$2")
+	if err != nil {
+		return status.Errorf(codes.Unknown, message.FailedPrepareDelete("All Contact Communication Methods", err))
+	}
+
+	_, err = stmt.ExecContext(ctx, contactSystemCode, contactID)
+	if err != nil {
+		return status.Errorf(codes.Unknown, message.FailedDelete("All Contact Communication Methods", err))
 	}
 
 	return nil

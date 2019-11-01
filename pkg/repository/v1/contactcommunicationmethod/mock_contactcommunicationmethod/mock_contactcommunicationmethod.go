@@ -105,3 +105,17 @@ func (mr *MockIContactCommunicationMethodRepositoryMockRecorder) DoDelete(arg0, 
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DoDelete", reflect.TypeOf((*MockIContactCommunicationMethodRepository)(nil).DoDelete), arg0, arg1, arg2, arg3)
 }
+
+// DoDeleteAll mocks base method
+func (m *MockIContactCommunicationMethodRepository) DoDeleteAll(arg0 context.Context, arg1 string, arg2 int64) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "DoDeleteAll", arg0, arg1, arg2)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// DoDeleteAll indicates an expected call of DoDeleteAll
+func (mr *MockIContactCommunicationMethodRepositoryMockRecorder) DoDeleteAll(arg0, arg1, arg2 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DoDeleteAll", reflect.TypeOf((*MockIContactCommunicationMethodRepository)(nil).DoDeleteAll), arg0, arg1, arg2)
+}

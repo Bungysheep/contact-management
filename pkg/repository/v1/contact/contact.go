@@ -8,6 +8,7 @@ import (
 	"github.com/bungysheep/contact-management/pkg/api/v1/audit"
 	"github.com/bungysheep/contact-management/pkg/api/v1/contact"
 	"github.com/bungysheep/contact-management/pkg/common/message"
+	contactcommunicationmethodrepository "github.com/bungysheep/contact-management/pkg/repository/v1/contactcommunicationmethod"
 	"github.com/golang/protobuf/ptypes"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -208,6 +209,12 @@ func (cm *contactRepository) DoDelete(ctx context.Context, contactSystemCode str
 	rows, _ := result.RowsAffected()
 	if rows == 0 {
 		return status.Errorf(codes.NotFound, message.DoesNotExist("Contact"))
+	}
+
+	// Delete all related Contact Communication Methods
+	cmf := contactcommunicationmethodrepository.NewContactCommunicationMethodRepository(cm.db)
+	if err := cmf.DoDeleteAll(ctx, contactSystemCode, contactID); err != nil {
+		return err
 	}
 
 	return nil

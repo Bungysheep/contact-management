@@ -109,6 +109,8 @@ func doDelete(ctx context.Context) func(t *testing.T) {
 
 		t.Run("DoDelete unexisting", doDeleteUnexistingContact(ctx, data[0]))
 
+		t.Run("DoDelete all communication methods fail", doDeleteFailContactCommunicationMethod(ctx, data[0]))
+
 		t.Run("DoDelete existing", doDeleteExistingContact(ctx, data[0]))
 	}
 }
@@ -497,10 +499,33 @@ func doDeleteUnexistingContact(ctx context.Context, input *contact.Contact) func
 	}
 }
 
+func doDeleteFailContactCommunicationMethod(ctx context.Context, input *contact.Contact) func(t *testing.T) {
+	return func(t *testing.T) {
+		expContactQuery := mock.ExpectPrepare("DELETE FROM contact").ExpectExec()
+		expContactQuery.WithArgs(input.GetContactSystemCode(), input.GetContactId()).WillReturnResult(sqlmock.NewResult(0, 1))
+
+		expContactCommMethodQuery := mock.ExpectPrepare("DELETE FROM contact_communication_method").ExpectExec()
+		expContactCommMethodQuery.WithArgs(input.GetContactSystemCode(), input.GetContactId()).WillReturnError(fmt.Errorf("Delete all contact communication methods failed"))
+
+		err := repo.DoDelete(ctx, input.GetContactSystemCode(), input.GetContactId())
+		if err != nil {
+			s, ok := status.FromError(err)
+			if ok {
+				if s.Code() != codes.Unknown {
+					t.Fatalf("Expect a Unknown error, but got %s", s.Code())
+				}
+			}
+		}
+	}
+}
+
 func doDeleteExistingContact(ctx context.Context, input *contact.Contact) func(t *testing.T) {
 	return func(t *testing.T) {
-		expQuery := mock.ExpectPrepare("DELETE FROM contact").ExpectExec()
-		expQuery.WithArgs(input.GetContactSystemCode(), input.GetContactId()).WillReturnResult(sqlmock.NewResult(0, 1))
+		expContactQuery := mock.ExpectPrepare("DELETE FROM contact").ExpectExec()
+		expContactQuery.WithArgs(input.GetContactSystemCode(), input.GetContactId()).WillReturnResult(sqlmock.NewResult(0, 1))
+
+		expContactCommMethodQuery := mock.ExpectPrepare("DELETE FROM contact_communication_method").ExpectExec()
+		expContactCommMethodQuery.WithArgs(input.GetContactSystemCode(), input.GetContactId()).WillReturnResult(sqlmock.NewResult(0, 1))
 
 		err := repo.DoDelete(ctx, input.GetContactSystemCode(), input.GetContactId())
 		if err != nil {
