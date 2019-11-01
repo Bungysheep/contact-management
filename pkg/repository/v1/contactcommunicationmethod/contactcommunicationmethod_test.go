@@ -74,6 +74,8 @@ func TestContactCommunicationMethodRepository(t *testing.T) {
 	t.Run("DoSave Contact Communication Method", doSave(ctx))
 
 	t.Run("DoDelete Contact Communication Method", doDelete(ctx))
+
+	t.Run("DoDeleteAll Contact Communication Method", doDeleteAll(ctx))
 }
 
 func doRead(ctx context.Context) func(t *testing.T) {
@@ -119,6 +121,16 @@ func doDelete(ctx context.Context) func(t *testing.T) {
 		t.Run("DoDelete unexisting", doDeleteUnexistingContactCommunicationMethod(ctx, data[0]))
 
 		t.Run("DoDelete existing", doDeleteExistingContactCommunicationMethod(ctx, data[0]))
+	}
+}
+
+func doDeleteAll(ctx context.Context) func(t *testing.T) {
+	return func(t *testing.T) {
+		t.Run("DoDeleteAll fail", doDeleteAllFailContactCommunicationMethod(ctx, data[0]))
+
+		t.Run("DoDeleteAll unexisting", doDeleteAllUnexistingContactCommunicationMethod(ctx, data[0]))
+
+		t.Run("DoDeleteAll existing", doDeleteAllExistingContactCommunicationMethod(ctx, data[0]))
 	}
 }
 
@@ -530,6 +542,54 @@ func doDeleteExistingContactCommunicationMethod(ctx context.Context, input *cont
 		err := repo.DoDelete(ctx, input.GetContactSystemCode(), input.GetContactId(), input.GetContactCommunicationMethodId())
 		if err != nil {
 			t.Errorf("Failed to delete contact communication method: %v", err)
+		}
+	}
+}
+
+func doDeleteAllFailContactCommunicationMethod(ctx context.Context, input *contactcommunicationmethod.ContactCommunicationMethod) func(t *testing.T) {
+	return func(t *testing.T) {
+		expQuery := mock.ExpectPrepare("DELETE FROM contact_communication_method").ExpectExec()
+		expQuery.WithArgs(input.GetContactSystemCode(), input.GetContactId()).WillReturnError(fmt.Errorf("Delete all contact communication methods failed"))
+
+		err := repo.DoDeleteAll(ctx, input.GetContactSystemCode(), input.GetContactId())
+		if err != nil {
+			s, ok := status.FromError(err)
+			if ok {
+				if s.Code() != codes.Unknown {
+					t.Fatalf("Expect a Unknown error, but got %s", s.Code())
+				}
+			}
+		} else {
+			t.Errorf("Expect error is not nil")
+		}
+	}
+}
+
+func doDeleteAllUnexistingContactCommunicationMethod(ctx context.Context, input *contactcommunicationmethod.ContactCommunicationMethod) func(t *testing.T) {
+	return func(t *testing.T) {
+		expQuery := mock.ExpectPrepare("DELETE FROM contact_communication_method").ExpectExec()
+		expQuery.WithArgs(input.GetContactSystemCode(), input.GetContactId()).WillReturnResult(sqlmock.NewResult(0, 0))
+
+		err := repo.DoDeleteAll(ctx, input.GetContactSystemCode(), input.GetContactId())
+		if err != nil {
+			s, ok := status.FromError(err)
+			if ok {
+				if s.Code() != codes.NotFound {
+					t.Fatalf("Expect a NotFound error, but got %s", s.Code())
+				}
+			}
+		}
+	}
+}
+
+func doDeleteAllExistingContactCommunicationMethod(ctx context.Context, input *contactcommunicationmethod.ContactCommunicationMethod) func(t *testing.T) {
+	return func(t *testing.T) {
+		expQuery := mock.ExpectPrepare("DELETE FROM contact_communication_method").ExpectExec()
+		expQuery.WithArgs(input.GetContactSystemCode(), input.GetContactId()).WillReturnResult(sqlmock.NewResult(0, 1))
+
+		err := repo.DoDeleteAll(ctx, input.GetContactSystemCode(), input.GetContactId())
+		if err != nil {
+			t.Errorf("Failed to delete all contact communication methods: %v", err)
 		}
 	}
 }
