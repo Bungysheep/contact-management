@@ -20,48 +20,48 @@ message Contact {
     v1.Audit audit = 6;
 }
 
-message DoReadRequest {
+message DoReadContactRequest {
     string contact_system_code = 1;
 
     int64 contact_id = 2;
 }
 
-message DoReadResponse {
+message DoReadContactResponse {
     Contact contact = 1;
 }
 
-message DoReadAllRequest { 
+message DoReadAllContactRequest { 
     string contact_system_code = 1;
 }
 
-message DoReadAllResponse {
+message DoReadAllContactResponse {
     repeated Contact contact = 1;
 }
 
-message DoSaveRequest {
+message DoSaveContactRequest {
     Contact contact = 1;
 }
 
-message DoSaveResponse {
+message DoSaveContactResponse {
     bool result = 1;
 }
 
-message DoDeleteRequest {
+message DoDeleteContactRequest {
     string contact_system_code = 1;
 
     int64 contact_id = 2;
 }
 
-message DoDeleteResponse {
+message DoDeleteContactResponse {
     bool result = 1;
 }
 
 service ContactService { 
-    rpc DoRead (DoReadRequest) returns (DoReadResponse);
+    rpc DoRead (DoReadContactRequest) returns (DoReadContactResponse);
 
-    rpc DoReadAll (DoReadAllRequest) returns (DoReadAllResponse);
+    rpc DoReadAll (DoReadAllContactRequest) returns (DoReadAllContactResponse);
 
-    rpc DoSave (DoSaveRequest) returns (DoSaveResponse);
+    rpc DoSave (DoSaveContactRequest) returns (DoSaveContactResponse);
 
-    rpc DoDelete (DoDeleteRequest) returns (DoDeleteResponse);
+    rpc DoDelete (DoDeleteContactRequest) returns (DoDeleteContactResponse);
 }

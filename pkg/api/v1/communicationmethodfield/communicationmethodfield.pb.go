@@ -104,7 +104,7 @@ func (m *CommunicationMethodField) GetAudit() *audit.Audit {
 	return nil
 }
 
-type DoReadRequest struct {
+type DoReadCommunicationMethodFieldRequest struct {
 	ContactSystemCode       string   `protobuf:"bytes,1,opt,name=contact_system_code,json=contactSystemCode,proto3" json:"contact_system_code,omitempty"`
 	CommunicationMethodCode string   `protobuf:"bytes,2,opt,name=communication_method_code,json=communicationMethodCode,proto3" json:"communication_method_code,omitempty"`
 	FieldCode               string   `protobuf:"bytes,3,opt,name=field_code,json=fieldCode,proto3" json:"field_code,omitempty"`
@@ -113,92 +113,94 @@ type DoReadRequest struct {
 	XXX_sizecache           int32    `json:"-"`
 }
 
-func (m *DoReadRequest) Reset()         { *m = DoReadRequest{} }
-func (m *DoReadRequest) String() string { return proto.CompactTextString(m) }
-func (*DoReadRequest) ProtoMessage()    {}
-func (*DoReadRequest) Descriptor() ([]byte, []int) {
+func (m *DoReadCommunicationMethodFieldRequest) Reset()         { *m = DoReadCommunicationMethodFieldRequest{} }
+func (m *DoReadCommunicationMethodFieldRequest) String() string { return proto.CompactTextString(m) }
+func (*DoReadCommunicationMethodFieldRequest) ProtoMessage()    {}
+func (*DoReadCommunicationMethodFieldRequest) Descriptor() ([]byte, []int) {
 	return fileDescriptor_17ca2fbec7e6e1de, []int{1}
 }
 
-func (m *DoReadRequest) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_DoReadRequest.Unmarshal(m, b)
+func (m *DoReadCommunicationMethodFieldRequest) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_DoReadCommunicationMethodFieldRequest.Unmarshal(m, b)
 }
-func (m *DoReadRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_DoReadRequest.Marshal(b, m, deterministic)
+func (m *DoReadCommunicationMethodFieldRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_DoReadCommunicationMethodFieldRequest.Marshal(b, m, deterministic)
 }
-func (m *DoReadRequest) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_DoReadRequest.Merge(m, src)
+func (m *DoReadCommunicationMethodFieldRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_DoReadCommunicationMethodFieldRequest.Merge(m, src)
 }
-func (m *DoReadRequest) XXX_Size() int {
-	return xxx_messageInfo_DoReadRequest.Size(m)
+func (m *DoReadCommunicationMethodFieldRequest) XXX_Size() int {
+	return xxx_messageInfo_DoReadCommunicationMethodFieldRequest.Size(m)
 }
-func (m *DoReadRequest) XXX_DiscardUnknown() {
-	xxx_messageInfo_DoReadRequest.DiscardUnknown(m)
+func (m *DoReadCommunicationMethodFieldRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_DoReadCommunicationMethodFieldRequest.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_DoReadRequest proto.InternalMessageInfo
+var xxx_messageInfo_DoReadCommunicationMethodFieldRequest proto.InternalMessageInfo
 
-func (m *DoReadRequest) GetContactSystemCode() string {
+func (m *DoReadCommunicationMethodFieldRequest) GetContactSystemCode() string {
 	if m != nil {
 		return m.ContactSystemCode
 	}
 	return ""
 }
 
-func (m *DoReadRequest) GetCommunicationMethodCode() string {
+func (m *DoReadCommunicationMethodFieldRequest) GetCommunicationMethodCode() string {
 	if m != nil {
 		return m.CommunicationMethodCode
 	}
 	return ""
 }
 
-func (m *DoReadRequest) GetFieldCode() string {
+func (m *DoReadCommunicationMethodFieldRequest) GetFieldCode() string {
 	if m != nil {
 		return m.FieldCode
 	}
 	return ""
 }
 
-type DoReadResponse struct {
+type DoReadCommunicationMethodFieldResponse struct {
 	CommunicationMethodField *CommunicationMethodField `protobuf:"bytes,1,opt,name=communication_method_field,json=communicationMethodField,proto3" json:"communication_method_field,omitempty"`
 	XXX_NoUnkeyedLiteral     struct{}                  `json:"-"`
 	XXX_unrecognized         []byte                    `json:"-"`
 	XXX_sizecache            int32                     `json:"-"`
 }
 
-func (m *DoReadResponse) Reset()         { *m = DoReadResponse{} }
-func (m *DoReadResponse) String() string { return proto.CompactTextString(m) }
-func (*DoReadResponse) ProtoMessage()    {}
-func (*DoReadResponse) Descriptor() ([]byte, []int) {
+func (m *DoReadCommunicationMethodFieldResponse) Reset() {
+	*m = DoReadCommunicationMethodFieldResponse{}
+}
+func (m *DoReadCommunicationMethodFieldResponse) String() string { return proto.CompactTextString(m) }
+func (*DoReadCommunicationMethodFieldResponse) ProtoMessage()    {}
+func (*DoReadCommunicationMethodFieldResponse) Descriptor() ([]byte, []int) {
 	return fileDescriptor_17ca2fbec7e6e1de, []int{2}
 }
 
-func (m *DoReadResponse) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_DoReadResponse.Unmarshal(m, b)
+func (m *DoReadCommunicationMethodFieldResponse) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_DoReadCommunicationMethodFieldResponse.Unmarshal(m, b)
 }
-func (m *DoReadResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_DoReadResponse.Marshal(b, m, deterministic)
+func (m *DoReadCommunicationMethodFieldResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_DoReadCommunicationMethodFieldResponse.Marshal(b, m, deterministic)
 }
-func (m *DoReadResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_DoReadResponse.Merge(m, src)
+func (m *DoReadCommunicationMethodFieldResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_DoReadCommunicationMethodFieldResponse.Merge(m, src)
 }
-func (m *DoReadResponse) XXX_Size() int {
-	return xxx_messageInfo_DoReadResponse.Size(m)
+func (m *DoReadCommunicationMethodFieldResponse) XXX_Size() int {
+	return xxx_messageInfo_DoReadCommunicationMethodFieldResponse.Size(m)
 }
-func (m *DoReadResponse) XXX_DiscardUnknown() {
-	xxx_messageInfo_DoReadResponse.DiscardUnknown(m)
+func (m *DoReadCommunicationMethodFieldResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_DoReadCommunicationMethodFieldResponse.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_DoReadResponse proto.InternalMessageInfo
+var xxx_messageInfo_DoReadCommunicationMethodFieldResponse proto.InternalMessageInfo
 
-func (m *DoReadResponse) GetCommunicationMethodField() *CommunicationMethodField {
+func (m *DoReadCommunicationMethodFieldResponse) GetCommunicationMethodField() *CommunicationMethodField {
 	if m != nil {
 		return m.CommunicationMethodField
 	}
 	return nil
 }
 
-type DoReadAllRequest struct {
+type DoReadAllCommunicationMethodFieldRequest struct {
 	ContactSystemCode       string   `protobuf:"bytes,1,opt,name=contact_system_code,json=contactSystemCode,proto3" json:"contact_system_code,omitempty"`
 	CommunicationMethodCode string   `protobuf:"bytes,2,opt,name=communication_method_code,json=communicationMethodCode,proto3" json:"communication_method_code,omitempty"`
 	XXX_NoUnkeyedLiteral    struct{} `json:"-"`
@@ -206,163 +208,169 @@ type DoReadAllRequest struct {
 	XXX_sizecache           int32    `json:"-"`
 }
 
-func (m *DoReadAllRequest) Reset()         { *m = DoReadAllRequest{} }
-func (m *DoReadAllRequest) String() string { return proto.CompactTextString(m) }
-func (*DoReadAllRequest) ProtoMessage()    {}
-func (*DoReadAllRequest) Descriptor() ([]byte, []int) {
+func (m *DoReadAllCommunicationMethodFieldRequest) Reset() {
+	*m = DoReadAllCommunicationMethodFieldRequest{}
+}
+func (m *DoReadAllCommunicationMethodFieldRequest) String() string { return proto.CompactTextString(m) }
+func (*DoReadAllCommunicationMethodFieldRequest) ProtoMessage()    {}
+func (*DoReadAllCommunicationMethodFieldRequest) Descriptor() ([]byte, []int) {
 	return fileDescriptor_17ca2fbec7e6e1de, []int{3}
 }
 
-func (m *DoReadAllRequest) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_DoReadAllRequest.Unmarshal(m, b)
+func (m *DoReadAllCommunicationMethodFieldRequest) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_DoReadAllCommunicationMethodFieldRequest.Unmarshal(m, b)
 }
-func (m *DoReadAllRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_DoReadAllRequest.Marshal(b, m, deterministic)
+func (m *DoReadAllCommunicationMethodFieldRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_DoReadAllCommunicationMethodFieldRequest.Marshal(b, m, deterministic)
 }
-func (m *DoReadAllRequest) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_DoReadAllRequest.Merge(m, src)
+func (m *DoReadAllCommunicationMethodFieldRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_DoReadAllCommunicationMethodFieldRequest.Merge(m, src)
 }
-func (m *DoReadAllRequest) XXX_Size() int {
-	return xxx_messageInfo_DoReadAllRequest.Size(m)
+func (m *DoReadAllCommunicationMethodFieldRequest) XXX_Size() int {
+	return xxx_messageInfo_DoReadAllCommunicationMethodFieldRequest.Size(m)
 }
-func (m *DoReadAllRequest) XXX_DiscardUnknown() {
-	xxx_messageInfo_DoReadAllRequest.DiscardUnknown(m)
+func (m *DoReadAllCommunicationMethodFieldRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_DoReadAllCommunicationMethodFieldRequest.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_DoReadAllRequest proto.InternalMessageInfo
+var xxx_messageInfo_DoReadAllCommunicationMethodFieldRequest proto.InternalMessageInfo
 
-func (m *DoReadAllRequest) GetContactSystemCode() string {
+func (m *DoReadAllCommunicationMethodFieldRequest) GetContactSystemCode() string {
 	if m != nil {
 		return m.ContactSystemCode
 	}
 	return ""
 }
 
-func (m *DoReadAllRequest) GetCommunicationMethodCode() string {
+func (m *DoReadAllCommunicationMethodFieldRequest) GetCommunicationMethodCode() string {
 	if m != nil {
 		return m.CommunicationMethodCode
 	}
 	return ""
 }
 
-type DoReadAllResponse struct {
+type DoReadAllCommunicationMethodFieldResponse struct {
 	CommunicationMethodField []*CommunicationMethodField `protobuf:"bytes,1,rep,name=communication_method_field,json=communicationMethodField,proto3" json:"communication_method_field,omitempty"`
 	XXX_NoUnkeyedLiteral     struct{}                    `json:"-"`
 	XXX_unrecognized         []byte                      `json:"-"`
 	XXX_sizecache            int32                       `json:"-"`
 }
 
-func (m *DoReadAllResponse) Reset()         { *m = DoReadAllResponse{} }
-func (m *DoReadAllResponse) String() string { return proto.CompactTextString(m) }
-func (*DoReadAllResponse) ProtoMessage()    {}
-func (*DoReadAllResponse) Descriptor() ([]byte, []int) {
+func (m *DoReadAllCommunicationMethodFieldResponse) Reset() {
+	*m = DoReadAllCommunicationMethodFieldResponse{}
+}
+func (m *DoReadAllCommunicationMethodFieldResponse) String() string { return proto.CompactTextString(m) }
+func (*DoReadAllCommunicationMethodFieldResponse) ProtoMessage()    {}
+func (*DoReadAllCommunicationMethodFieldResponse) Descriptor() ([]byte, []int) {
 	return fileDescriptor_17ca2fbec7e6e1de, []int{4}
 }
 
-func (m *DoReadAllResponse) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_DoReadAllResponse.Unmarshal(m, b)
+func (m *DoReadAllCommunicationMethodFieldResponse) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_DoReadAllCommunicationMethodFieldResponse.Unmarshal(m, b)
 }
-func (m *DoReadAllResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_DoReadAllResponse.Marshal(b, m, deterministic)
+func (m *DoReadAllCommunicationMethodFieldResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_DoReadAllCommunicationMethodFieldResponse.Marshal(b, m, deterministic)
 }
-func (m *DoReadAllResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_DoReadAllResponse.Merge(m, src)
+func (m *DoReadAllCommunicationMethodFieldResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_DoReadAllCommunicationMethodFieldResponse.Merge(m, src)
 }
-func (m *DoReadAllResponse) XXX_Size() int {
-	return xxx_messageInfo_DoReadAllResponse.Size(m)
+func (m *DoReadAllCommunicationMethodFieldResponse) XXX_Size() int {
+	return xxx_messageInfo_DoReadAllCommunicationMethodFieldResponse.Size(m)
 }
-func (m *DoReadAllResponse) XXX_DiscardUnknown() {
-	xxx_messageInfo_DoReadAllResponse.DiscardUnknown(m)
+func (m *DoReadAllCommunicationMethodFieldResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_DoReadAllCommunicationMethodFieldResponse.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_DoReadAllResponse proto.InternalMessageInfo
+var xxx_messageInfo_DoReadAllCommunicationMethodFieldResponse proto.InternalMessageInfo
 
-func (m *DoReadAllResponse) GetCommunicationMethodField() []*CommunicationMethodField {
+func (m *DoReadAllCommunicationMethodFieldResponse) GetCommunicationMethodField() []*CommunicationMethodField {
 	if m != nil {
 		return m.CommunicationMethodField
 	}
 	return nil
 }
 
-type DoSaveRequest struct {
+type DoSaveCommunicationMethodFieldRequest struct {
 	CommunicationMethodField *CommunicationMethodField `protobuf:"bytes,1,opt,name=communication_method_field,json=communicationMethodField,proto3" json:"communication_method_field,omitempty"`
 	XXX_NoUnkeyedLiteral     struct{}                  `json:"-"`
 	XXX_unrecognized         []byte                    `json:"-"`
 	XXX_sizecache            int32                     `json:"-"`
 }
 
-func (m *DoSaveRequest) Reset()         { *m = DoSaveRequest{} }
-func (m *DoSaveRequest) String() string { return proto.CompactTextString(m) }
-func (*DoSaveRequest) ProtoMessage()    {}
-func (*DoSaveRequest) Descriptor() ([]byte, []int) {
+func (m *DoSaveCommunicationMethodFieldRequest) Reset()         { *m = DoSaveCommunicationMethodFieldRequest{} }
+func (m *DoSaveCommunicationMethodFieldRequest) String() string { return proto.CompactTextString(m) }
+func (*DoSaveCommunicationMethodFieldRequest) ProtoMessage()    {}
+func (*DoSaveCommunicationMethodFieldRequest) Descriptor() ([]byte, []int) {
 	return fileDescriptor_17ca2fbec7e6e1de, []int{5}
 }
 
-func (m *DoSaveRequest) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_DoSaveRequest.Unmarshal(m, b)
+func (m *DoSaveCommunicationMethodFieldRequest) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_DoSaveCommunicationMethodFieldRequest.Unmarshal(m, b)
 }
-func (m *DoSaveRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_DoSaveRequest.Marshal(b, m, deterministic)
+func (m *DoSaveCommunicationMethodFieldRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_DoSaveCommunicationMethodFieldRequest.Marshal(b, m, deterministic)
 }
-func (m *DoSaveRequest) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_DoSaveRequest.Merge(m, src)
+func (m *DoSaveCommunicationMethodFieldRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_DoSaveCommunicationMethodFieldRequest.Merge(m, src)
 }
-func (m *DoSaveRequest) XXX_Size() int {
-	return xxx_messageInfo_DoSaveRequest.Size(m)
+func (m *DoSaveCommunicationMethodFieldRequest) XXX_Size() int {
+	return xxx_messageInfo_DoSaveCommunicationMethodFieldRequest.Size(m)
 }
-func (m *DoSaveRequest) XXX_DiscardUnknown() {
-	xxx_messageInfo_DoSaveRequest.DiscardUnknown(m)
+func (m *DoSaveCommunicationMethodFieldRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_DoSaveCommunicationMethodFieldRequest.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_DoSaveRequest proto.InternalMessageInfo
+var xxx_messageInfo_DoSaveCommunicationMethodFieldRequest proto.InternalMessageInfo
 
-func (m *DoSaveRequest) GetCommunicationMethodField() *CommunicationMethodField {
+func (m *DoSaveCommunicationMethodFieldRequest) GetCommunicationMethodField() *CommunicationMethodField {
 	if m != nil {
 		return m.CommunicationMethodField
 	}
 	return nil
 }
 
-type DoSaveResponse struct {
+type DoSaveCommunicationMethodFieldResponse struct {
 	Result               bool     `protobuf:"varint,1,opt,name=result,proto3" json:"result,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
 }
 
-func (m *DoSaveResponse) Reset()         { *m = DoSaveResponse{} }
-func (m *DoSaveResponse) String() string { return proto.CompactTextString(m) }
-func (*DoSaveResponse) ProtoMessage()    {}
-func (*DoSaveResponse) Descriptor() ([]byte, []int) {
+func (m *DoSaveCommunicationMethodFieldResponse) Reset() {
+	*m = DoSaveCommunicationMethodFieldResponse{}
+}
+func (m *DoSaveCommunicationMethodFieldResponse) String() string { return proto.CompactTextString(m) }
+func (*DoSaveCommunicationMethodFieldResponse) ProtoMessage()    {}
+func (*DoSaveCommunicationMethodFieldResponse) Descriptor() ([]byte, []int) {
 	return fileDescriptor_17ca2fbec7e6e1de, []int{6}
 }
 
-func (m *DoSaveResponse) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_DoSaveResponse.Unmarshal(m, b)
+func (m *DoSaveCommunicationMethodFieldResponse) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_DoSaveCommunicationMethodFieldResponse.Unmarshal(m, b)
 }
-func (m *DoSaveResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_DoSaveResponse.Marshal(b, m, deterministic)
+func (m *DoSaveCommunicationMethodFieldResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_DoSaveCommunicationMethodFieldResponse.Marshal(b, m, deterministic)
 }
-func (m *DoSaveResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_DoSaveResponse.Merge(m, src)
+func (m *DoSaveCommunicationMethodFieldResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_DoSaveCommunicationMethodFieldResponse.Merge(m, src)
 }
-func (m *DoSaveResponse) XXX_Size() int {
-	return xxx_messageInfo_DoSaveResponse.Size(m)
+func (m *DoSaveCommunicationMethodFieldResponse) XXX_Size() int {
+	return xxx_messageInfo_DoSaveCommunicationMethodFieldResponse.Size(m)
 }
-func (m *DoSaveResponse) XXX_DiscardUnknown() {
-	xxx_messageInfo_DoSaveResponse.DiscardUnknown(m)
+func (m *DoSaveCommunicationMethodFieldResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_DoSaveCommunicationMethodFieldResponse.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_DoSaveResponse proto.InternalMessageInfo
+var xxx_messageInfo_DoSaveCommunicationMethodFieldResponse proto.InternalMessageInfo
 
-func (m *DoSaveResponse) GetResult() bool {
+func (m *DoSaveCommunicationMethodFieldResponse) GetResult() bool {
 	if m != nil {
 		return m.Result
 	}
 	return false
 }
 
-type DoDeleteRequest struct {
+type DoDeleteCommunicationMethodFieldRequest struct {
 	ContactSystemCode       string   `protobuf:"bytes,1,opt,name=contact_system_code,json=contactSystemCode,proto3" json:"contact_system_code,omitempty"`
 	CommunicationMethodCode string   `protobuf:"bytes,2,opt,name=communication_method_code,json=communicationMethodCode,proto3" json:"communication_method_code,omitempty"`
 	FieldCode               string   `protobuf:"bytes,3,opt,name=field_code,json=fieldCode,proto3" json:"field_code,omitempty"`
@@ -371,85 +379,89 @@ type DoDeleteRequest struct {
 	XXX_sizecache           int32    `json:"-"`
 }
 
-func (m *DoDeleteRequest) Reset()         { *m = DoDeleteRequest{} }
-func (m *DoDeleteRequest) String() string { return proto.CompactTextString(m) }
-func (*DoDeleteRequest) ProtoMessage()    {}
-func (*DoDeleteRequest) Descriptor() ([]byte, []int) {
+func (m *DoDeleteCommunicationMethodFieldRequest) Reset() {
+	*m = DoDeleteCommunicationMethodFieldRequest{}
+}
+func (m *DoDeleteCommunicationMethodFieldRequest) String() string { return proto.CompactTextString(m) }
+func (*DoDeleteCommunicationMethodFieldRequest) ProtoMessage()    {}
+func (*DoDeleteCommunicationMethodFieldRequest) Descriptor() ([]byte, []int) {
 	return fileDescriptor_17ca2fbec7e6e1de, []int{7}
 }
 
-func (m *DoDeleteRequest) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_DoDeleteRequest.Unmarshal(m, b)
+func (m *DoDeleteCommunicationMethodFieldRequest) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_DoDeleteCommunicationMethodFieldRequest.Unmarshal(m, b)
 }
-func (m *DoDeleteRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_DoDeleteRequest.Marshal(b, m, deterministic)
+func (m *DoDeleteCommunicationMethodFieldRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_DoDeleteCommunicationMethodFieldRequest.Marshal(b, m, deterministic)
 }
-func (m *DoDeleteRequest) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_DoDeleteRequest.Merge(m, src)
+func (m *DoDeleteCommunicationMethodFieldRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_DoDeleteCommunicationMethodFieldRequest.Merge(m, src)
 }
-func (m *DoDeleteRequest) XXX_Size() int {
-	return xxx_messageInfo_DoDeleteRequest.Size(m)
+func (m *DoDeleteCommunicationMethodFieldRequest) XXX_Size() int {
+	return xxx_messageInfo_DoDeleteCommunicationMethodFieldRequest.Size(m)
 }
-func (m *DoDeleteRequest) XXX_DiscardUnknown() {
-	xxx_messageInfo_DoDeleteRequest.DiscardUnknown(m)
+func (m *DoDeleteCommunicationMethodFieldRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_DoDeleteCommunicationMethodFieldRequest.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_DoDeleteRequest proto.InternalMessageInfo
+var xxx_messageInfo_DoDeleteCommunicationMethodFieldRequest proto.InternalMessageInfo
 
-func (m *DoDeleteRequest) GetContactSystemCode() string {
+func (m *DoDeleteCommunicationMethodFieldRequest) GetContactSystemCode() string {
 	if m != nil {
 		return m.ContactSystemCode
 	}
 	return ""
 }
 
-func (m *DoDeleteRequest) GetCommunicationMethodCode() string {
+func (m *DoDeleteCommunicationMethodFieldRequest) GetCommunicationMethodCode() string {
 	if m != nil {
 		return m.CommunicationMethodCode
 	}
 	return ""
 }
 
-func (m *DoDeleteRequest) GetFieldCode() string {
+func (m *DoDeleteCommunicationMethodFieldRequest) GetFieldCode() string {
 	if m != nil {
 		return m.FieldCode
 	}
 	return ""
 }
 
-type DoDeleteResponse struct {
+type DoDeleteCommunicationMethodFieldResponse struct {
 	Result               bool     `protobuf:"varint,1,opt,name=result,proto3" json:"result,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
 }
 
-func (m *DoDeleteResponse) Reset()         { *m = DoDeleteResponse{} }
-func (m *DoDeleteResponse) String() string { return proto.CompactTextString(m) }
-func (*DoDeleteResponse) ProtoMessage()    {}
-func (*DoDeleteResponse) Descriptor() ([]byte, []int) {
+func (m *DoDeleteCommunicationMethodFieldResponse) Reset() {
+	*m = DoDeleteCommunicationMethodFieldResponse{}
+}
+func (m *DoDeleteCommunicationMethodFieldResponse) String() string { return proto.CompactTextString(m) }
+func (*DoDeleteCommunicationMethodFieldResponse) ProtoMessage()    {}
+func (*DoDeleteCommunicationMethodFieldResponse) Descriptor() ([]byte, []int) {
 	return fileDescriptor_17ca2fbec7e6e1de, []int{8}
 }
 
-func (m *DoDeleteResponse) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_DoDeleteResponse.Unmarshal(m, b)
+func (m *DoDeleteCommunicationMethodFieldResponse) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_DoDeleteCommunicationMethodFieldResponse.Unmarshal(m, b)
 }
-func (m *DoDeleteResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_DoDeleteResponse.Marshal(b, m, deterministic)
+func (m *DoDeleteCommunicationMethodFieldResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_DoDeleteCommunicationMethodFieldResponse.Marshal(b, m, deterministic)
 }
-func (m *DoDeleteResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_DoDeleteResponse.Merge(m, src)
+func (m *DoDeleteCommunicationMethodFieldResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_DoDeleteCommunicationMethodFieldResponse.Merge(m, src)
 }
-func (m *DoDeleteResponse) XXX_Size() int {
-	return xxx_messageInfo_DoDeleteResponse.Size(m)
+func (m *DoDeleteCommunicationMethodFieldResponse) XXX_Size() int {
+	return xxx_messageInfo_DoDeleteCommunicationMethodFieldResponse.Size(m)
 }
-func (m *DoDeleteResponse) XXX_DiscardUnknown() {
-	xxx_messageInfo_DoDeleteResponse.DiscardUnknown(m)
+func (m *DoDeleteCommunicationMethodFieldResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_DoDeleteCommunicationMethodFieldResponse.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_DoDeleteResponse proto.InternalMessageInfo
+var xxx_messageInfo_DoDeleteCommunicationMethodFieldResponse proto.InternalMessageInfo
 
-func (m *DoDeleteResponse) GetResult() bool {
+func (m *DoDeleteCommunicationMethodFieldResponse) GetResult() bool {
 	if m != nil {
 		return m.Result
 	}
@@ -458,50 +470,51 @@ func (m *DoDeleteResponse) GetResult() bool {
 
 func init() {
 	proto.RegisterType((*CommunicationMethodField)(nil), "v1.CommunicationMethodField")
-	proto.RegisterType((*DoReadRequest)(nil), "v1.DoReadRequest")
-	proto.RegisterType((*DoReadResponse)(nil), "v1.DoReadResponse")
-	proto.RegisterType((*DoReadAllRequest)(nil), "v1.DoReadAllRequest")
-	proto.RegisterType((*DoReadAllResponse)(nil), "v1.DoReadAllResponse")
-	proto.RegisterType((*DoSaveRequest)(nil), "v1.DoSaveRequest")
-	proto.RegisterType((*DoSaveResponse)(nil), "v1.DoSaveResponse")
-	proto.RegisterType((*DoDeleteRequest)(nil), "v1.DoDeleteRequest")
-	proto.RegisterType((*DoDeleteResponse)(nil), "v1.DoDeleteResponse")
+	proto.RegisterType((*DoReadCommunicationMethodFieldRequest)(nil), "v1.DoReadCommunicationMethodFieldRequest")
+	proto.RegisterType((*DoReadCommunicationMethodFieldResponse)(nil), "v1.DoReadCommunicationMethodFieldResponse")
+	proto.RegisterType((*DoReadAllCommunicationMethodFieldRequest)(nil), "v1.DoReadAllCommunicationMethodFieldRequest")
+	proto.RegisterType((*DoReadAllCommunicationMethodFieldResponse)(nil), "v1.DoReadAllCommunicationMethodFieldResponse")
+	proto.RegisterType((*DoSaveCommunicationMethodFieldRequest)(nil), "v1.DoSaveCommunicationMethodFieldRequest")
+	proto.RegisterType((*DoSaveCommunicationMethodFieldResponse)(nil), "v1.DoSaveCommunicationMethodFieldResponse")
+	proto.RegisterType((*DoDeleteCommunicationMethodFieldRequest)(nil), "v1.DoDeleteCommunicationMethodFieldRequest")
+	proto.RegisterType((*DoDeleteCommunicationMethodFieldResponse)(nil), "v1.DoDeleteCommunicationMethodFieldResponse")
 }
 
 func init() { proto.RegisterFile("communicationmethodfield.proto", fileDescriptor_17ca2fbec7e6e1de) }
 
 var fileDescriptor_17ca2fbec7e6e1de = []byte{
-	// 473 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xcc, 0x54, 0x4d, 0x8f, 0xd3, 0x30,
-	0x10, 0x95, 0xb7, 0x6c, 0x69, 0xa7, 0xe2, 0xa3, 0xde, 0x05, 0x42, 0x04, 0x6c, 0x95, 0x53, 0x85,
-	0x44, 0xa2, 0x16, 0x21, 0x21, 0x6e, 0xcb, 0x56, 0x9c, 0x80, 0x43, 0x7a, 0xdb, 0x4b, 0xe5, 0x3a,
-	0x43, 0x1b, 0x6d, 0x62, 0x87, 0xda, 0x89, 0xb4, 0x17, 0x7e, 0x08, 0xe2, 0x67, 0x72, 0xe4, 0x80,
-	0x6c, 0x27, 0xbb, 0x0d, 0x50, 0x84, 0x84, 0x10, 0x3d, 0xfa, 0x8d, 0x5f, 0xde, 0xbc, 0x79, 0x13,
-	0xc3, 0x13, 0x2e, 0xf3, 0xbc, 0x14, 0x29, 0x67, 0x3a, 0x95, 0x22, 0x47, 0xbd, 0x96, 0xc9, 0x87,
-	0x14, 0xb3, 0x24, 0x2c, 0x36, 0x52, 0x4b, 0x7a, 0x50, 0x4d, 0xfc, 0x01, 0x2b, 0x93, 0x54, 0x3b,
-	0x20, 0xf8, 0x46, 0xc0, 0x3b, 0xdb, 0xe6, 0xbc, 0xb3, 0x9c, 0x37, 0x86, 0x43, 0x43, 0x38, 0xe2,
-	0x52, 0x68, 0xc6, 0xf5, 0x42, 0x5d, 0x2a, 0x8d, 0xf9, 0x82, 0xcb, 0x04, 0x3d, 0x32, 0x22, 0xe3,
-	0x7e, 0x3c, 0xac, 0x4b, 0x73, 0x5b, 0x39, 0x93, 0x09, 0xd2, 0x57, 0xf0, 0xb0, 0xa5, 0xbf, 0x70,
-	0x0d, 0x38, 0xd6, 0x81, 0x65, 0x3d, 0xe0, 0x3f, 0x8b, 0x59, 0xee, 0x63, 0x00, 0xdb, 0xa8, 0xbb,
-	0xdc, 0xb1, 0x97, 0xfb, 0x16, 0xb1, 0x65, 0x0f, 0x6e, 0x72, 0x56, 0x18, 0x8e, 0x77, 0xc3, 0xd6,
-	0x9a, 0x23, 0xf5, 0xa1, 0xa7, 0xf0, 0x63, 0x89, 0x82, 0xa3, 0x77, 0x38, 0x22, 0xe3, 0x4e, 0x7c,
-	0x75, 0xa6, 0x27, 0x70, 0x68, 0xcd, 0x7a, 0xdd, 0x11, 0x19, 0x0f, 0xa6, 0xfd, 0xb0, 0x9a, 0x84,
-	0xa7, 0x06, 0x88, 0x1d, 0x1e, 0x7c, 0x26, 0x70, 0x6b, 0x26, 0x63, 0x64, 0x49, 0x6c, 0x38, 0x4a,
-	0xef, 0x91, 0xe7, 0x20, 0x83, 0xdb, 0x4d, 0x6f, 0xaa, 0x90, 0x42, 0x21, 0x3d, 0x07, 0xff, 0x97,
-	0x62, 0x96, 0x63, 0x7b, 0x1c, 0x4c, 0x1f, 0x19, 0x93, 0xbb, 0x22, 0x8d, 0x3d, 0xbe, 0xa3, 0x12,
-	0x7c, 0x82, 0xbb, 0x4e, 0xed, 0x34, 0xcb, 0xfe, 0xc3, 0x30, 0x02, 0x09, 0xc3, 0x2d, 0xfd, 0x3f,
-	0x34, 0xdc, 0xf9, 0x0b, 0xc3, 0x17, 0x26, 0xfa, 0x39, 0xab, 0xb0, 0x71, 0xfb, 0x2f, 0xa7, 0x3b,
-	0x36, 0x59, 0x3a, 0xb1, 0xda, 0xda, 0x7d, 0xe8, 0x6e, 0x50, 0x95, 0x99, 0xb6, 0x5f, 0xee, 0xc5,
-	0xf5, 0x29, 0xf8, 0x42, 0xe0, 0xce, 0x4c, 0xce, 0x30, 0x43, 0x8d, 0x7b, 0xb8, 0x94, 0x4f, 0xcd,
-	0x9a, 0x34, 0xdd, 0xfd, 0xde, 0xca, 0xf4, 0x2b, 0x81, 0x93, 0x5d, 0xb3, 0x9a, 0xe3, 0xa6, 0x4a,
-	0x39, 0xd2, 0x08, 0xba, 0x2e, 0x76, 0x3a, 0x34, 0xa3, 0x6d, 0xfd, 0x8c, 0x3e, 0xdd, 0x86, 0x6a,
-	0xb1, 0x97, 0xd0, 0xbf, 0xda, 0x13, 0x7a, 0x7c, 0x7d, 0xe1, 0x7a, 0x6d, 0xfd, 0x7b, 0x3f, 0xa0,
-	0x35, 0xd3, 0x4a, 0x99, 0x0c, 0x1a, 0xa9, 0xad, 0xf0, 0x1b, 0xa9, 0x56, 0x44, 0x2f, 0xa0, 0xd7,
-	0x78, 0xa5, 0x47, 0xae, 0xde, 0xca, 0xc5, 0x3f, 0x6e, 0x83, 0x8e, 0xf6, 0xfa, 0xfd, 0xf9, 0xdb,
-	0x55, 0xaa, 0xd7, 0xe5, 0x32, 0xe4, 0x32, 0x8f, 0x96, 0xa5, 0x58, 0x5d, 0xaa, 0x35, 0x62, 0x11,
-	0xd5, 0x41, 0x3d, 0xcb, 0x99, 0x60, 0x2b, 0xcc, 0x51, 0xe8, 0xa8, 0xb8, 0x58, 0x45, 0xac, 0x48,
-	0xa3, 0x6a, 0x12, 0xed, 0x7a, 0xba, 0x97, 0x5d, 0xfb, 0x54, 0x3f, 0xff, 0x1e, 0x00, 0x00, 0xff,
-	0xff, 0x5c, 0x64, 0x39, 0xb6, 0xdd, 0x05, 0x00, 0x00,
+	// 488 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xd4, 0x55, 0xc1, 0x6e, 0xd3, 0x40,
+	0x10, 0xd5, 0x36, 0x34, 0x24, 0x93, 0x13, 0x8b, 0x04, 0xc6, 0x02, 0x1a, 0x59, 0x02, 0x52, 0x68,
+	0x6d, 0x25, 0xdc, 0x38, 0xd1, 0x36, 0xe2, 0x04, 0x1c, 0x9c, 0x5b, 0x2f, 0xd1, 0x66, 0x3d, 0x24,
+	0x16, 0xb6, 0xd7, 0x64, 0xd7, 0x96, 0x7a, 0x06, 0x89, 0x3f, 0xe0, 0x43, 0x50, 0x3f, 0x8f, 0x03,
+	0xda, 0x5d, 0xa7, 0x80, 0xc0, 0xcd, 0x4a, 0x08, 0x29, 0x1c, 0x77, 0x66, 0xde, 0xce, 0x9b, 0x37,
+	0xcf, 0x5e, 0x78, 0xc8, 0x45, 0x9e, 0x57, 0x45, 0xca, 0x99, 0x4a, 0x45, 0x91, 0xa3, 0x5a, 0x89,
+	0xe4, 0x5d, 0x8a, 0x59, 0x12, 0x96, 0x6b, 0xa1, 0x04, 0xdd, 0xab, 0xc7, 0xfe, 0x80, 0x55, 0x49,
+	0xaa, 0x6c, 0x20, 0xf8, 0x46, 0xc0, 0x3b, 0xfb, 0x19, 0xf3, 0xc6, 0x60, 0x5e, 0x69, 0x0c, 0x0d,
+	0xe1, 0x36, 0x17, 0x85, 0x62, 0x5c, 0xcd, 0xe5, 0x85, 0x54, 0x98, 0xcf, 0xb9, 0x48, 0xd0, 0x23,
+	0x43, 0x32, 0xea, 0xc7, 0xb7, 0x9a, 0xd4, 0xcc, 0x64, 0xce, 0x44, 0x82, 0xf4, 0x05, 0xdc, 0xfb,
+	0xa5, 0xff, 0xdc, 0x12, 0xb0, 0xa8, 0x3d, 0x83, 0xba, 0xcb, 0x7f, 0x6f, 0x66, 0xb0, 0x0f, 0x00,
+	0x0c, 0x51, 0x5b, 0xdc, 0x31, 0xc5, 0x7d, 0x13, 0x31, 0x69, 0x0f, 0x6e, 0x72, 0x56, 0x6a, 0x8c,
+	0x77, 0xc3, 0xe4, 0x36, 0x47, 0xea, 0x43, 0x4f, 0xe2, 0x87, 0x0a, 0x0b, 0x8e, 0xde, 0xfe, 0x90,
+	0x8c, 0x3a, 0xf1, 0xd5, 0x99, 0x1e, 0xc0, 0xbe, 0x19, 0xd6, 0xeb, 0x0e, 0xc9, 0x68, 0x30, 0xe9,
+	0x87, 0xf5, 0x38, 0x3c, 0xd1, 0x81, 0xd8, 0xc6, 0x83, 0xaf, 0x04, 0x1e, 0x4d, 0x45, 0x8c, 0x2c,
+	0x69, 0x13, 0x21, 0xd6, 0x77, 0x49, 0xb5, 0x43, 0x5a, 0x04, 0x9f, 0x08, 0x3c, 0xde, 0x46, 0x5a,
+	0x96, 0xa2, 0x90, 0x48, 0xcf, 0xc1, 0xff, 0x23, 0x0b, 0x73, 0x99, 0x21, 0x3f, 0x98, 0xdc, 0xd7,
+	0xaa, 0xb4, 0xde, 0xe4, 0xf1, 0x96, 0x4c, 0xf0, 0x85, 0xc0, 0xc8, 0xd2, 0x38, 0xc9, 0xb2, 0x1d,
+	0x92, 0x2f, 0xf8, 0x4c, 0xe0, 0xd0, 0x81, 0x98, 0xa3, 0x44, 0x9d, 0xbf, 0x90, 0xe8, 0xa3, 0xb1,
+	0xd7, 0x8c, 0xd5, 0xb8, 0x4d, 0x9f, 0x7f, 0xb9, 0xa8, 0x97, 0xda, 0x2e, 0xd7, 0x93, 0x68, 0xb4,
+	0xb8, 0x03, 0xdd, 0x35, 0xca, 0x2a, 0x53, 0xa6, 0x63, 0x2f, 0x6e, 0x4e, 0xc1, 0x25, 0x81, 0x27,
+	0x53, 0x31, 0xc5, 0x0c, 0x15, 0xfe, 0x47, 0x1f, 0xca, 0xa9, 0x36, 0xe8, 0x36, 0xd6, 0xd7, 0x8f,
+	0x3e, 0xb9, 0xec, 0xc0, 0x41, 0x1b, 0x78, 0x86, 0xeb, 0x3a, 0xe5, 0x48, 0xe7, 0xd0, 0xb5, 0x7e,
+	0xa3, 0x87, 0x7a, 0x45, 0x4e, 0x3f, 0x14, 0xff, 0xa9, 0x4b, 0x69, 0x43, 0x6e, 0x05, 0xfd, 0x2b,
+	0x43, 0xd3, 0xa3, 0x1f, 0xc0, 0xed, 0x1f, 0x9e, 0x7f, 0xec, 0x58, 0xdd, 0x74, 0x32, 0xa3, 0x68,
+	0xaf, 0x6c, 0x46, 0x71, 0x30, 0xef, 0x66, 0x14, 0x27, 0x8b, 0x21, 0xf4, 0x36, 0x3b, 0xa1, 0xcf,
+	0x2c, 0xce, 0xc9, 0x57, 0xfe, 0x91, 0x5b, 0xb1, 0x6d, 0x73, 0xfa, 0xf6, 0xfc, 0xf5, 0x32, 0x55,
+	0xab, 0x6a, 0x11, 0x72, 0x91, 0x47, 0x8b, 0xaa, 0x58, 0x5e, 0xc8, 0x15, 0x62, 0x19, 0x35, 0x06,
+	0x3c, 0xce, 0x59, 0xc1, 0x96, 0x98, 0x63, 0xa1, 0xa2, 0xf2, 0xfd, 0x32, 0x62, 0x65, 0x1a, 0xd5,
+	0xe3, 0xa8, 0xed, 0xf9, 0x5c, 0x74, 0xcd, 0x73, 0xf9, 0xfc, 0x7b, 0x00, 0x00, 0x00, 0xff, 0xff,
+	0x0c, 0x19, 0x2e, 0xd9, 0x61, 0x07, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -516,10 +529,10 @@ const _ = grpc.SupportPackageIsVersion4
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
 type CommunicationMethodFieldServiceClient interface {
-	DoRead(ctx context.Context, in *DoReadRequest, opts ...grpc.CallOption) (*DoReadResponse, error)
-	DoReadAll(ctx context.Context, in *DoReadAllRequest, opts ...grpc.CallOption) (*DoReadAllResponse, error)
-	DoSave(ctx context.Context, in *DoSaveRequest, opts ...grpc.CallOption) (*DoSaveResponse, error)
-	DoDelete(ctx context.Context, in *DoDeleteRequest, opts ...grpc.CallOption) (*DoDeleteResponse, error)
+	DoRead(ctx context.Context, in *DoReadCommunicationMethodFieldRequest, opts ...grpc.CallOption) (*DoReadCommunicationMethodFieldResponse, error)
+	DoReadAll(ctx context.Context, in *DoReadAllCommunicationMethodFieldRequest, opts ...grpc.CallOption) (*DoReadAllCommunicationMethodFieldResponse, error)
+	DoSave(ctx context.Context, in *DoSaveCommunicationMethodFieldRequest, opts ...grpc.CallOption) (*DoSaveCommunicationMethodFieldResponse, error)
+	DoDelete(ctx context.Context, in *DoDeleteCommunicationMethodFieldRequest, opts ...grpc.CallOption) (*DoDeleteCommunicationMethodFieldResponse, error)
 }
 
 type communicationMethodFieldServiceClient struct {
@@ -530,8 +543,8 @@ func NewCommunicationMethodFieldServiceClient(cc *grpc.ClientConn) Communication
 	return &communicationMethodFieldServiceClient{cc}
 }
 
-func (c *communicationMethodFieldServiceClient) DoRead(ctx context.Context, in *DoReadRequest, opts ...grpc.CallOption) (*DoReadResponse, error) {
-	out := new(DoReadResponse)
+func (c *communicationMethodFieldServiceClient) DoRead(ctx context.Context, in *DoReadCommunicationMethodFieldRequest, opts ...grpc.CallOption) (*DoReadCommunicationMethodFieldResponse, error) {
+	out := new(DoReadCommunicationMethodFieldResponse)
 	err := c.cc.Invoke(ctx, "/v1.CommunicationMethodFieldService/DoRead", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -539,8 +552,8 @@ func (c *communicationMethodFieldServiceClient) DoRead(ctx context.Context, in *
 	return out, nil
 }
 
-func (c *communicationMethodFieldServiceClient) DoReadAll(ctx context.Context, in *DoReadAllRequest, opts ...grpc.CallOption) (*DoReadAllResponse, error) {
-	out := new(DoReadAllResponse)
+func (c *communicationMethodFieldServiceClient) DoReadAll(ctx context.Context, in *DoReadAllCommunicationMethodFieldRequest, opts ...grpc.CallOption) (*DoReadAllCommunicationMethodFieldResponse, error) {
+	out := new(DoReadAllCommunicationMethodFieldResponse)
 	err := c.cc.Invoke(ctx, "/v1.CommunicationMethodFieldService/DoReadAll", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -548,8 +561,8 @@ func (c *communicationMethodFieldServiceClient) DoReadAll(ctx context.Context, i
 	return out, nil
 }
 
-func (c *communicationMethodFieldServiceClient) DoSave(ctx context.Context, in *DoSaveRequest, opts ...grpc.CallOption) (*DoSaveResponse, error) {
-	out := new(DoSaveResponse)
+func (c *communicationMethodFieldServiceClient) DoSave(ctx context.Context, in *DoSaveCommunicationMethodFieldRequest, opts ...grpc.CallOption) (*DoSaveCommunicationMethodFieldResponse, error) {
+	out := new(DoSaveCommunicationMethodFieldResponse)
 	err := c.cc.Invoke(ctx, "/v1.CommunicationMethodFieldService/DoSave", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -557,8 +570,8 @@ func (c *communicationMethodFieldServiceClient) DoSave(ctx context.Context, in *
 	return out, nil
 }
 
-func (c *communicationMethodFieldServiceClient) DoDelete(ctx context.Context, in *DoDeleteRequest, opts ...grpc.CallOption) (*DoDeleteResponse, error) {
-	out := new(DoDeleteResponse)
+func (c *communicationMethodFieldServiceClient) DoDelete(ctx context.Context, in *DoDeleteCommunicationMethodFieldRequest, opts ...grpc.CallOption) (*DoDeleteCommunicationMethodFieldResponse, error) {
+	out := new(DoDeleteCommunicationMethodFieldResponse)
 	err := c.cc.Invoke(ctx, "/v1.CommunicationMethodFieldService/DoDelete", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -568,26 +581,26 @@ func (c *communicationMethodFieldServiceClient) DoDelete(ctx context.Context, in
 
 // CommunicationMethodFieldServiceServer is the server API for CommunicationMethodFieldService service.
 type CommunicationMethodFieldServiceServer interface {
-	DoRead(context.Context, *DoReadRequest) (*DoReadResponse, error)
-	DoReadAll(context.Context, *DoReadAllRequest) (*DoReadAllResponse, error)
-	DoSave(context.Context, *DoSaveRequest) (*DoSaveResponse, error)
-	DoDelete(context.Context, *DoDeleteRequest) (*DoDeleteResponse, error)
+	DoRead(context.Context, *DoReadCommunicationMethodFieldRequest) (*DoReadCommunicationMethodFieldResponse, error)
+	DoReadAll(context.Context, *DoReadAllCommunicationMethodFieldRequest) (*DoReadAllCommunicationMethodFieldResponse, error)
+	DoSave(context.Context, *DoSaveCommunicationMethodFieldRequest) (*DoSaveCommunicationMethodFieldResponse, error)
+	DoDelete(context.Context, *DoDeleteCommunicationMethodFieldRequest) (*DoDeleteCommunicationMethodFieldResponse, error)
 }
 
 // UnimplementedCommunicationMethodFieldServiceServer can be embedded to have forward compatible implementations.
 type UnimplementedCommunicationMethodFieldServiceServer struct {
 }
 
-func (*UnimplementedCommunicationMethodFieldServiceServer) DoRead(ctx context.Context, req *DoReadRequest) (*DoReadResponse, error) {
+func (*UnimplementedCommunicationMethodFieldServiceServer) DoRead(ctx context.Context, req *DoReadCommunicationMethodFieldRequest) (*DoReadCommunicationMethodFieldResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DoRead not implemented")
 }
-func (*UnimplementedCommunicationMethodFieldServiceServer) DoReadAll(ctx context.Context, req *DoReadAllRequest) (*DoReadAllResponse, error) {
+func (*UnimplementedCommunicationMethodFieldServiceServer) DoReadAll(ctx context.Context, req *DoReadAllCommunicationMethodFieldRequest) (*DoReadAllCommunicationMethodFieldResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DoReadAll not implemented")
 }
-func (*UnimplementedCommunicationMethodFieldServiceServer) DoSave(ctx context.Context, req *DoSaveRequest) (*DoSaveResponse, error) {
+func (*UnimplementedCommunicationMethodFieldServiceServer) DoSave(ctx context.Context, req *DoSaveCommunicationMethodFieldRequest) (*DoSaveCommunicationMethodFieldResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DoSave not implemented")
 }
-func (*UnimplementedCommunicationMethodFieldServiceServer) DoDelete(ctx context.Context, req *DoDeleteRequest) (*DoDeleteResponse, error) {
+func (*UnimplementedCommunicationMethodFieldServiceServer) DoDelete(ctx context.Context, req *DoDeleteCommunicationMethodFieldRequest) (*DoDeleteCommunicationMethodFieldResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DoDelete not implemented")
 }
 
@@ -596,7 +609,7 @@ func RegisterCommunicationMethodFieldServiceServer(s *grpc.Server, srv Communica
 }
 
 func _CommunicationMethodFieldService_DoRead_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(DoReadRequest)
+	in := new(DoReadCommunicationMethodFieldRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -608,13 +621,13 @@ func _CommunicationMethodFieldService_DoRead_Handler(srv interface{}, ctx contex
 		FullMethod: "/v1.CommunicationMethodFieldService/DoRead",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(CommunicationMethodFieldServiceServer).DoRead(ctx, req.(*DoReadRequest))
+		return srv.(CommunicationMethodFieldServiceServer).DoRead(ctx, req.(*DoReadCommunicationMethodFieldRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
 func _CommunicationMethodFieldService_DoReadAll_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(DoReadAllRequest)
+	in := new(DoReadAllCommunicationMethodFieldRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -626,13 +639,13 @@ func _CommunicationMethodFieldService_DoReadAll_Handler(srv interface{}, ctx con
 		FullMethod: "/v1.CommunicationMethodFieldService/DoReadAll",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(CommunicationMethodFieldServiceServer).DoReadAll(ctx, req.(*DoReadAllRequest))
+		return srv.(CommunicationMethodFieldServiceServer).DoReadAll(ctx, req.(*DoReadAllCommunicationMethodFieldRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
 func _CommunicationMethodFieldService_DoSave_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(DoSaveRequest)
+	in := new(DoSaveCommunicationMethodFieldRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -644,13 +657,13 @@ func _CommunicationMethodFieldService_DoSave_Handler(srv interface{}, ctx contex
 		FullMethod: "/v1.CommunicationMethodFieldService/DoSave",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(CommunicationMethodFieldServiceServer).DoSave(ctx, req.(*DoSaveRequest))
+		return srv.(CommunicationMethodFieldServiceServer).DoSave(ctx, req.(*DoSaveCommunicationMethodFieldRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
 func _CommunicationMethodFieldService_DoDelete_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(DoDeleteRequest)
+	in := new(DoDeleteCommunicationMethodFieldRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -662,7 +675,7 @@ func _CommunicationMethodFieldService_DoDelete_Handler(srv interface{}, ctx cont
 		FullMethod: "/v1.CommunicationMethodFieldService/DoDelete",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(CommunicationMethodFieldServiceServer).DoDelete(ctx, req.(*DoDeleteRequest))
+		return srv.(CommunicationMethodFieldServiceServer).DoDelete(ctx, req.(*DoDeleteCommunicationMethodFieldRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }

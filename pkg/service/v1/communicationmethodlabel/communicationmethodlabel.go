@@ -18,19 +18,19 @@ func NewCommunicationMethodLabelService(repo communicationmethodlabelrepository.
 	return &communicationMethodLabelService{repo: repo}
 }
 
-func (cm *communicationMethodLabelService) DoRead(ctx context.Context, req *communicationmethodlabelapi.DoReadRequest) (*communicationmethodlabelapi.DoReadResponse, error) {
+func (cm *communicationMethodLabelService) DoRead(ctx context.Context, req *communicationmethodlabelapi.DoReadCommunicationMethodLabelRequest) (*communicationmethodlabelapi.DoReadCommunicationMethodLabelResponse, error) {
 	result, err := cm.repo.DoRead(ctx, req.GetContactSystemCode(), req.GetCommunicationMethodCode(), req.GetCommunicationMethodLabelCode())
 
-	return &communicationmethodlabelapi.DoReadResponse{CommunicationMethodLabel: result}, err
+	return &communicationmethodlabelapi.DoReadCommunicationMethodLabelResponse{CommunicationMethodLabel: result}, err
 }
 
-func (cm *communicationMethodLabelService) DoReadAll(ctx context.Context, req *communicationmethodlabelapi.DoReadAllRequest) (*communicationmethodlabelapi.DoReadAllResponse, error) {
+func (cm *communicationMethodLabelService) DoReadAll(ctx context.Context, req *communicationmethodlabelapi.DoReadAllCommunicationMethodLabelRequest) (*communicationmethodlabelapi.DoReadAllCommunicationMethodLabelResponse, error) {
 	result, err := cm.repo.DoReadAll(ctx, req.GetContactSystemCode(), req.GetCommunicationMethodCode())
 
-	return &communicationmethodlabelapi.DoReadAllResponse{CommunicationMethodLabel: result}, err
+	return &communicationmethodlabelapi.DoReadAllCommunicationMethodLabelResponse{CommunicationMethodLabel: result}, err
 }
 
-func (cm *communicationMethodLabelService) DoSave(ctx context.Context, req *communicationmethodlabelapi.DoSaveRequest) (*communicationmethodlabelapi.DoSaveResponse, error) {
+func (cm *communicationMethodLabelService) DoSave(ctx context.Context, req *communicationmethodlabelapi.DoSaveCommunicationMethodLabelRequest) (*communicationmethodlabelapi.DoSaveCommunicationMethodLabelResponse, error) {
 	res, err := doUpdate(ctx, cm.repo, req)
 	if err != nil {
 		s, ok := status.FromError(err)
@@ -44,20 +44,20 @@ func (cm *communicationMethodLabelService) DoSave(ctx context.Context, req *comm
 	return res, err
 }
 
-func (cm *communicationMethodLabelService) DoDelete(ctx context.Context, req *communicationmethodlabelapi.DoDeleteRequest) (*communicationmethodlabelapi.DoDeleteResponse, error) {
+func (cm *communicationMethodLabelService) DoDelete(ctx context.Context, req *communicationmethodlabelapi.DoDeleteCommunicationMethodLabelRequest) (*communicationmethodlabelapi.DoDeleteCommunicationMethodLabelResponse, error) {
 	err := cm.repo.DoDelete(ctx, req.GetContactSystemCode(), req.GetCommunicationMethodCode(), req.GetCommunicationMethodLabelCode())
 
-	return &communicationmethodlabelapi.DoDeleteResponse{Result: err == nil}, err
+	return &communicationmethodlabelapi.DoDeleteCommunicationMethodLabelResponse{Result: err == nil}, err
 }
 
-func doInsert(ctx context.Context, repo communicationmethodlabelrepository.ICommunicationMethodLabelRepository, req *communicationmethodlabelapi.DoSaveRequest) (*communicationmethodlabelapi.DoSaveResponse, error) {
+func doInsert(ctx context.Context, repo communicationmethodlabelrepository.ICommunicationMethodLabelRepository, req *communicationmethodlabelapi.DoSaveCommunicationMethodLabelRequest) (*communicationmethodlabelapi.DoSaveCommunicationMethodLabelResponse, error) {
 	err := repo.DoInsert(ctx, req.GetCommunicationMethodLabel())
 
-	return &communicationmethodlabelapi.DoSaveResponse{Result: err == nil}, err
+	return &communicationmethodlabelapi.DoSaveCommunicationMethodLabelResponse{Result: err == nil}, err
 }
 
-func doUpdate(ctx context.Context, repo communicationmethodlabelrepository.ICommunicationMethodLabelRepository, req *communicationmethodlabelapi.DoSaveRequest) (*communicationmethodlabelapi.DoSaveResponse, error) {
+func doUpdate(ctx context.Context, repo communicationmethodlabelrepository.ICommunicationMethodLabelRepository, req *communicationmethodlabelapi.DoSaveCommunicationMethodLabelRequest) (*communicationmethodlabelapi.DoSaveCommunicationMethodLabelResponse, error) {
 	err := repo.DoUpdate(ctx, req.GetCommunicationMethodLabel())
 
-	return &communicationmethodlabelapi.DoSaveResponse{Result: err == nil}, err
+	return &communicationmethodlabelapi.DoSaveCommunicationMethodLabelResponse{Result: err == nil}, err
 }

@@ -137,7 +137,7 @@ func (m *ContactCommunicationMethod) GetAudit() *audit.Audit {
 	return nil
 }
 
-type DoReadRequest struct {
+type DoReadContactCommunicationMethodRequest struct {
 	ContactSystemCode            string   `protobuf:"bytes,1,opt,name=contact_system_code,json=contactSystemCode,proto3" json:"contact_system_code,omitempty"`
 	ContactId                    int64    `protobuf:"varint,2,opt,name=contact_id,json=contactId,proto3" json:"contact_id,omitempty"`
 	ContactCommunicationMethodId int64    `protobuf:"varint,3,opt,name=contact_communication_method_id,json=contactCommunicationMethodId,proto3" json:"contact_communication_method_id,omitempty"`
@@ -146,92 +146,96 @@ type DoReadRequest struct {
 	XXX_sizecache                int32    `json:"-"`
 }
 
-func (m *DoReadRequest) Reset()         { *m = DoReadRequest{} }
-func (m *DoReadRequest) String() string { return proto.CompactTextString(m) }
-func (*DoReadRequest) ProtoMessage()    {}
-func (*DoReadRequest) Descriptor() ([]byte, []int) {
+func (m *DoReadContactCommunicationMethodRequest) Reset() {
+	*m = DoReadContactCommunicationMethodRequest{}
+}
+func (m *DoReadContactCommunicationMethodRequest) String() string { return proto.CompactTextString(m) }
+func (*DoReadContactCommunicationMethodRequest) ProtoMessage()    {}
+func (*DoReadContactCommunicationMethodRequest) Descriptor() ([]byte, []int) {
 	return fileDescriptor_64e73ba28293f485, []int{1}
 }
 
-func (m *DoReadRequest) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_DoReadRequest.Unmarshal(m, b)
+func (m *DoReadContactCommunicationMethodRequest) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_DoReadContactCommunicationMethodRequest.Unmarshal(m, b)
 }
-func (m *DoReadRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_DoReadRequest.Marshal(b, m, deterministic)
+func (m *DoReadContactCommunicationMethodRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_DoReadContactCommunicationMethodRequest.Marshal(b, m, deterministic)
 }
-func (m *DoReadRequest) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_DoReadRequest.Merge(m, src)
+func (m *DoReadContactCommunicationMethodRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_DoReadContactCommunicationMethodRequest.Merge(m, src)
 }
-func (m *DoReadRequest) XXX_Size() int {
-	return xxx_messageInfo_DoReadRequest.Size(m)
+func (m *DoReadContactCommunicationMethodRequest) XXX_Size() int {
+	return xxx_messageInfo_DoReadContactCommunicationMethodRequest.Size(m)
 }
-func (m *DoReadRequest) XXX_DiscardUnknown() {
-	xxx_messageInfo_DoReadRequest.DiscardUnknown(m)
+func (m *DoReadContactCommunicationMethodRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_DoReadContactCommunicationMethodRequest.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_DoReadRequest proto.InternalMessageInfo
+var xxx_messageInfo_DoReadContactCommunicationMethodRequest proto.InternalMessageInfo
 
-func (m *DoReadRequest) GetContactSystemCode() string {
+func (m *DoReadContactCommunicationMethodRequest) GetContactSystemCode() string {
 	if m != nil {
 		return m.ContactSystemCode
 	}
 	return ""
 }
 
-func (m *DoReadRequest) GetContactId() int64 {
+func (m *DoReadContactCommunicationMethodRequest) GetContactId() int64 {
 	if m != nil {
 		return m.ContactId
 	}
 	return 0
 }
 
-func (m *DoReadRequest) GetContactCommunicationMethodId() int64 {
+func (m *DoReadContactCommunicationMethodRequest) GetContactCommunicationMethodId() int64 {
 	if m != nil {
 		return m.ContactCommunicationMethodId
 	}
 	return 0
 }
 
-type DoReadResponse struct {
+type DoReadContactCommunicationMethodResponse struct {
 	ContactCommunicationMethod *ContactCommunicationMethod `protobuf:"bytes,1,opt,name=contact_communication_method,json=contactCommunicationMethod,proto3" json:"contact_communication_method,omitempty"`
 	XXX_NoUnkeyedLiteral       struct{}                    `json:"-"`
 	XXX_unrecognized           []byte                      `json:"-"`
 	XXX_sizecache              int32                       `json:"-"`
 }
 
-func (m *DoReadResponse) Reset()         { *m = DoReadResponse{} }
-func (m *DoReadResponse) String() string { return proto.CompactTextString(m) }
-func (*DoReadResponse) ProtoMessage()    {}
-func (*DoReadResponse) Descriptor() ([]byte, []int) {
+func (m *DoReadContactCommunicationMethodResponse) Reset() {
+	*m = DoReadContactCommunicationMethodResponse{}
+}
+func (m *DoReadContactCommunicationMethodResponse) String() string { return proto.CompactTextString(m) }
+func (*DoReadContactCommunicationMethodResponse) ProtoMessage()    {}
+func (*DoReadContactCommunicationMethodResponse) Descriptor() ([]byte, []int) {
 	return fileDescriptor_64e73ba28293f485, []int{2}
 }
 
-func (m *DoReadResponse) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_DoReadResponse.Unmarshal(m, b)
+func (m *DoReadContactCommunicationMethodResponse) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_DoReadContactCommunicationMethodResponse.Unmarshal(m, b)
 }
-func (m *DoReadResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_DoReadResponse.Marshal(b, m, deterministic)
+func (m *DoReadContactCommunicationMethodResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_DoReadContactCommunicationMethodResponse.Marshal(b, m, deterministic)
 }
-func (m *DoReadResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_DoReadResponse.Merge(m, src)
+func (m *DoReadContactCommunicationMethodResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_DoReadContactCommunicationMethodResponse.Merge(m, src)
 }
-func (m *DoReadResponse) XXX_Size() int {
-	return xxx_messageInfo_DoReadResponse.Size(m)
+func (m *DoReadContactCommunicationMethodResponse) XXX_Size() int {
+	return xxx_messageInfo_DoReadContactCommunicationMethodResponse.Size(m)
 }
-func (m *DoReadResponse) XXX_DiscardUnknown() {
-	xxx_messageInfo_DoReadResponse.DiscardUnknown(m)
+func (m *DoReadContactCommunicationMethodResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_DoReadContactCommunicationMethodResponse.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_DoReadResponse proto.InternalMessageInfo
+var xxx_messageInfo_DoReadContactCommunicationMethodResponse proto.InternalMessageInfo
 
-func (m *DoReadResponse) GetContactCommunicationMethod() *ContactCommunicationMethod {
+func (m *DoReadContactCommunicationMethodResponse) GetContactCommunicationMethod() *ContactCommunicationMethod {
 	if m != nil {
 		return m.ContactCommunicationMethod
 	}
 	return nil
 }
 
-type DoReadAllRequest struct {
+type DoReadAllContactCommunicationMethodRequest struct {
 	ContactSystemCode    string   `protobuf:"bytes,1,opt,name=contact_system_code,json=contactSystemCode,proto3" json:"contact_system_code,omitempty"`
 	ContactId            int64    `protobuf:"varint,2,opt,name=contact_id,json=contactId,proto3" json:"contact_id,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
@@ -239,163 +243,175 @@ type DoReadAllRequest struct {
 	XXX_sizecache        int32    `json:"-"`
 }
 
-func (m *DoReadAllRequest) Reset()         { *m = DoReadAllRequest{} }
-func (m *DoReadAllRequest) String() string { return proto.CompactTextString(m) }
-func (*DoReadAllRequest) ProtoMessage()    {}
-func (*DoReadAllRequest) Descriptor() ([]byte, []int) {
+func (m *DoReadAllContactCommunicationMethodRequest) Reset() {
+	*m = DoReadAllContactCommunicationMethodRequest{}
+}
+func (m *DoReadAllContactCommunicationMethodRequest) String() string {
+	return proto.CompactTextString(m)
+}
+func (*DoReadAllContactCommunicationMethodRequest) ProtoMessage() {}
+func (*DoReadAllContactCommunicationMethodRequest) Descriptor() ([]byte, []int) {
 	return fileDescriptor_64e73ba28293f485, []int{3}
 }
 
-func (m *DoReadAllRequest) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_DoReadAllRequest.Unmarshal(m, b)
+func (m *DoReadAllContactCommunicationMethodRequest) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_DoReadAllContactCommunicationMethodRequest.Unmarshal(m, b)
 }
-func (m *DoReadAllRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_DoReadAllRequest.Marshal(b, m, deterministic)
+func (m *DoReadAllContactCommunicationMethodRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_DoReadAllContactCommunicationMethodRequest.Marshal(b, m, deterministic)
 }
-func (m *DoReadAllRequest) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_DoReadAllRequest.Merge(m, src)
+func (m *DoReadAllContactCommunicationMethodRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_DoReadAllContactCommunicationMethodRequest.Merge(m, src)
 }
-func (m *DoReadAllRequest) XXX_Size() int {
-	return xxx_messageInfo_DoReadAllRequest.Size(m)
+func (m *DoReadAllContactCommunicationMethodRequest) XXX_Size() int {
+	return xxx_messageInfo_DoReadAllContactCommunicationMethodRequest.Size(m)
 }
-func (m *DoReadAllRequest) XXX_DiscardUnknown() {
-	xxx_messageInfo_DoReadAllRequest.DiscardUnknown(m)
+func (m *DoReadAllContactCommunicationMethodRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_DoReadAllContactCommunicationMethodRequest.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_DoReadAllRequest proto.InternalMessageInfo
+var xxx_messageInfo_DoReadAllContactCommunicationMethodRequest proto.InternalMessageInfo
 
-func (m *DoReadAllRequest) GetContactSystemCode() string {
+func (m *DoReadAllContactCommunicationMethodRequest) GetContactSystemCode() string {
 	if m != nil {
 		return m.ContactSystemCode
 	}
 	return ""
 }
 
-func (m *DoReadAllRequest) GetContactId() int64 {
+func (m *DoReadAllContactCommunicationMethodRequest) GetContactId() int64 {
 	if m != nil {
 		return m.ContactId
 	}
 	return 0
 }
 
-type DoReadAllResponse struct {
+type DoReadAllContactCommunicationMethodResponse struct {
 	ContactCommunicationMethod []*ContactCommunicationMethod `protobuf:"bytes,1,rep,name=contact_communication_method,json=contactCommunicationMethod,proto3" json:"contact_communication_method,omitempty"`
 	XXX_NoUnkeyedLiteral       struct{}                      `json:"-"`
 	XXX_unrecognized           []byte                        `json:"-"`
 	XXX_sizecache              int32                         `json:"-"`
 }
 
-func (m *DoReadAllResponse) Reset()         { *m = DoReadAllResponse{} }
-func (m *DoReadAllResponse) String() string { return proto.CompactTextString(m) }
-func (*DoReadAllResponse) ProtoMessage()    {}
-func (*DoReadAllResponse) Descriptor() ([]byte, []int) {
+func (m *DoReadAllContactCommunicationMethodResponse) Reset() {
+	*m = DoReadAllContactCommunicationMethodResponse{}
+}
+func (m *DoReadAllContactCommunicationMethodResponse) String() string {
+	return proto.CompactTextString(m)
+}
+func (*DoReadAllContactCommunicationMethodResponse) ProtoMessage() {}
+func (*DoReadAllContactCommunicationMethodResponse) Descriptor() ([]byte, []int) {
 	return fileDescriptor_64e73ba28293f485, []int{4}
 }
 
-func (m *DoReadAllResponse) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_DoReadAllResponse.Unmarshal(m, b)
+func (m *DoReadAllContactCommunicationMethodResponse) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_DoReadAllContactCommunicationMethodResponse.Unmarshal(m, b)
 }
-func (m *DoReadAllResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_DoReadAllResponse.Marshal(b, m, deterministic)
+func (m *DoReadAllContactCommunicationMethodResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_DoReadAllContactCommunicationMethodResponse.Marshal(b, m, deterministic)
 }
-func (m *DoReadAllResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_DoReadAllResponse.Merge(m, src)
+func (m *DoReadAllContactCommunicationMethodResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_DoReadAllContactCommunicationMethodResponse.Merge(m, src)
 }
-func (m *DoReadAllResponse) XXX_Size() int {
-	return xxx_messageInfo_DoReadAllResponse.Size(m)
+func (m *DoReadAllContactCommunicationMethodResponse) XXX_Size() int {
+	return xxx_messageInfo_DoReadAllContactCommunicationMethodResponse.Size(m)
 }
-func (m *DoReadAllResponse) XXX_DiscardUnknown() {
-	xxx_messageInfo_DoReadAllResponse.DiscardUnknown(m)
+func (m *DoReadAllContactCommunicationMethodResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_DoReadAllContactCommunicationMethodResponse.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_DoReadAllResponse proto.InternalMessageInfo
+var xxx_messageInfo_DoReadAllContactCommunicationMethodResponse proto.InternalMessageInfo
 
-func (m *DoReadAllResponse) GetContactCommunicationMethod() []*ContactCommunicationMethod {
+func (m *DoReadAllContactCommunicationMethodResponse) GetContactCommunicationMethod() []*ContactCommunicationMethod {
 	if m != nil {
 		return m.ContactCommunicationMethod
 	}
 	return nil
 }
 
-type DoSaveRequest struct {
+type DoSaveContactCommunicationMethodRequest struct {
 	ContactCommunicationMethod *ContactCommunicationMethod `protobuf:"bytes,1,opt,name=contact_communication_method,json=contactCommunicationMethod,proto3" json:"contact_communication_method,omitempty"`
 	XXX_NoUnkeyedLiteral       struct{}                    `json:"-"`
 	XXX_unrecognized           []byte                      `json:"-"`
 	XXX_sizecache              int32                       `json:"-"`
 }
 
-func (m *DoSaveRequest) Reset()         { *m = DoSaveRequest{} }
-func (m *DoSaveRequest) String() string { return proto.CompactTextString(m) }
-func (*DoSaveRequest) ProtoMessage()    {}
-func (*DoSaveRequest) Descriptor() ([]byte, []int) {
+func (m *DoSaveContactCommunicationMethodRequest) Reset() {
+	*m = DoSaveContactCommunicationMethodRequest{}
+}
+func (m *DoSaveContactCommunicationMethodRequest) String() string { return proto.CompactTextString(m) }
+func (*DoSaveContactCommunicationMethodRequest) ProtoMessage()    {}
+func (*DoSaveContactCommunicationMethodRequest) Descriptor() ([]byte, []int) {
 	return fileDescriptor_64e73ba28293f485, []int{5}
 }
 
-func (m *DoSaveRequest) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_DoSaveRequest.Unmarshal(m, b)
+func (m *DoSaveContactCommunicationMethodRequest) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_DoSaveContactCommunicationMethodRequest.Unmarshal(m, b)
 }
-func (m *DoSaveRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_DoSaveRequest.Marshal(b, m, deterministic)
+func (m *DoSaveContactCommunicationMethodRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_DoSaveContactCommunicationMethodRequest.Marshal(b, m, deterministic)
 }
-func (m *DoSaveRequest) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_DoSaveRequest.Merge(m, src)
+func (m *DoSaveContactCommunicationMethodRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_DoSaveContactCommunicationMethodRequest.Merge(m, src)
 }
-func (m *DoSaveRequest) XXX_Size() int {
-	return xxx_messageInfo_DoSaveRequest.Size(m)
+func (m *DoSaveContactCommunicationMethodRequest) XXX_Size() int {
+	return xxx_messageInfo_DoSaveContactCommunicationMethodRequest.Size(m)
 }
-func (m *DoSaveRequest) XXX_DiscardUnknown() {
-	xxx_messageInfo_DoSaveRequest.DiscardUnknown(m)
+func (m *DoSaveContactCommunicationMethodRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_DoSaveContactCommunicationMethodRequest.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_DoSaveRequest proto.InternalMessageInfo
+var xxx_messageInfo_DoSaveContactCommunicationMethodRequest proto.InternalMessageInfo
 
-func (m *DoSaveRequest) GetContactCommunicationMethod() *ContactCommunicationMethod {
+func (m *DoSaveContactCommunicationMethodRequest) GetContactCommunicationMethod() *ContactCommunicationMethod {
 	if m != nil {
 		return m.ContactCommunicationMethod
 	}
 	return nil
 }
 
-type DoSaveResponse struct {
+type DoSaveContactCommunicationMethodResponse struct {
 	Result               bool     `protobuf:"varint,1,opt,name=result,proto3" json:"result,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
 }
 
-func (m *DoSaveResponse) Reset()         { *m = DoSaveResponse{} }
-func (m *DoSaveResponse) String() string { return proto.CompactTextString(m) }
-func (*DoSaveResponse) ProtoMessage()    {}
-func (*DoSaveResponse) Descriptor() ([]byte, []int) {
+func (m *DoSaveContactCommunicationMethodResponse) Reset() {
+	*m = DoSaveContactCommunicationMethodResponse{}
+}
+func (m *DoSaveContactCommunicationMethodResponse) String() string { return proto.CompactTextString(m) }
+func (*DoSaveContactCommunicationMethodResponse) ProtoMessage()    {}
+func (*DoSaveContactCommunicationMethodResponse) Descriptor() ([]byte, []int) {
 	return fileDescriptor_64e73ba28293f485, []int{6}
 }
 
-func (m *DoSaveResponse) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_DoSaveResponse.Unmarshal(m, b)
+func (m *DoSaveContactCommunicationMethodResponse) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_DoSaveContactCommunicationMethodResponse.Unmarshal(m, b)
 }
-func (m *DoSaveResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_DoSaveResponse.Marshal(b, m, deterministic)
+func (m *DoSaveContactCommunicationMethodResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_DoSaveContactCommunicationMethodResponse.Marshal(b, m, deterministic)
 }
-func (m *DoSaveResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_DoSaveResponse.Merge(m, src)
+func (m *DoSaveContactCommunicationMethodResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_DoSaveContactCommunicationMethodResponse.Merge(m, src)
 }
-func (m *DoSaveResponse) XXX_Size() int {
-	return xxx_messageInfo_DoSaveResponse.Size(m)
+func (m *DoSaveContactCommunicationMethodResponse) XXX_Size() int {
+	return xxx_messageInfo_DoSaveContactCommunicationMethodResponse.Size(m)
 }
-func (m *DoSaveResponse) XXX_DiscardUnknown() {
-	xxx_messageInfo_DoSaveResponse.DiscardUnknown(m)
+func (m *DoSaveContactCommunicationMethodResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_DoSaveContactCommunicationMethodResponse.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_DoSaveResponse proto.InternalMessageInfo
+var xxx_messageInfo_DoSaveContactCommunicationMethodResponse proto.InternalMessageInfo
 
-func (m *DoSaveResponse) GetResult() bool {
+func (m *DoSaveContactCommunicationMethodResponse) GetResult() bool {
 	if m != nil {
 		return m.Result
 	}
 	return false
 }
 
-type DoDeleteRequest struct {
+type DoDeleteContactCommunicationMethodRequest struct {
 	ContactSystemCode            string   `protobuf:"bytes,1,opt,name=contact_system_code,json=contactSystemCode,proto3" json:"contact_system_code,omitempty"`
 	ContactId                    int64    `protobuf:"varint,2,opt,name=contact_id,json=contactId,proto3" json:"contact_id,omitempty"`
 	ContactCommunicationMethodId int64    `protobuf:"varint,3,opt,name=contact_communication_method_id,json=contactCommunicationMethodId,proto3" json:"contact_communication_method_id,omitempty"`
@@ -404,85 +420,91 @@ type DoDeleteRequest struct {
 	XXX_sizecache                int32    `json:"-"`
 }
 
-func (m *DoDeleteRequest) Reset()         { *m = DoDeleteRequest{} }
-func (m *DoDeleteRequest) String() string { return proto.CompactTextString(m) }
-func (*DoDeleteRequest) ProtoMessage()    {}
-func (*DoDeleteRequest) Descriptor() ([]byte, []int) {
+func (m *DoDeleteContactCommunicationMethodRequest) Reset() {
+	*m = DoDeleteContactCommunicationMethodRequest{}
+}
+func (m *DoDeleteContactCommunicationMethodRequest) String() string { return proto.CompactTextString(m) }
+func (*DoDeleteContactCommunicationMethodRequest) ProtoMessage()    {}
+func (*DoDeleteContactCommunicationMethodRequest) Descriptor() ([]byte, []int) {
 	return fileDescriptor_64e73ba28293f485, []int{7}
 }
 
-func (m *DoDeleteRequest) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_DoDeleteRequest.Unmarshal(m, b)
+func (m *DoDeleteContactCommunicationMethodRequest) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_DoDeleteContactCommunicationMethodRequest.Unmarshal(m, b)
 }
-func (m *DoDeleteRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_DoDeleteRequest.Marshal(b, m, deterministic)
+func (m *DoDeleteContactCommunicationMethodRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_DoDeleteContactCommunicationMethodRequest.Marshal(b, m, deterministic)
 }
-func (m *DoDeleteRequest) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_DoDeleteRequest.Merge(m, src)
+func (m *DoDeleteContactCommunicationMethodRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_DoDeleteContactCommunicationMethodRequest.Merge(m, src)
 }
-func (m *DoDeleteRequest) XXX_Size() int {
-	return xxx_messageInfo_DoDeleteRequest.Size(m)
+func (m *DoDeleteContactCommunicationMethodRequest) XXX_Size() int {
+	return xxx_messageInfo_DoDeleteContactCommunicationMethodRequest.Size(m)
 }
-func (m *DoDeleteRequest) XXX_DiscardUnknown() {
-	xxx_messageInfo_DoDeleteRequest.DiscardUnknown(m)
+func (m *DoDeleteContactCommunicationMethodRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_DoDeleteContactCommunicationMethodRequest.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_DoDeleteRequest proto.InternalMessageInfo
+var xxx_messageInfo_DoDeleteContactCommunicationMethodRequest proto.InternalMessageInfo
 
-func (m *DoDeleteRequest) GetContactSystemCode() string {
+func (m *DoDeleteContactCommunicationMethodRequest) GetContactSystemCode() string {
 	if m != nil {
 		return m.ContactSystemCode
 	}
 	return ""
 }
 
-func (m *DoDeleteRequest) GetContactId() int64 {
+func (m *DoDeleteContactCommunicationMethodRequest) GetContactId() int64 {
 	if m != nil {
 		return m.ContactId
 	}
 	return 0
 }
 
-func (m *DoDeleteRequest) GetContactCommunicationMethodId() int64 {
+func (m *DoDeleteContactCommunicationMethodRequest) GetContactCommunicationMethodId() int64 {
 	if m != nil {
 		return m.ContactCommunicationMethodId
 	}
 	return 0
 }
 
-type DoDeleteResponse struct {
+type DoDeleteContactCommunicationMethodResponse struct {
 	Result               bool     `protobuf:"varint,1,opt,name=result,proto3" json:"result,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
 }
 
-func (m *DoDeleteResponse) Reset()         { *m = DoDeleteResponse{} }
-func (m *DoDeleteResponse) String() string { return proto.CompactTextString(m) }
-func (*DoDeleteResponse) ProtoMessage()    {}
-func (*DoDeleteResponse) Descriptor() ([]byte, []int) {
+func (m *DoDeleteContactCommunicationMethodResponse) Reset() {
+	*m = DoDeleteContactCommunicationMethodResponse{}
+}
+func (m *DoDeleteContactCommunicationMethodResponse) String() string {
+	return proto.CompactTextString(m)
+}
+func (*DoDeleteContactCommunicationMethodResponse) ProtoMessage() {}
+func (*DoDeleteContactCommunicationMethodResponse) Descriptor() ([]byte, []int) {
 	return fileDescriptor_64e73ba28293f485, []int{8}
 }
 
-func (m *DoDeleteResponse) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_DoDeleteResponse.Unmarshal(m, b)
+func (m *DoDeleteContactCommunicationMethodResponse) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_DoDeleteContactCommunicationMethodResponse.Unmarshal(m, b)
 }
-func (m *DoDeleteResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_DoDeleteResponse.Marshal(b, m, deterministic)
+func (m *DoDeleteContactCommunicationMethodResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_DoDeleteContactCommunicationMethodResponse.Marshal(b, m, deterministic)
 }
-func (m *DoDeleteResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_DoDeleteResponse.Merge(m, src)
+func (m *DoDeleteContactCommunicationMethodResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_DoDeleteContactCommunicationMethodResponse.Merge(m, src)
 }
-func (m *DoDeleteResponse) XXX_Size() int {
-	return xxx_messageInfo_DoDeleteResponse.Size(m)
+func (m *DoDeleteContactCommunicationMethodResponse) XXX_Size() int {
+	return xxx_messageInfo_DoDeleteContactCommunicationMethodResponse.Size(m)
 }
-func (m *DoDeleteResponse) XXX_DiscardUnknown() {
-	xxx_messageInfo_DoDeleteResponse.DiscardUnknown(m)
+func (m *DoDeleteContactCommunicationMethodResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_DoDeleteContactCommunicationMethodResponse.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_DoDeleteResponse proto.InternalMessageInfo
+var xxx_messageInfo_DoDeleteContactCommunicationMethodResponse proto.InternalMessageInfo
 
-func (m *DoDeleteResponse) GetResult() bool {
+func (m *DoDeleteContactCommunicationMethodResponse) GetResult() bool {
 	if m != nil {
 		return m.Result
 	}
@@ -491,57 +513,57 @@ func (m *DoDeleteResponse) GetResult() bool {
 
 func init() {
 	proto.RegisterType((*ContactCommunicationMethod)(nil), "v1.ContactCommunicationMethod")
-	proto.RegisterType((*DoReadRequest)(nil), "v1.DoReadRequest")
-	proto.RegisterType((*DoReadResponse)(nil), "v1.DoReadResponse")
-	proto.RegisterType((*DoReadAllRequest)(nil), "v1.DoReadAllRequest")
-	proto.RegisterType((*DoReadAllResponse)(nil), "v1.DoReadAllResponse")
-	proto.RegisterType((*DoSaveRequest)(nil), "v1.DoSaveRequest")
-	proto.RegisterType((*DoSaveResponse)(nil), "v1.DoSaveResponse")
-	proto.RegisterType((*DoDeleteRequest)(nil), "v1.DoDeleteRequest")
-	proto.RegisterType((*DoDeleteResponse)(nil), "v1.DoDeleteResponse")
+	proto.RegisterType((*DoReadContactCommunicationMethodRequest)(nil), "v1.DoReadContactCommunicationMethodRequest")
+	proto.RegisterType((*DoReadContactCommunicationMethodResponse)(nil), "v1.DoReadContactCommunicationMethodResponse")
+	proto.RegisterType((*DoReadAllContactCommunicationMethodRequest)(nil), "v1.DoReadAllContactCommunicationMethodRequest")
+	proto.RegisterType((*DoReadAllContactCommunicationMethodResponse)(nil), "v1.DoReadAllContactCommunicationMethodResponse")
+	proto.RegisterType((*DoSaveContactCommunicationMethodRequest)(nil), "v1.DoSaveContactCommunicationMethodRequest")
+	proto.RegisterType((*DoSaveContactCommunicationMethodResponse)(nil), "v1.DoSaveContactCommunicationMethodResponse")
+	proto.RegisterType((*DoDeleteContactCommunicationMethodRequest)(nil), "v1.DoDeleteContactCommunicationMethodRequest")
+	proto.RegisterType((*DoDeleteContactCommunicationMethodResponse)(nil), "v1.DoDeleteContactCommunicationMethodResponse")
 }
 
 func init() { proto.RegisterFile("contactcommunicationmethod.proto", fileDescriptor_64e73ba28293f485) }
 
 var fileDescriptor_64e73ba28293f485 = []byte{
-	// 577 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xcc, 0x55, 0x5d, 0x8b, 0xd3, 0x40,
-	0x14, 0x25, 0xdb, 0xdd, 0xba, 0xb9, 0xf5, 0x6b, 0x67, 0x57, 0x8d, 0xa1, 0xda, 0x6c, 0x44, 0x08,
-	0x82, 0x0d, 0xad, 0x08, 0xe2, 0xdb, 0xda, 0x2a, 0x2c, 0x7e, 0x20, 0x29, 0xf8, 0xe0, 0x4b, 0x9d,
-	0x26, 0xb7, 0x6d, 0x30, 0xc9, 0x64, 0x9b, 0x49, 0x60, 0x7f, 0x90, 0xf8, 0x93, 0xfc, 0x27, 0x3e,
-	0xcb, 0xcc, 0x24, 0x6e, 0xab, 0x4d, 0x10, 0x64, 0x61, 0x1f, 0x73, 0xee, 0x3d, 0xe7, 0x9e, 0xfb,
-	0x31, 0x04, 0x2c, 0x9f, 0x25, 0x9c, 0xfa, 0xdc, 0x67, 0x71, 0x9c, 0x27, 0xa1, 0x4f, 0x79, 0xc8,
-	0x92, 0x18, 0xf9, 0x92, 0x05, 0xfd, 0x74, 0xc5, 0x38, 0x23, 0x3b, 0xc5, 0xc0, 0xec, 0xd0, 0x3c,
-	0x08, 0xb9, 0x02, 0xcc, 0xc7, 0xf5, 0x94, 0x79, 0x88, 0x51, 0xc9, 0xb3, 0x7f, 0xec, 0x82, 0x39,
-	0x52, 0x99, 0xa3, 0xf5, 0xcc, 0xf7, 0x32, 0x93, 0xf4, 0xe1, 0xb0, 0xd4, 0x99, 0x66, 0xe7, 0x19,
-	0xc7, 0x78, 0xea, 0xb3, 0x00, 0x0d, 0xcd, 0xd2, 0x1c, 0xdd, 0x3b, 0x28, 0x43, 0x13, 0x19, 0x19,
-	0xb1, 0x00, 0xc9, 0x03, 0x80, 0x2a, 0x3f, 0x0c, 0x8c, 0x1d, 0x4b, 0x73, 0x5a, 0x9e, 0x5e, 0x22,
-	0xa7, 0x01, 0x79, 0x0d, 0xbd, 0x2a, 0xbc, 0xe1, 0x6b, 0xaa, 0x8c, 0x09, 0x4e, 0x4b, 0x72, 0xba,
-	0x7e, 0xad, 0xa7, 0xd3, 0x80, 0xbc, 0x84, 0xfb, 0x5b, 0xe9, 0xd2, 0xdb, 0xae, 0xf4, 0x76, 0xcf,
-	0xff, 0x9b, 0x29, 0x1d, 0x4a, 0x0b, 0x5b, 0xb8, 0x11, 0x9d, 0x61, 0xa4, 0x14, 0xf6, 0xa4, 0x42,
-	0x77, 0x8b, 0xc2, 0x3b, 0x91, 0x24, 0x65, 0xde, 0x82, 0xdd, 0x24, 0x43, 0x53, 0x01, 0x1a, 0x6d,
-	0xa9, 0xd4, 0xab, 0x55, 0x52, 0x69, 0xe4, 0x18, 0xae, 0xcf, 0xd9, 0x2a, 0xa6, 0x7c, 0x5a, 0xd0,
-	0x28, 0x47, 0xe3, 0x9a, 0xa4, 0x75, 0x14, 0xf6, 0x49, 0x40, 0x62, 0xb0, 0x61, 0x36, 0x0d, 0x70,
-	0x4e, 0xf3, 0x88, 0x1b, 0xfb, 0x96, 0xe6, 0xec, 0x7b, 0x7a, 0x98, 0x8d, 0x15, 0x40, 0x52, 0x61,
-	0xa7, 0x61, 0xb0, 0x72, 0xe5, 0x86, 0x6e, 0xb5, 0x9c, 0xce, 0xf0, 0x51, 0xbf, 0x18, 0xf4, 0xeb,
-	0x77, 0xfe, 0x46, 0xa4, 0x7a, 0x3d, 0xbf, 0x39, 0x81, 0xf4, 0x60, 0x4f, 0x9e, 0x9b, 0x01, 0x96,
-	0xe6, 0x74, 0x86, 0xba, 0x10, 0x3d, 0x11, 0x80, 0xa7, 0x70, 0xfb, 0x9b, 0x06, 0x37, 0xc6, 0xcc,
-	0x43, 0x1a, 0x78, 0x78, 0x96, 0x63, 0xc6, 0xaf, 0xe6, 0x31, 0xd9, 0x2b, 0xb8, 0x59, 0xd9, 0xcc,
-	0x52, 0x96, 0x64, 0x48, 0xbe, 0x40, 0xb7, 0x49, 0x58, 0x1a, 0xee, 0x0c, 0x1f, 0x36, 0x8f, 0xd1,
-	0x33, 0xeb, 0xab, 0xda, 0x14, 0x6e, 0xab, 0x9a, 0x27, 0x51, 0x74, 0x39, 0xd3, 0xb1, 0x73, 0x38,
-	0x58, 0x2b, 0xf1, 0xcf, 0x9d, 0xb5, 0xfe, 0xb3, 0xb3, 0x33, 0xb1, 0xf4, 0x09, 0x2d, 0xb0, 0x6a,
-	0xeb, 0xf2, 0x87, 0xe9, 0x88, 0x05, 0xaa, 0x92, 0x65, 0x9b, 0x77, 0xa1, 0xbd, 0xc2, 0x4c, 0x3c,
-	0x14, 0x4d, 0x3e, 0x94, 0xf2, 0xcb, 0xfe, 0xae, 0xc1, 0xad, 0x31, 0x1b, 0x63, 0x84, 0x1c, 0xaf,
-	0xf6, 0x51, 0x3e, 0x11, 0x07, 0x52, 0x19, 0x6d, 0xee, 0x6a, 0xf8, 0x53, 0x83, 0xe3, 0xfa, 0xd1,
-	0x4d, 0x70, 0x55, 0x84, 0x3e, 0x12, 0x17, 0xda, 0xea, 0x1e, 0xc8, 0x81, 0x98, 0xf5, 0xc6, 0xcb,
-	0x34, 0xc9, 0x3a, 0x54, 0x96, 0x7b, 0x01, 0xfa, 0xef, 0x03, 0x22, 0x47, 0x17, 0x09, 0x17, 0x27,
-	0x6b, 0xde, 0xf9, 0x03, 0x2d, 0x99, 0xb2, 0x94, 0x58, 0x48, 0x55, 0x6a, 0xed, 0x1e, 0xaa, 0x52,
-	0x1b, 0xfb, 0x7a, 0x0e, 0xfb, 0x55, 0xb7, 0xe4, 0x50, 0xc5, 0x37, 0x96, 0x64, 0x1e, 0x6d, 0x82,
-	0x8a, 0xf6, 0xea, 0xe3, 0xe7, 0x0f, 0x8b, 0x90, 0x2f, 0xf3, 0x59, 0xdf, 0x67, 0xb1, 0x3b, 0xcb,
-	0x93, 0xc5, 0x79, 0xb6, 0x44, 0x4c, 0xdd, 0x72, 0xb4, 0x4f, 0x63, 0x9a, 0xd0, 0x05, 0xc6, 0x98,
-	0x70, 0x37, 0xfd, 0xba, 0x70, 0x69, 0x1a, 0xba, 0xc5, 0xc0, 0xad, 0xff, 0x31, 0xce, 0xda, 0xf2,
-	0xa7, 0xf8, 0xec, 0x57, 0x00, 0x00, 0x00, 0xff, 0xff, 0xe4, 0x9c, 0x1e, 0x0c, 0x70, 0x07, 0x00,
-	0x00,
+	// 590 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xd4, 0x56, 0x5d, 0x8b, 0xd3, 0x40,
+	0x14, 0x25, 0xdb, 0xdd, 0xba, 0xb9, 0xf5, 0xc5, 0x11, 0x34, 0x86, 0xd5, 0x66, 0x23, 0x62, 0x74,
+	0xdd, 0x84, 0xd6, 0x37, 0xdf, 0x76, 0x5b, 0x85, 0xc5, 0x0f, 0x24, 0x05, 0x1f, 0x7c, 0xa9, 0xd3,
+	0xe4, 0xb6, 0x0d, 0x26, 0x99, 0xd8, 0x4c, 0x02, 0x8b, 0x3f, 0x41, 0xc1, 0x9f, 0x24, 0xbe, 0xf8,
+	0x17, 0xfc, 0x3b, 0x32, 0x33, 0xa9, 0x1f, 0xd8, 0xa4, 0x01, 0x51, 0xf4, 0xb1, 0x77, 0xce, 0xb9,
+	0x73, 0xee, 0xb9, 0x67, 0x4a, 0xc0, 0x0a, 0x58, 0xca, 0x69, 0xc0, 0x03, 0x96, 0x24, 0x45, 0x1a,
+	0x05, 0x94, 0x47, 0x2c, 0x4d, 0x90, 0x2f, 0x59, 0xe8, 0x66, 0x2b, 0xc6, 0x19, 0xd9, 0x29, 0x07,
+	0x66, 0x8f, 0x16, 0x61, 0xc4, 0x55, 0xc1, 0xbc, 0x55, 0x4f, 0x99, 0x47, 0x18, 0x57, 0x3c, 0xfb,
+	0xcb, 0x2e, 0x98, 0x23, 0x85, 0x1c, 0xfd, 0x88, 0x7c, 0x2a, 0x91, 0xc4, 0x85, 0xcb, 0x55, 0x9f,
+	0x69, 0x7e, 0x9e, 0x73, 0x4c, 0xa6, 0x01, 0x0b, 0xd1, 0xd0, 0x2c, 0xcd, 0xd1, 0xfd, 0x4b, 0xd5,
+	0xd1, 0x44, 0x9e, 0x8c, 0x58, 0x88, 0xe4, 0x3a, 0xc0, 0x1a, 0x1f, 0x85, 0xc6, 0x8e, 0xa5, 0x39,
+	0x1d, 0x5f, 0xaf, 0x2a, 0x67, 0x21, 0x79, 0x08, 0xfd, 0xf5, 0xf1, 0x4f, 0xba, 0xa6, 0x4a, 0x98,
+	0xe0, 0x74, 0x24, 0xe7, 0x20, 0xa8, 0xd5, 0x74, 0x16, 0x92, 0x07, 0x70, 0x6d, 0x23, 0x5d, 0x6a,
+	0xdb, 0x95, 0xda, 0xae, 0x06, 0xbf, 0x32, 0xa5, 0x42, 0x29, 0x61, 0x03, 0x37, 0xa6, 0x33, 0x8c,
+	0x55, 0x87, 0x3d, 0xd9, 0xe1, 0x60, 0x43, 0x87, 0x27, 0x02, 0x24, 0xdb, 0x3c, 0x06, 0xbb, 0xa9,
+	0x0d, 0xcd, 0x44, 0xd1, 0xe8, 0xca, 0x4e, 0xfd, 0xda, 0x4e, 0x0a, 0x46, 0x0e, 0xe1, 0xe2, 0x9c,
+	0xad, 0x12, 0xca, 0xa7, 0x25, 0x8d, 0x0b, 0x34, 0x2e, 0x48, 0x5a, 0x4f, 0xd5, 0x5e, 0x88, 0x92,
+	0x30, 0x36, 0xca, 0xa7, 0x21, 0xce, 0x69, 0x11, 0x73, 0x63, 0xdf, 0xd2, 0x9c, 0x7d, 0x5f, 0x8f,
+	0xf2, 0xb1, 0x2a, 0x90, 0x4c, 0xc8, 0x69, 0x30, 0x56, 0xae, 0xdc, 0xd0, 0xad, 0x8e, 0xd3, 0x1b,
+	0xde, 0x74, 0xcb, 0x81, 0x5b, 0xbf, 0xf3, 0x47, 0x02, 0xea, 0xf7, 0x83, 0x66, 0x00, 0xe9, 0xc3,
+	0x9e, 0x8c, 0x9b, 0x01, 0x96, 0xe6, 0xf4, 0x86, 0xba, 0x68, 0x7a, 0x22, 0x0a, 0xbe, 0xaa, 0xdb,
+	0x1f, 0x35, 0xb8, 0x3d, 0x66, 0x3e, 0xd2, 0xb0, 0xfe, 0x2e, 0x1f, 0xdf, 0x14, 0x98, 0xf3, 0x7f,
+	0x33, 0x66, 0xf6, 0x7b, 0x0d, 0x9c, 0xed, 0x13, 0xe4, 0x19, 0x4b, 0x73, 0x24, 0xaf, 0xe0, 0xa0,
+	0xe9, 0x4e, 0x39, 0x4b, 0x6f, 0x78, 0xa3, 0xd9, 0x7b, 0xdf, 0xac, 0x17, 0x64, 0xbf, 0x85, 0xbb,
+	0x4a, 0xcd, 0x49, 0x1c, 0xff, 0x6d, 0x4b, 0xed, 0x0f, 0x1a, 0x1c, 0xb5, 0xba, 0xbd, 0xb5, 0x1d,
+	0x9d, 0xdf, 0xb4, 0xe3, 0x9d, 0xcc, 0xd7, 0x84, 0x96, 0xb8, 0xdd, 0x8c, 0x3f, 0xbf, 0x9c, 0x53,
+	0x11, 0x95, 0x6d, 0x62, 0x2a, 0x6f, 0xae, 0x40, 0x77, 0x85, 0xb9, 0x78, 0xc7, 0x9a, 0x7c, 0xc7,
+	0xd5, 0x2f, 0xfb, 0x93, 0x06, 0x77, 0xc6, 0x6c, 0x8c, 0x31, 0x72, 0xfc, 0x5f, 0xdf, 0xcc, 0x58,
+	0x84, 0x74, 0xfb, 0x08, 0xcd, 0x4e, 0x0c, 0x3f, 0x77, 0xe0, 0xb0, 0x9e, 0x3e, 0xc1, 0x55, 0x19,
+	0x05, 0x48, 0x02, 0xe8, 0xaa, 0x48, 0x92, 0x23, 0xb1, 0xb9, 0x96, 0x7f, 0x36, 0xe6, 0xbd, 0x76,
+	0xe0, 0x4a, 0x62, 0x0c, 0xfa, 0xb7, 0xdc, 0x13, 0xf7, 0x3b, 0xb5, 0xcd, 0x23, 0x34, 0xbd, 0xd6,
+	0xf8, 0xea, 0x36, 0x39, 0x92, 0x88, 0xd1, 0x7a, 0xa4, 0x56, 0xf9, 0x5e, 0x8f, 0xd4, 0x32, 0x7f,
+	0x11, 0xec, 0xaf, 0x77, 0x44, 0x8e, 0x15, 0xb3, 0x65, 0xe8, 0x4c, 0xb7, 0x2d, 0x5c, 0x5d, 0x75,
+	0xfa, 0xfc, 0xe5, 0xb3, 0x45, 0xc4, 0x97, 0xc5, 0xcc, 0x0d, 0x58, 0xe2, 0xcd, 0x8a, 0x74, 0x71,
+	0x9e, 0x2f, 0x11, 0x33, 0xaf, 0x0a, 0xd1, 0x71, 0x42, 0x53, 0xba, 0xc0, 0x04, 0x53, 0xee, 0x65,
+	0xaf, 0x17, 0x1e, 0xcd, 0x22, 0xaf, 0x1c, 0x78, 0xf5, 0xdf, 0x2e, 0xb3, 0xae, 0xfc, 0x6e, 0xb9,
+	0xff, 0x35, 0x00, 0x00, 0xff, 0xff, 0x13, 0x0e, 0xcc, 0xbb, 0x13, 0x09, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -556,10 +578,10 @@ const _ = grpc.SupportPackageIsVersion4
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
 type ContactCommunicationMethodServiceClient interface {
-	DoRead(ctx context.Context, in *DoReadRequest, opts ...grpc.CallOption) (*DoReadResponse, error)
-	DoReadAll(ctx context.Context, in *DoReadAllRequest, opts ...grpc.CallOption) (*DoReadAllResponse, error)
-	DoSave(ctx context.Context, in *DoSaveRequest, opts ...grpc.CallOption) (*DoSaveResponse, error)
-	DoDelete(ctx context.Context, in *DoDeleteRequest, opts ...grpc.CallOption) (*DoDeleteResponse, error)
+	DoRead(ctx context.Context, in *DoReadContactCommunicationMethodRequest, opts ...grpc.CallOption) (*DoReadContactCommunicationMethodResponse, error)
+	DoReadAll(ctx context.Context, in *DoReadAllContactCommunicationMethodRequest, opts ...grpc.CallOption) (*DoReadAllContactCommunicationMethodResponse, error)
+	DoSave(ctx context.Context, in *DoSaveContactCommunicationMethodRequest, opts ...grpc.CallOption) (*DoSaveContactCommunicationMethodResponse, error)
+	DoDelete(ctx context.Context, in *DoDeleteContactCommunicationMethodRequest, opts ...grpc.CallOption) (*DoDeleteContactCommunicationMethodResponse, error)
 }
 
 type contactCommunicationMethodServiceClient struct {
@@ -570,8 +592,8 @@ func NewContactCommunicationMethodServiceClient(cc *grpc.ClientConn) ContactComm
 	return &contactCommunicationMethodServiceClient{cc}
 }
 
-func (c *contactCommunicationMethodServiceClient) DoRead(ctx context.Context, in *DoReadRequest, opts ...grpc.CallOption) (*DoReadResponse, error) {
-	out := new(DoReadResponse)
+func (c *contactCommunicationMethodServiceClient) DoRead(ctx context.Context, in *DoReadContactCommunicationMethodRequest, opts ...grpc.CallOption) (*DoReadContactCommunicationMethodResponse, error) {
+	out := new(DoReadContactCommunicationMethodResponse)
 	err := c.cc.Invoke(ctx, "/v1.ContactCommunicationMethodService/DoRead", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -579,8 +601,8 @@ func (c *contactCommunicationMethodServiceClient) DoRead(ctx context.Context, in
 	return out, nil
 }
 
-func (c *contactCommunicationMethodServiceClient) DoReadAll(ctx context.Context, in *DoReadAllRequest, opts ...grpc.CallOption) (*DoReadAllResponse, error) {
-	out := new(DoReadAllResponse)
+func (c *contactCommunicationMethodServiceClient) DoReadAll(ctx context.Context, in *DoReadAllContactCommunicationMethodRequest, opts ...grpc.CallOption) (*DoReadAllContactCommunicationMethodResponse, error) {
+	out := new(DoReadAllContactCommunicationMethodResponse)
 	err := c.cc.Invoke(ctx, "/v1.ContactCommunicationMethodService/DoReadAll", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -588,8 +610,8 @@ func (c *contactCommunicationMethodServiceClient) DoReadAll(ctx context.Context,
 	return out, nil
 }
 
-func (c *contactCommunicationMethodServiceClient) DoSave(ctx context.Context, in *DoSaveRequest, opts ...grpc.CallOption) (*DoSaveResponse, error) {
-	out := new(DoSaveResponse)
+func (c *contactCommunicationMethodServiceClient) DoSave(ctx context.Context, in *DoSaveContactCommunicationMethodRequest, opts ...grpc.CallOption) (*DoSaveContactCommunicationMethodResponse, error) {
+	out := new(DoSaveContactCommunicationMethodResponse)
 	err := c.cc.Invoke(ctx, "/v1.ContactCommunicationMethodService/DoSave", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -597,8 +619,8 @@ func (c *contactCommunicationMethodServiceClient) DoSave(ctx context.Context, in
 	return out, nil
 }
 
-func (c *contactCommunicationMethodServiceClient) DoDelete(ctx context.Context, in *DoDeleteRequest, opts ...grpc.CallOption) (*DoDeleteResponse, error) {
-	out := new(DoDeleteResponse)
+func (c *contactCommunicationMethodServiceClient) DoDelete(ctx context.Context, in *DoDeleteContactCommunicationMethodRequest, opts ...grpc.CallOption) (*DoDeleteContactCommunicationMethodResponse, error) {
+	out := new(DoDeleteContactCommunicationMethodResponse)
 	err := c.cc.Invoke(ctx, "/v1.ContactCommunicationMethodService/DoDelete", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -608,26 +630,26 @@ func (c *contactCommunicationMethodServiceClient) DoDelete(ctx context.Context, 
 
 // ContactCommunicationMethodServiceServer is the server API for ContactCommunicationMethodService service.
 type ContactCommunicationMethodServiceServer interface {
-	DoRead(context.Context, *DoReadRequest) (*DoReadResponse, error)
-	DoReadAll(context.Context, *DoReadAllRequest) (*DoReadAllResponse, error)
-	DoSave(context.Context, *DoSaveRequest) (*DoSaveResponse, error)
-	DoDelete(context.Context, *DoDeleteRequest) (*DoDeleteResponse, error)
+	DoRead(context.Context, *DoReadContactCommunicationMethodRequest) (*DoReadContactCommunicationMethodResponse, error)
+	DoReadAll(context.Context, *DoReadAllContactCommunicationMethodRequest) (*DoReadAllContactCommunicationMethodResponse, error)
+	DoSave(context.Context, *DoSaveContactCommunicationMethodRequest) (*DoSaveContactCommunicationMethodResponse, error)
+	DoDelete(context.Context, *DoDeleteContactCommunicationMethodRequest) (*DoDeleteContactCommunicationMethodResponse, error)
 }
 
 // UnimplementedContactCommunicationMethodServiceServer can be embedded to have forward compatible implementations.
 type UnimplementedContactCommunicationMethodServiceServer struct {
 }
 
-func (*UnimplementedContactCommunicationMethodServiceServer) DoRead(ctx context.Context, req *DoReadRequest) (*DoReadResponse, error) {
+func (*UnimplementedContactCommunicationMethodServiceServer) DoRead(ctx context.Context, req *DoReadContactCommunicationMethodRequest) (*DoReadContactCommunicationMethodResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DoRead not implemented")
 }
-func (*UnimplementedContactCommunicationMethodServiceServer) DoReadAll(ctx context.Context, req *DoReadAllRequest) (*DoReadAllResponse, error) {
+func (*UnimplementedContactCommunicationMethodServiceServer) DoReadAll(ctx context.Context, req *DoReadAllContactCommunicationMethodRequest) (*DoReadAllContactCommunicationMethodResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DoReadAll not implemented")
 }
-func (*UnimplementedContactCommunicationMethodServiceServer) DoSave(ctx context.Context, req *DoSaveRequest) (*DoSaveResponse, error) {
+func (*UnimplementedContactCommunicationMethodServiceServer) DoSave(ctx context.Context, req *DoSaveContactCommunicationMethodRequest) (*DoSaveContactCommunicationMethodResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DoSave not implemented")
 }
-func (*UnimplementedContactCommunicationMethodServiceServer) DoDelete(ctx context.Context, req *DoDeleteRequest) (*DoDeleteResponse, error) {
+func (*UnimplementedContactCommunicationMethodServiceServer) DoDelete(ctx context.Context, req *DoDeleteContactCommunicationMethodRequest) (*DoDeleteContactCommunicationMethodResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DoDelete not implemented")
 }
 
@@ -636,7 +658,7 @@ func RegisterContactCommunicationMethodServiceServer(s *grpc.Server, srv Contact
 }
 
 func _ContactCommunicationMethodService_DoRead_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(DoReadRequest)
+	in := new(DoReadContactCommunicationMethodRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -648,13 +670,13 @@ func _ContactCommunicationMethodService_DoRead_Handler(srv interface{}, ctx cont
 		FullMethod: "/v1.ContactCommunicationMethodService/DoRead",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ContactCommunicationMethodServiceServer).DoRead(ctx, req.(*DoReadRequest))
+		return srv.(ContactCommunicationMethodServiceServer).DoRead(ctx, req.(*DoReadContactCommunicationMethodRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
 func _ContactCommunicationMethodService_DoReadAll_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(DoReadAllRequest)
+	in := new(DoReadAllContactCommunicationMethodRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -666,13 +688,13 @@ func _ContactCommunicationMethodService_DoReadAll_Handler(srv interface{}, ctx c
 		FullMethod: "/v1.ContactCommunicationMethodService/DoReadAll",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ContactCommunicationMethodServiceServer).DoReadAll(ctx, req.(*DoReadAllRequest))
+		return srv.(ContactCommunicationMethodServiceServer).DoReadAll(ctx, req.(*DoReadAllContactCommunicationMethodRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
 func _ContactCommunicationMethodService_DoSave_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(DoSaveRequest)
+	in := new(DoSaveContactCommunicationMethodRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -684,13 +706,13 @@ func _ContactCommunicationMethodService_DoSave_Handler(srv interface{}, ctx cont
 		FullMethod: "/v1.ContactCommunicationMethodService/DoSave",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ContactCommunicationMethodServiceServer).DoSave(ctx, req.(*DoSaveRequest))
+		return srv.(ContactCommunicationMethodServiceServer).DoSave(ctx, req.(*DoSaveContactCommunicationMethodRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
 func _ContactCommunicationMethodService_DoDelete_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(DoDeleteRequest)
+	in := new(DoDeleteContactCommunicationMethodRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -702,7 +724,7 @@ func _ContactCommunicationMethodService_DoDelete_Handler(srv interface{}, ctx co
 		FullMethod: "/v1.ContactCommunicationMethodService/DoDelete",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ContactCommunicationMethodServiceServer).DoDelete(ctx, req.(*DoDeleteRequest))
+		return srv.(ContactCommunicationMethodServiceServer).DoDelete(ctx, req.(*DoDeleteContactCommunicationMethodRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }

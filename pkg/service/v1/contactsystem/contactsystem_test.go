@@ -66,7 +66,7 @@ func doRead(ctx context.Context, input *contactsystem.ContactSystem) func(t *tes
 
 		svc := NewContactSystemService(repo)
 
-		resp, err := svc.DoRead(ctx, &contactsystem.DoReadRequest{ContactSystemCode: input.GetContactSystemCode()})
+		resp, err := svc.DoRead(ctx, &contactsystem.DoReadContactSystemRequest{ContactSystemCode: input.GetContactSystemCode()})
 		if err != nil {
 			t.Errorf("Expect error is nil")
 		}
@@ -104,7 +104,7 @@ func doReadAll(ctx context.Context, input *contactsystem.ContactSystem) func(t *
 
 		svc := NewContactSystemService(repo)
 
-		resp, err := svc.DoReadAll(ctx, &contactsystem.DoReadAllRequest{})
+		resp, err := svc.DoReadAll(ctx, &contactsystem.DoReadAllContactSystemRequest{})
 		if err != nil {
 			t.Errorf("Expect error is nil")
 		}
@@ -148,7 +148,7 @@ func doSaveNew(ctx context.Context, input *contactsystem.ContactSystem) func(t *
 
 		svc := NewContactSystemService(repo)
 
-		resp, err := svc.DoSave(ctx, &contactsystem.DoSaveRequest{ContactSystem: input})
+		resp, err := svc.DoSave(ctx, &contactsystem.DoSaveContactSystemRequest{ContactSystem: input})
 		if err != nil {
 			t.Errorf("Expect error is nil")
 		}
@@ -170,7 +170,7 @@ func doSaveExisting(ctx context.Context, input *contactsystem.ContactSystem) fun
 
 		svc := NewContactSystemService(repo)
 
-		resp, err := svc.DoSave(ctx, &contactsystem.DoSaveRequest{ContactSystem: input})
+		resp, err := svc.DoSave(ctx, &contactsystem.DoSaveContactSystemRequest{ContactSystem: input})
 		if err != nil {
 			t.Errorf("Expect error is nil")
 		}
@@ -192,7 +192,7 @@ func doDelete(ctx context.Context, input *contactsystem.ContactSystem) func(t *t
 
 		svc := NewContactSystemService(repo)
 
-		resp, err := svc.DoDelete(ctx, &contactsystem.DoDeleteRequest{ContactSystemCode: input.GetContactSystemCode()})
+		resp, err := svc.DoDelete(ctx, &contactsystem.DoDeleteContactSystemRequest{ContactSystemCode: input.GetContactSystemCode()})
 		if err != nil {
 			t.Errorf("Expect error is nil")
 		}

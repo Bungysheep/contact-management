@@ -66,7 +66,7 @@ func doRead(ctx context.Context, input *communicationmethodlabel.CommunicationMe
 
 		svc := NewCommunicationMethodLabelService(repo)
 
-		resp, err := svc.DoRead(ctx, &communicationmethodlabel.DoReadRequest{ContactSystemCode: input.GetContactSystemCode(), CommunicationMethodCode: input.GetCommunicationMethodCode(), CommunicationMethodLabelCode: input.GetCommunicationMethodLabelCode()})
+		resp, err := svc.DoRead(ctx, &communicationmethodlabel.DoReadCommunicationMethodLabelRequest{ContactSystemCode: input.GetContactSystemCode(), CommunicationMethodCode: input.GetCommunicationMethodCode(), CommunicationMethodLabelCode: input.GetCommunicationMethodLabelCode()})
 		if err != nil {
 			t.Errorf("Expect error is nil")
 		}
@@ -104,7 +104,7 @@ func doReadAll(ctx context.Context, input *communicationmethodlabel.Communicatio
 
 		svc := NewCommunicationMethodLabelService(repo)
 
-		resp, err := svc.DoReadAll(ctx, &communicationmethodlabel.DoReadAllRequest{ContactSystemCode: input.GetContactSystemCode(), CommunicationMethodCode: input.GetCommunicationMethodCode()})
+		resp, err := svc.DoReadAll(ctx, &communicationmethodlabel.DoReadAllCommunicationMethodLabelRequest{ContactSystemCode: input.GetContactSystemCode(), CommunicationMethodCode: input.GetCommunicationMethodCode()})
 		if err != nil {
 			t.Errorf("Expect error is nil")
 		}
@@ -148,7 +148,7 @@ func doSaveNew(ctx context.Context, input *communicationmethodlabel.Communicatio
 
 		svc := NewCommunicationMethodLabelService(repo)
 
-		resp, err := svc.DoSave(ctx, &communicationmethodlabel.DoSaveRequest{CommunicationMethodLabel: input})
+		resp, err := svc.DoSave(ctx, &communicationmethodlabel.DoSaveCommunicationMethodLabelRequest{CommunicationMethodLabel: input})
 		if err != nil {
 			t.Errorf("Expect error is nil")
 		}
@@ -170,7 +170,7 @@ func doSaveExisting(ctx context.Context, input *communicationmethodlabel.Communi
 
 		svc := NewCommunicationMethodLabelService(repo)
 
-		resp, err := svc.DoSave(ctx, &communicationmethodlabel.DoSaveRequest{CommunicationMethodLabel: input})
+		resp, err := svc.DoSave(ctx, &communicationmethodlabel.DoSaveCommunicationMethodLabelRequest{CommunicationMethodLabel: input})
 		if err != nil {
 			t.Errorf("Expect error is nil")
 		}
@@ -192,7 +192,7 @@ func doDelete(ctx context.Context, input *communicationmethodlabel.Communication
 
 		svc := NewCommunicationMethodLabelService(repo)
 
-		resp, err := svc.DoDelete(ctx, &communicationmethodlabel.DoDeleteRequest{ContactSystemCode: input.GetContactSystemCode(), CommunicationMethodCode: input.GetCommunicationMethodCode(), CommunicationMethodLabelCode: input.GetCommunicationMethodLabelCode()})
+		resp, err := svc.DoDelete(ctx, &communicationmethodlabel.DoDeleteCommunicationMethodLabelRequest{ContactSystemCode: input.GetContactSystemCode(), CommunicationMethodCode: input.GetCommunicationMethodCode(), CommunicationMethodLabelCode: input.GetCommunicationMethodLabelCode()})
 		if err != nil {
 			t.Errorf("Expect error is nil")
 		}

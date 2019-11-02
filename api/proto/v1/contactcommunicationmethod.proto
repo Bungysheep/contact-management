@@ -29,7 +29,7 @@ message ContactCommunicationMethod {
     v1.Audit audit = 10;
 }
 
-message DoReadRequest {
+message DoReadContactCommunicationMethodRequest {
     string contact_system_code = 1;
 
     int64 contact_id = 2;
@@ -37,29 +37,29 @@ message DoReadRequest {
     int64 contact_communication_method_id = 3;
 }
 
-message DoReadResponse {
+message DoReadContactCommunicationMethodResponse {
     ContactCommunicationMethod contact_communication_method = 1;
 }
 
-message DoReadAllRequest { 
+message DoReadAllContactCommunicationMethodRequest { 
     string contact_system_code = 1;
 
     int64 contact_id = 2;
 }
 
-message DoReadAllResponse {
+message DoReadAllContactCommunicationMethodResponse {
     repeated ContactCommunicationMethod contact_communication_method = 1;
 }
 
-message DoSaveRequest { 
+message DoSaveContactCommunicationMethodRequest { 
     ContactCommunicationMethod contact_communication_method = 1;
 }
 
-message DoSaveResponse {
+message DoSaveContactCommunicationMethodResponse {
     bool result = 1;
 }
 
-message DoDeleteRequest {
+message DoDeleteContactCommunicationMethodRequest {
     string contact_system_code = 1;
 
     int64 contact_id = 2;
@@ -67,16 +67,16 @@ message DoDeleteRequest {
     int64 contact_communication_method_id = 3;
 }
 
-message DoDeleteResponse {
+message DoDeleteContactCommunicationMethodResponse {
     bool result = 1;
 }
 
 service ContactCommunicationMethodService { 
-    rpc DoRead (DoReadRequest) returns (DoReadResponse);
+    rpc DoRead (DoReadContactCommunicationMethodRequest) returns (DoReadContactCommunicationMethodResponse);
 
-    rpc DoReadAll (DoReadAllRequest) returns (DoReadAllResponse);
+    rpc DoReadAll (DoReadAllContactCommunicationMethodRequest) returns (DoReadAllContactCommunicationMethodResponse);
 
-    rpc DoSave (DoSaveRequest) returns (DoSaveResponse);
+    rpc DoSave (DoSaveContactCommunicationMethodRequest) returns (DoSaveContactCommunicationMethodResponse);
 
-    rpc DoDelete (DoDeleteRequest) returns (DoDeleteResponse);
+    rpc DoDelete (DoDeleteContactCommunicationMethodRequest) returns (DoDeleteContactCommunicationMethodResponse);
 }

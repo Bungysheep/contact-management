@@ -18,19 +18,19 @@ func NewCommunicationMethodFieldService(repo communicationmethodfieldrepository.
 	return &communicationMethodFieldService{repo: repo}
 }
 
-func (cmf *communicationMethodFieldService) DoRead(ctx context.Context, req *communicationmethodfieldapi.DoReadRequest) (*communicationmethodfieldapi.DoReadResponse, error) {
+func (cmf *communicationMethodFieldService) DoRead(ctx context.Context, req *communicationmethodfieldapi.DoReadCommunicationMethodFieldRequest) (*communicationmethodfieldapi.DoReadCommunicationMethodFieldResponse, error) {
 	result, err := cmf.repo.DoRead(ctx, req.GetContactSystemCode(), req.GetCommunicationMethodCode(), req.GetFieldCode())
 
-	return &communicationmethodfieldapi.DoReadResponse{CommunicationMethodField: result}, err
+	return &communicationmethodfieldapi.DoReadCommunicationMethodFieldResponse{CommunicationMethodField: result}, err
 }
 
-func (cmf *communicationMethodFieldService) DoReadAll(ctx context.Context, req *communicationmethodfieldapi.DoReadAllRequest) (*communicationmethodfieldapi.DoReadAllResponse, error) {
+func (cmf *communicationMethodFieldService) DoReadAll(ctx context.Context, req *communicationmethodfieldapi.DoReadAllCommunicationMethodFieldRequest) (*communicationmethodfieldapi.DoReadAllCommunicationMethodFieldResponse, error) {
 	result, err := cmf.repo.DoReadAll(ctx, req.GetContactSystemCode(), req.GetCommunicationMethodCode())
 
-	return &communicationmethodfieldapi.DoReadAllResponse{CommunicationMethodField: result}, err
+	return &communicationmethodfieldapi.DoReadAllCommunicationMethodFieldResponse{CommunicationMethodField: result}, err
 }
 
-func (cmf *communicationMethodFieldService) DoSave(ctx context.Context, req *communicationmethodfieldapi.DoSaveRequest) (*communicationmethodfieldapi.DoSaveResponse, error) {
+func (cmf *communicationMethodFieldService) DoSave(ctx context.Context, req *communicationmethodfieldapi.DoSaveCommunicationMethodFieldRequest) (*communicationmethodfieldapi.DoSaveCommunicationMethodFieldResponse, error) {
 	res, err := doUpdate(ctx, cmf.repo, req)
 	if err != nil {
 		s, ok := status.FromError(err)
@@ -44,20 +44,20 @@ func (cmf *communicationMethodFieldService) DoSave(ctx context.Context, req *com
 	return res, err
 }
 
-func (cmf *communicationMethodFieldService) DoDelete(ctx context.Context, req *communicationmethodfieldapi.DoDeleteRequest) (*communicationmethodfieldapi.DoDeleteResponse, error) {
+func (cmf *communicationMethodFieldService) DoDelete(ctx context.Context, req *communicationmethodfieldapi.DoDeleteCommunicationMethodFieldRequest) (*communicationmethodfieldapi.DoDeleteCommunicationMethodFieldResponse, error) {
 	err := cmf.repo.DoDelete(ctx, req.GetContactSystemCode(), req.GetCommunicationMethodCode(), req.GetFieldCode())
 
-	return &communicationmethodfieldapi.DoDeleteResponse{Result: err == nil}, err
+	return &communicationmethodfieldapi.DoDeleteCommunicationMethodFieldResponse{Result: err == nil}, err
 }
 
-func doInsert(ctx context.Context, repo communicationmethodfieldrepository.ICommunicationMethodFieldRepository, req *communicationmethodfieldapi.DoSaveRequest) (*communicationmethodfieldapi.DoSaveResponse, error) {
+func doInsert(ctx context.Context, repo communicationmethodfieldrepository.ICommunicationMethodFieldRepository, req *communicationmethodfieldapi.DoSaveCommunicationMethodFieldRequest) (*communicationmethodfieldapi.DoSaveCommunicationMethodFieldResponse, error) {
 	err := repo.DoInsert(ctx, req.GetCommunicationMethodField())
 
-	return &communicationmethodfieldapi.DoSaveResponse{Result: err == nil}, err
+	return &communicationmethodfieldapi.DoSaveCommunicationMethodFieldResponse{Result: err == nil}, err
 }
 
-func doUpdate(ctx context.Context, repo communicationmethodfieldrepository.ICommunicationMethodFieldRepository, req *communicationmethodfieldapi.DoSaveRequest) (*communicationmethodfieldapi.DoSaveResponse, error) {
+func doUpdate(ctx context.Context, repo communicationmethodfieldrepository.ICommunicationMethodFieldRepository, req *communicationmethodfieldapi.DoSaveCommunicationMethodFieldRequest) (*communicationmethodfieldapi.DoSaveCommunicationMethodFieldResponse, error) {
 	err := repo.DoUpdate(ctx, req.GetCommunicationMethodField())
 
-	return &communicationmethodfieldapi.DoSaveResponse{Result: err == nil}, err
+	return &communicationmethodfieldapi.DoSaveCommunicationMethodFieldResponse{Result: err == nil}, err
 }

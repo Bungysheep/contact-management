@@ -78,7 +78,7 @@ func doRead(ctx context.Context, input *contactcommunicationmethod.ContactCommun
 
 		svc := NewContactCommunicationMethodService(repo)
 
-		resp, err := svc.DoRead(ctx, &contactcommunicationmethod.DoReadRequest{ContactSystemCode: input.GetContactSystemCode(), ContactId: input.GetContactId(), ContactCommunicationMethodId: input.GetContactCommunicationMethodId()})
+		resp, err := svc.DoRead(ctx, &contactcommunicationmethod.DoReadContactCommunicationMethodRequest{ContactSystemCode: input.GetContactSystemCode(), ContactId: input.GetContactId(), ContactCommunicationMethodId: input.GetContactCommunicationMethodId()})
 		if err != nil {
 			t.Errorf("Expect error is nil")
 		}
@@ -136,7 +136,7 @@ func doReadAll(ctx context.Context, input *contactcommunicationmethod.ContactCom
 
 		svc := NewContactCommunicationMethodService(repo)
 
-		resp, err := svc.DoReadAll(ctx, &contactcommunicationmethod.DoReadAllRequest{ContactSystemCode: input.GetContactSystemCode(), ContactId: input.GetContactId()})
+		resp, err := svc.DoReadAll(ctx, &contactcommunicationmethod.DoReadAllContactCommunicationMethodRequest{ContactSystemCode: input.GetContactSystemCode(), ContactId: input.GetContactId()})
 		if err != nil {
 			t.Errorf("Expect error is nil")
 		}
@@ -196,7 +196,7 @@ func doSaveNew(ctx context.Context, input *contactcommunicationmethod.ContactCom
 
 		svc := NewContactCommunicationMethodService(repo)
 
-		resp, err := svc.DoSave(ctx, &contactcommunicationmethod.DoSaveRequest{ContactCommunicationMethod: input})
+		resp, err := svc.DoSave(ctx, &contactcommunicationmethod.DoSaveContactCommunicationMethodRequest{ContactCommunicationMethod: input})
 		if err != nil {
 			t.Errorf("Expect error is nil")
 		}
@@ -218,7 +218,7 @@ func doSaveExisting(ctx context.Context, input *contactcommunicationmethod.Conta
 
 		svc := NewContactCommunicationMethodService(repo)
 
-		resp, err := svc.DoSave(ctx, &contactcommunicationmethod.DoSaveRequest{ContactCommunicationMethod: input})
+		resp, err := svc.DoSave(ctx, &contactcommunicationmethod.DoSaveContactCommunicationMethodRequest{ContactCommunicationMethod: input})
 		if err != nil {
 			t.Errorf("Expect error is nil")
 		}
@@ -240,7 +240,7 @@ func doDelete(ctx context.Context, input *contactcommunicationmethod.ContactComm
 
 		svc := NewContactCommunicationMethodService(repo)
 
-		resp, err := svc.DoDelete(ctx, &contactcommunicationmethod.DoDeleteRequest{ContactSystemCode: input.GetContactSystemCode(), ContactId: input.GetContactId(), ContactCommunicationMethodId: input.GetContactCommunicationMethodId()})
+		resp, err := svc.DoDelete(ctx, &contactcommunicationmethod.DoDeleteContactCommunicationMethodRequest{ContactSystemCode: input.GetContactSystemCode(), ContactId: input.GetContactId(), ContactCommunicationMethodId: input.GetContactCommunicationMethodId()})
 		if err != nil {
 			t.Errorf("Expect error is nil")
 		}
