@@ -18,42 +18,42 @@ message ContactSystem {
     v1.Audit audit = 5;
 }
 
-message DoReadRequest {
+message DoReadContactSystemRequest {
     string contact_system_code = 1;
 }
 
-message DoReadResponse {
+message DoReadContactSystemResponse {
     ContactSystem contact_system = 1;
 }
 
-message DoReadAllRequest { }
+message DoReadAllContactSystemRequest { }
 
-message DoReadAllResponse {
+message DoReadAllContactSystemResponse {
     repeated ContactSystem contact_systems = 1;
 }
 
-message DoSaveRequest { 
+message DoSaveContactSystemRequest { 
     ContactSystem contact_system = 1;
 }
 
-message DoSaveResponse {
+message DoSaveContactSystemResponse {
     bool result = 1;
 }
 
-message DoDeleteRequest {
+message DoDeleteContactSystemRequest {
     string contact_system_code = 1;
 }
 
-message DoDeleteResponse {
+message DoDeleteContactSystemResponse {
     bool result = 1;
 }
 
 service ContactSystemService { 
-    rpc DoRead (DoReadRequest) returns (DoReadResponse);
+    rpc DoRead (DoReadContactSystemRequest) returns (DoReadContactSystemResponse);
 
-    rpc DoReadAll (DoReadAllRequest) returns (DoReadAllResponse);
+    rpc DoReadAll (DoReadAllContactSystemRequest) returns (DoReadAllContactSystemResponse);
 
-    rpc DoSave (DoSaveRequest) returns (DoSaveResponse);
+    rpc DoSave (DoSaveContactSystemRequest) returns (DoSaveContactSystemResponse);
 
-    rpc DoDelete (DoDeleteRequest) returns (DoDeleteResponse);
+    rpc DoDelete (DoDeleteContactSystemRequest) returns (DoDeleteContactSystemResponse);
 }

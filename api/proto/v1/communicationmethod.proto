@@ -22,48 +22,48 @@ message CommunicationMethod {
     v1.Audit audit = 7;
 }
 
-message DoReadRequest {
+message DoReadCommunicationMethodRequest {
     string contact_system_code = 1;
 
     string communication_method_code = 2;
 }
 
-message DoReadResponse {
+message DoReadCommunicationMethodResponse {
     CommunicationMethod communication_method = 1;
 }
 
-message DoReadAllRequest { 
+message DoReadAllCommunicationMethodRequest { 
     string contact_system_code = 1;
 }
 
-message DoReadAllResponse {
+message DoReadAllCommunicationMethodResponse {
     repeated CommunicationMethod communication_method = 1;
 }
 
-message DoSaveRequest { 
+message DoSaveCommunicationMethodRequest { 
     CommunicationMethod communication_method = 1;
 }
 
-message DoSaveResponse {
+message DoSaveCommunicationMethodResponse {
     bool result = 1;
 }
 
-message DoDeleteRequest {
+message DoDeleteCommunicationMethodRequest {
     string contact_system_code = 1;
 
     string communication_method_code = 2;
 }
 
-message DoDeleteResponse {
+message DoDeleteCommunicationMethodResponse {
     bool result = 1;
 }
 
 service CommunicationMethodService { 
-    rpc DoRead (DoReadRequest) returns (DoReadResponse);
+    rpc DoRead (DoReadCommunicationMethodRequest) returns (DoReadCommunicationMethodResponse);
 
-    rpc DoReadAll (DoReadAllRequest) returns (DoReadAllResponse);
+    rpc DoReadAll (DoReadAllCommunicationMethodRequest) returns (DoReadAllCommunicationMethodResponse);
 
-    rpc DoSave (DoSaveRequest) returns (DoSaveResponse);
+    rpc DoSave (DoSaveCommunicationMethodRequest) returns (DoSaveCommunicationMethodResponse);
 
-    rpc DoDelete (DoDeleteRequest) returns (DoDeleteResponse);
+    rpc DoDelete (DoDeleteCommunicationMethodRequest) returns (DoDeleteCommunicationMethodResponse);
 }

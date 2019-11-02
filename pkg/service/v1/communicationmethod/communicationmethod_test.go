@@ -72,7 +72,7 @@ func doRead(ctx context.Context, input *communicationmethod.CommunicationMethod)
 
 		svc := NewCommunicationMethodService(repo)
 
-		resp, err := svc.DoRead(ctx, &communicationmethod.DoReadRequest{ContactSystemCode: input.GetContactSystemCode(), CommunicationMethodCode: input.GetCommunicationMethodCode()})
+		resp, err := svc.DoRead(ctx, &communicationmethod.DoReadCommunicationMethodRequest{ContactSystemCode: input.GetContactSystemCode(), CommunicationMethodCode: input.GetCommunicationMethodCode()})
 		if err != nil {
 			t.Errorf("Expect error is nil")
 		}
@@ -118,7 +118,7 @@ func doReadAll(ctx context.Context, input *communicationmethod.CommunicationMeth
 
 		svc := NewCommunicationMethodService(repo)
 
-		resp, err := svc.DoReadAll(ctx, &communicationmethod.DoReadAllRequest{ContactSystemCode: input.GetContactSystemCode()})
+		resp, err := svc.DoReadAll(ctx, &communicationmethod.DoReadAllCommunicationMethodRequest{ContactSystemCode: input.GetContactSystemCode()})
 		if err != nil {
 			t.Errorf("Expect error is nil")
 		}
@@ -170,7 +170,7 @@ func doSaveNew(ctx context.Context, input *communicationmethod.CommunicationMeth
 
 		svc := NewCommunicationMethodService(repo)
 
-		resp, err := svc.DoSave(ctx, &communicationmethod.DoSaveRequest{CommunicationMethod: input})
+		resp, err := svc.DoSave(ctx, &communicationmethod.DoSaveCommunicationMethodRequest{CommunicationMethod: input})
 		if err != nil {
 			t.Errorf("Expect error is nil")
 		}
@@ -192,7 +192,7 @@ func doSaveExisting(ctx context.Context, input *communicationmethod.Communicatio
 
 		svc := NewCommunicationMethodService(repo)
 
-		resp, err := svc.DoSave(ctx, &communicationmethod.DoSaveRequest{CommunicationMethod: input})
+		resp, err := svc.DoSave(ctx, &communicationmethod.DoSaveCommunicationMethodRequest{CommunicationMethod: input})
 		if err != nil {
 			t.Errorf("Expect error is nil")
 		}
@@ -214,7 +214,7 @@ func doDelete(ctx context.Context, input *communicationmethod.CommunicationMetho
 
 		svc := NewCommunicationMethodService(repo)
 
-		resp, err := svc.DoDelete(ctx, &communicationmethod.DoDeleteRequest{ContactSystemCode: input.GetContactSystemCode(), CommunicationMethodCode: input.GetCommunicationMethodCode()})
+		resp, err := svc.DoDelete(ctx, &communicationmethod.DoDeleteCommunicationMethodRequest{ContactSystemCode: input.GetContactSystemCode(), CommunicationMethodCode: input.GetCommunicationMethodCode()})
 		if err != nil {
 			t.Errorf("Expect error is nil")
 		}

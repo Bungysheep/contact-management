@@ -69,7 +69,7 @@ func doRead(ctx context.Context, input *contact.Contact) func(t *testing.T) {
 
 		svc := NewContactService(repo)
 
-		resp, err := svc.DoRead(ctx, &contact.DoReadRequest{ContactSystemCode: input.GetContactSystemCode(), ContactId: input.GetContactId()})
+		resp, err := svc.DoRead(ctx, &contact.DoReadContactRequest{ContactSystemCode: input.GetContactSystemCode(), ContactId: input.GetContactId()})
 		if err != nil {
 			t.Errorf("Expect error is nil")
 		}
@@ -111,7 +111,7 @@ func doReadAll(ctx context.Context, input *contact.Contact) func(t *testing.T) {
 
 		svc := NewContactService(repo)
 
-		resp, err := svc.DoReadAll(ctx, &contact.DoReadAllRequest{ContactSystemCode: input.GetContactSystemCode()})
+		resp, err := svc.DoReadAll(ctx, &contact.DoReadAllContactRequest{ContactSystemCode: input.GetContactSystemCode()})
 		if err != nil {
 			t.Errorf("Expect error is nil")
 		}
@@ -159,7 +159,7 @@ func doSaveNew(ctx context.Context, input *contact.Contact) func(t *testing.T) {
 
 		svc := NewContactService(repo)
 
-		resp, err := svc.DoSave(ctx, &contact.DoSaveRequest{Contact: input})
+		resp, err := svc.DoSave(ctx, &contact.DoSaveContactRequest{Contact: input})
 		if err != nil {
 			t.Errorf("Expect error is nil")
 		}
@@ -181,7 +181,7 @@ func doSaveExisting(ctx context.Context, input *contact.Contact) func(t *testing
 
 		svc := NewContactService(repo)
 
-		resp, err := svc.DoSave(ctx, &contact.DoSaveRequest{Contact: input})
+		resp, err := svc.DoSave(ctx, &contact.DoSaveContactRequest{Contact: input})
 		if err != nil {
 			t.Errorf("Expect error is nil")
 		}
@@ -203,7 +203,7 @@ func doDelete(ctx context.Context, input *contact.Contact) func(t *testing.T) {
 
 		svc := NewContactService(repo)
 
-		resp, err := svc.DoDelete(ctx, &contact.DoDeleteRequest{ContactSystemCode: input.GetContactSystemCode(), ContactId: input.GetContactId()})
+		resp, err := svc.DoDelete(ctx, &contact.DoDeleteContactRequest{ContactSystemCode: input.GetContactSystemCode(), ContactId: input.GetContactId()})
 		if err != nil {
 			t.Errorf("Expect error is nil")
 		}

@@ -69,7 +69,7 @@ func doRead(ctx context.Context, input *communicationmethodfield.CommunicationMe
 
 		svc := NewCommunicationMethodFieldService(repo)
 
-		resp, err := svc.DoRead(ctx, &communicationmethodfield.DoReadRequest{ContactSystemCode: input.GetContactSystemCode(), CommunicationMethodCode: input.GetCommunicationMethodCode(), FieldCode: input.GetFieldCode()})
+		resp, err := svc.DoRead(ctx, &communicationmethodfield.DoReadCommunicationMethodFieldRequest{ContactSystemCode: input.GetContactSystemCode(), CommunicationMethodCode: input.GetCommunicationMethodCode(), FieldCode: input.GetFieldCode()})
 		if err != nil {
 			t.Errorf("Expect error is nil")
 		}
@@ -111,7 +111,7 @@ func doReadAll(ctx context.Context, input *communicationmethodfield.Communicatio
 
 		svc := NewCommunicationMethodFieldService(repo)
 
-		resp, err := svc.DoReadAll(ctx, &communicationmethodfield.DoReadAllRequest{ContactSystemCode: input.GetContactSystemCode(), CommunicationMethodCode: input.GetCommunicationMethodCode()})
+		resp, err := svc.DoReadAll(ctx, &communicationmethodfield.DoReadAllCommunicationMethodFieldRequest{ContactSystemCode: input.GetContactSystemCode(), CommunicationMethodCode: input.GetCommunicationMethodCode()})
 		if err != nil {
 			t.Errorf("Expect error is nil")
 		}
@@ -159,7 +159,7 @@ func doSaveNew(ctx context.Context, input *communicationmethodfield.Communicatio
 
 		svc := NewCommunicationMethodFieldService(repo)
 
-		resp, err := svc.DoSave(ctx, &communicationmethodfield.DoSaveRequest{CommunicationMethodField: input})
+		resp, err := svc.DoSave(ctx, &communicationmethodfield.DoSaveCommunicationMethodFieldRequest{CommunicationMethodField: input})
 		if err != nil {
 			t.Errorf("Expect error is nil")
 		}
@@ -181,7 +181,7 @@ func doSaveExisting(ctx context.Context, input *communicationmethodfield.Communi
 
 		svc := NewCommunicationMethodFieldService(repo)
 
-		resp, err := svc.DoSave(ctx, &communicationmethodfield.DoSaveRequest{CommunicationMethodField: input})
+		resp, err := svc.DoSave(ctx, &communicationmethodfield.DoSaveCommunicationMethodFieldRequest{CommunicationMethodField: input})
 		if err != nil {
 			t.Errorf("Expect error is nil")
 		}
@@ -203,7 +203,7 @@ func doDelete(ctx context.Context, input *communicationmethodfield.Communication
 
 		svc := NewCommunicationMethodFieldService(repo)
 
-		resp, err := svc.DoDelete(ctx, &communicationmethodfield.DoDeleteRequest{ContactSystemCode: input.GetContactSystemCode(), CommunicationMethodCode: input.GetCommunicationMethodCode(), FieldCode: input.GetFieldCode()})
+		resp, err := svc.DoDelete(ctx, &communicationmethodfield.DoDeleteCommunicationMethodFieldRequest{ContactSystemCode: input.GetContactSystemCode(), CommunicationMethodCode: input.GetCommunicationMethodCode(), FieldCode: input.GetFieldCode()})
 		if err != nil {
 			t.Errorf("Expect error is nil")
 		}

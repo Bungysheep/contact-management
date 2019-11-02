@@ -18,19 +18,19 @@ func NewContactCommunicationMethodService(repo contactcommunicationmethodreposit
 	return &contactcommunicationmethodService{repo: repo}
 }
 
-func (cmm *contactcommunicationmethodService) DoRead(ctx context.Context, req *contactcommunicationmethodapi.DoReadRequest) (*contactcommunicationmethodapi.DoReadResponse, error) {
+func (cmm *contactcommunicationmethodService) DoRead(ctx context.Context, req *contactcommunicationmethodapi.DoReadContactCommunicationMethodRequest) (*contactcommunicationmethodapi.DoReadContactCommunicationMethodResponse, error) {
 	result, err := cmm.repo.DoRead(ctx, req.GetContactSystemCode(), req.GetContactId(), req.GetContactCommunicationMethodId())
 
-	return &contactcommunicationmethodapi.DoReadResponse{ContactCommunicationMethod: result}, err
+	return &contactcommunicationmethodapi.DoReadContactCommunicationMethodResponse{ContactCommunicationMethod: result}, err
 }
 
-func (cmm *contactcommunicationmethodService) DoReadAll(ctx context.Context, req *contactcommunicationmethodapi.DoReadAllRequest) (*contactcommunicationmethodapi.DoReadAllResponse, error) {
+func (cmm *contactcommunicationmethodService) DoReadAll(ctx context.Context, req *contactcommunicationmethodapi.DoReadAllContactCommunicationMethodRequest) (*contactcommunicationmethodapi.DoReadAllContactCommunicationMethodResponse, error) {
 	result, err := cmm.repo.DoReadAll(ctx, req.GetContactSystemCode(), req.GetContactId())
 
-	return &contactcommunicationmethodapi.DoReadAllResponse{ContactCommunicationMethod: result}, err
+	return &contactcommunicationmethodapi.DoReadAllContactCommunicationMethodResponse{ContactCommunicationMethod: result}, err
 }
 
-func (cmm *contactcommunicationmethodService) DoSave(ctx context.Context, req *contactcommunicationmethodapi.DoSaveRequest) (*contactcommunicationmethodapi.DoSaveResponse, error) {
+func (cmm *contactcommunicationmethodService) DoSave(ctx context.Context, req *contactcommunicationmethodapi.DoSaveContactCommunicationMethodRequest) (*contactcommunicationmethodapi.DoSaveContactCommunicationMethodResponse, error) {
 	res, err := doUpdate(ctx, cmm.repo, req)
 	if err != nil {
 		s, ok := status.FromError(err)
@@ -44,20 +44,20 @@ func (cmm *contactcommunicationmethodService) DoSave(ctx context.Context, req *c
 	return res, err
 }
 
-func (cmm *contactcommunicationmethodService) DoDelete(ctx context.Context, req *contactcommunicationmethodapi.DoDeleteRequest) (*contactcommunicationmethodapi.DoDeleteResponse, error) {
+func (cmm *contactcommunicationmethodService) DoDelete(ctx context.Context, req *contactcommunicationmethodapi.DoDeleteContactCommunicationMethodRequest) (*contactcommunicationmethodapi.DoDeleteContactCommunicationMethodResponse, error) {
 	err := cmm.repo.DoDelete(ctx, req.GetContactSystemCode(), req.GetContactId(), req.GetContactCommunicationMethodId())
 
-	return &contactcommunicationmethodapi.DoDeleteResponse{Result: err == nil}, err
+	return &contactcommunicationmethodapi.DoDeleteContactCommunicationMethodResponse{Result: err == nil}, err
 }
 
-func doInsert(ctx context.Context, repo contactcommunicationmethodrepository.IContactCommunicationMethodRepository, req *contactcommunicationmethodapi.DoSaveRequest) (*contactcommunicationmethodapi.DoSaveResponse, error) {
+func doInsert(ctx context.Context, repo contactcommunicationmethodrepository.IContactCommunicationMethodRepository, req *contactcommunicationmethodapi.DoSaveContactCommunicationMethodRequest) (*contactcommunicationmethodapi.DoSaveContactCommunicationMethodResponse, error) {
 	err := repo.DoInsert(ctx, req.GetContactCommunicationMethod())
 
-	return &contactcommunicationmethodapi.DoSaveResponse{Result: err == nil}, err
+	return &contactcommunicationmethodapi.DoSaveContactCommunicationMethodResponse{Result: err == nil}, err
 }
 
-func doUpdate(ctx context.Context, repo contactcommunicationmethodrepository.IContactCommunicationMethodRepository, req *contactcommunicationmethodapi.DoSaveRequest) (*contactcommunicationmethodapi.DoSaveResponse, error) {
+func doUpdate(ctx context.Context, repo contactcommunicationmethodrepository.IContactCommunicationMethodRepository, req *contactcommunicationmethodapi.DoSaveContactCommunicationMethodRequest) (*contactcommunicationmethodapi.DoSaveContactCommunicationMethodResponse, error) {
 	err := repo.DoUpdate(ctx, req.GetContactCommunicationMethod())
 
-	return &contactcommunicationmethodapi.DoSaveResponse{Result: err == nil}, err
+	return &contactcommunicationmethodapi.DoSaveContactCommunicationMethodResponse{Result: err == nil}, err
 }
