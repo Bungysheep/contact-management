@@ -23,16 +23,16 @@ type IContactCommunicationMethodRepository interface {
 	DoDeleteAll(context.Context, string, int64) error
 }
 
-type communicationMethodRepository struct {
+type contactCommunicationMethodRepository struct {
 	db *sql.DB
 }
 
 // NewContactCommunicationMethodRepository - Contact Communication Method repository implementation
 func NewContactCommunicationMethodRepository(db *sql.DB) IContactCommunicationMethodRepository {
-	return &communicationMethodRepository{db: db}
+	return &contactCommunicationMethodRepository{db: db}
 }
 
-func (cm *communicationMethodRepository) DoRead(ctx context.Context, contactSystemCode string, contactID int64, contactCommunicationMethodID int64) (*contactcommunicationmethod.ContactCommunicationMethod, error) {
+func (cm *contactCommunicationMethodRepository) DoRead(ctx context.Context, contactSystemCode string, contactID int64, contactCommunicationMethodID int64) (*contactcommunicationmethod.ContactCommunicationMethod, error) {
 	result := &contactcommunicationmethod.ContactCommunicationMethod{Audit: &audit.Audit{}}
 
 	conn, err := cm.db.Conn(ctx)
@@ -81,7 +81,7 @@ func (cm *communicationMethodRepository) DoRead(ctx context.Context, contactSyst
 	return result, nil
 }
 
-func (cm *communicationMethodRepository) DoReadAll(ctx context.Context, contactSystemCode string, contactID int64) ([]*contactcommunicationmethod.ContactCommunicationMethod, error) {
+func (cm *contactCommunicationMethodRepository) DoReadAll(ctx context.Context, contactSystemCode string, contactID int64) ([]*contactcommunicationmethod.ContactCommunicationMethod, error) {
 	result := make([]*contactcommunicationmethod.ContactCommunicationMethod, 0)
 
 	conn, err := cm.db.Conn(ctx)
@@ -138,7 +138,7 @@ func (cm *communicationMethodRepository) DoReadAll(ctx context.Context, contactS
 	return result, nil
 }
 
-func (cm *communicationMethodRepository) DoInsert(ctx context.Context, data *contactcommunicationmethod.ContactCommunicationMethod) error {
+func (cm *contactCommunicationMethodRepository) DoInsert(ctx context.Context, data *contactcommunicationmethod.ContactCommunicationMethod) error {
 	createdAt, _ := ptypes.Timestamp(data.GetAudit().GetCreatedAt())
 	modifiedAt, _ := ptypes.Timestamp(data.GetAudit().GetModifiedAt())
 
@@ -166,7 +166,7 @@ func (cm *communicationMethodRepository) DoInsert(ctx context.Context, data *con
 	return nil
 }
 
-func (cm *communicationMethodRepository) DoUpdate(ctx context.Context, data *contactcommunicationmethod.ContactCommunicationMethod) error {
+func (cm *contactCommunicationMethodRepository) DoUpdate(ctx context.Context, data *contactcommunicationmethod.ContactCommunicationMethod) error {
 	modifiedAt, _ := ptypes.Timestamp(data.GetAudit().GetModifiedAt())
 
 	conn, err := cm.db.Conn(ctx)
@@ -193,7 +193,14 @@ func (cm *communicationMethodRepository) DoUpdate(ctx context.Context, data *con
 	return nil
 }
 
-func (cm *communicationMethodRepository) DoDelete(ctx context.Context, contactSystemCode string, contactID int64, contactCommunicationMethodID int64) error {
+func (cm *contactCommunicationMethodRepository) DoDelete(ctx context.Context, contactSystemCode string, contactID int64, contactCommunicationMethodID int64) error {
+	isDefault, err := cm.isDefault(ctx, contactSystemCode, contactID, contactCommunicationMethodID)
+	if err != nil {
+		return err
+	} else if isDefault {
+		return status.Errorf(codes.Unknown, message.UnableDeleteDefault("Contact Communication Method"))
+	}
+
 	conn, err := cm.db.Conn(ctx)
 	if err != nil {
 		return status.Errorf(codes.Unknown, message.FailedConnectToDatabase(err))
@@ -218,7 +225,7 @@ func (cm *communicationMethodRepository) DoDelete(ctx context.Context, contactSy
 	return nil
 }
 
-func (cm *communicationMethodRepository) DoDeleteAll(ctx context.Context, contactSystemCode string, contactID int64) error {
+func (cm *contactCommunicationMethodRepository) DoDeleteAll(ctx context.Context, contactSystemCode string, contactID int64) error {
 	conn, err := cm.db.Conn(ctx)
 	if err != nil {
 		return status.Errorf(codes.Unknown, message.FailedConnectToDatabase(err))
@@ -236,4 +243,13 @@ func (cm *communicationMethodRepository) DoDeleteAll(ctx context.Context, contac
 	}
 
 	return nil
+}
+
+func (cm *contactCommunicationMethodRepository) isDefault(ctx context.Context, contactSystemCode string, contactID int64, contactCommunicationMethodID int64) (bool, error) {
+	result, err := cm.DoRead(ctx, contactSystemCode, contactID, contactCommunicationMethodID)
+	if err != nil {
+		return false, err
+	}
+
+	return result.GetIsDefault(), nil
 }

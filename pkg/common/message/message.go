@@ -81,3 +81,8 @@ func FailedRetrieveRowDeleted(err error) string {
 func FailedDeleteAsReferenceExist(name string) string {
 	return fmt.Sprintf("Failed to delete as there is any reference to %s", name)
 }
+
+// UnableDeleteDefault message
+func UnableDeleteDefault(name string) string {
+	return fmt.Sprintf("Unable to delete default %s", name)
+}
