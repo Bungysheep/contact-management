@@ -22,6 +22,7 @@ type ICommunicationMethodRepository interface {
 	DoInsert(context.Context, *communicationmethod.CommunicationMethod) error
 	DoUpdate(context.Context, *communicationmethod.CommunicationMethod) error
 	DoDelete(context.Context, string, string) error
+	AnyReference(context.Context, string) (bool, error)
 }
 
 type communicationMethodRepository struct {
@@ -227,4 +228,32 @@ func (cm *communicationMethodRepository) DoDelete(ctx context.Context, contactSy
 	}
 
 	return nil
+}
+
+func (cm *communicationMethodRepository) AnyReference(ctx context.Context, contactSystemCode string) (bool, error) {
+	conn, err := cm.db.Conn(ctx)
+	if err != nil {
+		return false, status.Errorf(codes.Unknown, message.FailedConnectToDatabase(err))
+	}
+	defer conn.Close()
+
+	stmt, err := conn.PrepareContext(ctx, "SELECT 1 FROM communication_method WHERE contact_system_code=$1")
+	if err != nil {
+		return false, status.Errorf(codes.Unknown, message.FailedPrepareRead("Communication Method", err))
+	}
+
+	rows, err := stmt.QueryContext(ctx, contactSystemCode)
+	if err != nil {
+		return false, status.Errorf(codes.Unknown, message.FailedRead("Communication Method", err))
+	}
+	defer rows.Close()
+
+	if !rows.Next() {
+		if err := rows.Err(); err != nil {
+			return false, status.Errorf(codes.Unknown, message.FailedRetrieveRow("Communication Method", err))
+		}
+		return false, nil
+	}
+
+	return true, nil
 }

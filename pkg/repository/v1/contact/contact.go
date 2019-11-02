@@ -21,6 +21,7 @@ type IContactRepository interface {
 	DoInsert(context.Context, *contact.Contact) error
 	DoUpdate(context.Context, *contact.Contact) error
 	DoDelete(context.Context, string, int64) error
+	AnyReference(context.Context, string) (bool, error)
 }
 
 type contactRepository struct {
@@ -218,4 +219,32 @@ func (cm *contactRepository) DoDelete(ctx context.Context, contactSystemCode str
 	}
 
 	return nil
+}
+
+func (cm *contactRepository) AnyReference(ctx context.Context, contactSystemCode string) (bool, error) {
+	conn, err := cm.db.Conn(ctx)
+	if err != nil {
+		return false, status.Errorf(codes.Unknown, message.FailedConnectToDatabase(err))
+	}
+	defer conn.Close()
+
+	stmt, err := conn.PrepareContext(ctx, "SELECT 1 FROM contact WHERE contact_system_code=$1")
+	if err != nil {
+		return false, status.Errorf(codes.Unknown, message.FailedPrepareRead("Contact", err))
+	}
+
+	rows, err := stmt.QueryContext(ctx, contactSystemCode)
+	if err != nil {
+		return false, status.Errorf(codes.Unknown, message.FailedRead("Contact", err))
+	}
+	defer rows.Close()
+
+	if !rows.Next() {
+		if err := rows.Err(); err != nil {
+			return false, status.Errorf(codes.Unknown, message.FailedRetrieveRow("Contact", err))
+		}
+		return false, nil
+	}
+
+	return true, nil
 }
