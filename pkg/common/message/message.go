@@ -76,3 +76,8 @@ func FailedDelete(name string, err error) string {
 func FailedRetrieveRowDeleted(err error) string {
 	return fmt.Sprintf("Failed to retrieve number of row deleted: %v", err)
 }
+
+// FailedDeleteAsReferenceExist message
+func FailedDeleteAsReferenceExist(name string) string {
+	return fmt.Sprintf("Failed to delete as there is any reference to %s", name)
+}

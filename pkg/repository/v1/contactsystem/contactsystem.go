@@ -8,6 +8,8 @@ import (
 	"github.com/bungysheep/contact-management/pkg/api/v1/audit"
 	"github.com/bungysheep/contact-management/pkg/api/v1/contactsystem"
 	"github.com/bungysheep/contact-management/pkg/common/message"
+	communicationmethodrepository "github.com/bungysheep/contact-management/pkg/repository/v1/communicationmethod"
+	contactrepository "github.com/bungysheep/contact-management/pkg/repository/v1/contact"
 	"github.com/golang/protobuf/ptypes"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -187,6 +189,10 @@ func (cntsys *contactSystemRepository) DoUpdate(ctx context.Context, data *conta
 }
 
 func (cntsys *contactSystemRepository) DoDelete(ctx context.Context, contactSystemCode string) error {
+	if err := cntsys.anyReferences(ctx, contactSystemCode); err != nil {
+		return err
+	}
+
 	conn, err := cntsys.db.Conn(ctx)
 	if err != nil {
 		return status.Errorf(codes.Unknown, message.FailedConnectToDatabase(err))
@@ -206,6 +212,28 @@ func (cntsys *contactSystemRepository) DoDelete(ctx context.Context, contactSyst
 	rows, _ := result.RowsAffected()
 	if rows == 0 {
 		return status.Errorf(codes.NotFound, message.DoesNotExist("Contact System"))
+	}
+
+	return nil
+}
+
+func (cntsys *contactSystemRepository) anyReferences(ctx context.Context, contactSystemCode string) error {
+	// Check if any Communication Method references
+	cm := communicationmethodrepository.NewCommunicationMethodRepository(cntsys.db)
+	anyRef, err := cm.AnyReference(ctx, contactSystemCode)
+	if err != nil {
+		return err
+	} else if anyRef {
+		return status.Errorf(codes.Unknown, message.FailedDeleteAsReferenceExist("Communication Method"))
+	}
+
+	// Check if any Contact references
+	cnt := contactrepository.NewContactRepository(cntsys.db)
+	anyRef, err = cnt.AnyReference(ctx, contactSystemCode)
+	if err != nil {
+		return err
+	} else if anyRef {
+		return status.Errorf(codes.Unknown, message.FailedDeleteAsReferenceExist("Contact"))
 	}
 
 	return nil
