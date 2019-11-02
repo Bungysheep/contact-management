@@ -105,3 +105,18 @@ func (mr *MockIContactRepositoryMockRecorder) DoDelete(arg0, arg1, arg2 interfac
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DoDelete", reflect.TypeOf((*MockIContactRepository)(nil).DoDelete), arg0, arg1, arg2)
 }
+
+// AnyReference mocks base method
+func (m *MockIContactRepository) AnyReference(arg0 context.Context, arg1 string) (bool, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "AnyReference", arg0, arg1)
+	ret0, _ := ret[0].(bool)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// AnyReference indicates an expected call of AnyReference
+func (mr *MockIContactRepositoryMockRecorder) AnyReference(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AnyReference", reflect.TypeOf((*MockIContactRepository)(nil).AnyReference), arg0, arg1)
+}

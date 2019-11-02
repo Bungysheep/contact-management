@@ -65,6 +65,8 @@ func TestContactRepository(t *testing.T) {
 	t.Run("DoSave Contact", doSave(ctx))
 
 	t.Run("DoDelete Contact", doDelete(ctx))
+
+	t.Run("AnyReference Contact", anyReference(ctx))
 }
 
 func doRead(ctx context.Context) func(t *testing.T) {
@@ -112,6 +114,18 @@ func doDelete(ctx context.Context) func(t *testing.T) {
 		t.Run("DoDelete all communication methods fail", doDeleteFailContactCommunicationMethod(ctx, data[0]))
 
 		t.Run("DoDelete existing", doDeleteExistingContact(ctx, data[0]))
+	}
+}
+
+func anyReference(ctx context.Context) func(t *testing.T) {
+	return func(t *testing.T) {
+		t.Run("AnyReference fail", anyReferenceFailContact(ctx, data[0]))
+
+		t.Run("AnyReference unexisting", anyReferenceUnexistingContact(ctx, data[0]))
+
+		t.Run("AnyReference row error", anyReferenceRowErrorContact(ctx, data[0]))
+
+		t.Run("AnyReference existing", anyReferenceExistingContact(ctx, data[0]))
 	}
 }
 
@@ -530,6 +544,92 @@ func doDeleteExistingContact(ctx context.Context, input *contact.Contact) func(t
 		err := repo.DoDelete(ctx, input.GetContactSystemCode(), input.GetContactId())
 		if err != nil {
 			t.Errorf("Failed to delete contact: %v", err)
+		}
+	}
+}
+
+func anyReferenceFailContact(ctx context.Context, input *contact.Contact) func(t *testing.T) {
+	return func(t *testing.T) {
+		expQuery := mock.ExpectPrepare("SELECT 1 FROM contact").ExpectQuery()
+		expQuery.WithArgs(input.GetContactSystemCode()).WillReturnError(fmt.Errorf("AnyReference contact failed"))
+
+		res, err := repo.AnyReference(ctx, input.GetContactSystemCode())
+		if err != nil {
+			s, ok := status.FromError(err)
+			if ok {
+				if s.Code() != codes.Unknown {
+					t.Fatalf("Expect a Unknown error, but got %s", s.Code())
+				}
+			}
+		} else {
+			t.Errorf("Expect error is not nil")
+		}
+
+		if res {
+			t.Errorf("Expect result is FALSE")
+		}
+	}
+}
+
+func anyReferenceUnexistingContact(ctx context.Context, input *contact.Contact) func(t *testing.T) {
+	return func(t *testing.T) {
+		rows := sqlmock.NewRows([]string{"exists"})
+
+		expQuery := mock.ExpectPrepare("SELECT 1 FROM contact").ExpectQuery()
+		expQuery.WithArgs(input.GetContactSystemCode()).WillReturnRows(rows)
+
+		res, err := repo.AnyReference(ctx, input.GetContactSystemCode())
+		if err != nil {
+			t.Errorf("Expect error is nil")
+		}
+
+		if res {
+			t.Errorf("Expect result is FALSE")
+		}
+	}
+}
+
+func anyReferenceRowErrorContact(ctx context.Context, input *contact.Contact) func(t *testing.T) {
+	return func(t *testing.T) {
+		rows := sqlmock.NewRows([]string{"exists"}).
+			AddRow(1).
+			RowError(0, fmt.Errorf("AnyReference row error"))
+
+		expQuery := mock.ExpectPrepare("SELECT 1 FROM contact").ExpectQuery()
+		expQuery.WithArgs(input.GetContactSystemCode()).WillReturnRows(rows)
+
+		res, err := repo.AnyReference(ctx, input.GetContactSystemCode())
+		if err != nil {
+			s, ok := status.FromError(err)
+			if ok {
+				if s.Code() != codes.Unknown {
+					t.Fatalf("Expect a Unknown error, but got %s", s.Code())
+				}
+			}
+		} else {
+			t.Errorf("Expect error is not nil")
+		}
+
+		if res {
+			t.Errorf("Expect result is FALSE")
+		}
+	}
+}
+
+func anyReferenceExistingContact(ctx context.Context, input *contact.Contact) func(t *testing.T) {
+	return func(t *testing.T) {
+		rows := sqlmock.NewRows([]string{"exists"}).AddRow("1")
+
+		expQuery := mock.ExpectPrepare("SELECT 1 FROM contact").ExpectQuery()
+		expQuery.WithArgs(input.GetContactSystemCode()).WillReturnRows(rows)
+
+		res, err := repo.AnyReference(ctx, input.GetContactSystemCode())
+		if err != nil {
+			t.Errorf("Expect error is nil")
+		}
+
+		if !res {
+			t.Errorf("Expect result is TRUE")
 		}
 	}
 }
