@@ -4,38 +4,60 @@ import (
 	"context"
 	"os"
 	"testing"
+	"time"
 
-	"github.com/bungysheep/contact-management/pkg/api/v1/contactsystem"
+	auditapi "github.com/bungysheep/contact-management/pkg/api/v1/audit"
+	contactsystemapi "github.com/bungysheep/contact-management/pkg/api/v1/contactsystem"
 	"github.com/bungysheep/contact-management/pkg/common/message"
+	auditmodel "github.com/bungysheep/contact-management/pkg/models/v1/audit"
+	contactsystemmodel "github.com/bungysheep/contact-management/pkg/models/v1/contactsystem"
 	"github.com/bungysheep/contact-management/pkg/repository/v1/contactsystem/mock_contactsystem"
 	"github.com/golang/mock/gomock"
+	"github.com/golang/protobuf/ptypes"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
 
 var (
 	ctx  context.Context
-	data []*contactsystem.ContactSystem
+	data []*contactsystemmodel.ContactSystem
 )
 
 func TestMain(m *testing.M) {
 	ctx = context.TODO()
 
-	data = append(data, &contactsystem.ContactSystem{
+	tmNow := time.Now().In(time.UTC)
+
+	data = append(data, &contactsystemmodel.ContactSystem{
 		ContactSystemCode: "CNTSYS001",
 		Description:       "Contact System 1",
 		Details:           "Contact System 1",
 		Status:            "A",
-	}, &contactsystem.ContactSystem{
+		Audit: &auditmodel.Audit{
+			CreatedAt:  tmNow,
+			ModifiedAt: tmNow,
+			Vers:       1,
+		},
+	}, &contactsystemmodel.ContactSystem{
 		ContactSystemCode: "CNTSYS002",
 		Description:       "Contact System 2",
 		Details:           "Contact System 2",
 		Status:            "A",
-	}, &contactsystem.ContactSystem{
+		Audit: &auditmodel.Audit{
+			CreatedAt:  tmNow,
+			ModifiedAt: tmNow,
+			Vers:       1,
+		},
+	}, &contactsystemmodel.ContactSystem{
 		ContactSystemCode: "CNTSYS003",
 		Description:       "Contact System 3",
 		Details:           "Contact System 3",
 		Status:            "A",
+		Audit: &auditmodel.Audit{
+			CreatedAt:  tmNow,
+			ModifiedAt: tmNow,
+			Vers:       1,
+		},
 	})
 
 	exitCode := m.Run()
@@ -55,7 +77,7 @@ func TestContactSystemService(t *testing.T) {
 	t.Run("DoDelete Contact System", doDelete(ctx, data[0]))
 }
 
-func doRead(ctx context.Context, input *contactsystem.ContactSystem) func(t *testing.T) {
+func doRead(ctx context.Context, input *contactsystemmodel.ContactSystem) func(t *testing.T) {
 	return func(t *testing.T) {
 		ctl := gomock.NewController(t)
 		defer ctl.Finish()
@@ -66,7 +88,7 @@ func doRead(ctx context.Context, input *contactsystem.ContactSystem) func(t *tes
 
 		svc := NewContactSystemService(repo)
 
-		resp, err := svc.DoRead(ctx, &contactsystem.DoReadContactSystemRequest{ContactSystemCode: input.GetContactSystemCode()})
+		resp, err := svc.DoRead(ctx, &contactsystemapi.DoReadContactSystemRequest{ContactSystemCode: input.GetContactSystemCode()})
 		if err != nil {
 			t.Errorf("Expect error is nil")
 		}
@@ -93,7 +115,7 @@ func doRead(ctx context.Context, input *contactsystem.ContactSystem) func(t *tes
 	}
 }
 
-func doReadAll(ctx context.Context, input *contactsystem.ContactSystem) func(t *testing.T) {
+func doReadAll(ctx context.Context, input *contactsystemmodel.ContactSystem) func(t *testing.T) {
 	return func(t *testing.T) {
 		ctl := gomock.NewController(t)
 		defer ctl.Finish()
@@ -104,7 +126,7 @@ func doReadAll(ctx context.Context, input *contactsystem.ContactSystem) func(t *
 
 		svc := NewContactSystemService(repo)
 
-		resp, err := svc.DoReadAll(ctx, &contactsystem.DoReadAllContactSystemRequest{})
+		resp, err := svc.DoReadAll(ctx, &contactsystemapi.DoReadAllContactSystemRequest{})
 		if err != nil {
 			t.Errorf("Expect error is nil")
 		}
@@ -135,12 +157,21 @@ func doReadAll(ctx context.Context, input *contactsystem.ContactSystem) func(t *
 	}
 }
 
-func doSaveNew(ctx context.Context, input *contactsystem.ContactSystem) func(t *testing.T) {
+func doSaveNew(ctx context.Context, input *contactsystemmodel.ContactSystem) func(t *testing.T) {
 	return func(t *testing.T) {
 		ctl := gomock.NewController(t)
 		defer ctl.Finish()
 
 		repo := mock_contactsystem.NewMockIContactSystemRepository(ctl)
+
+		contactSystem := &contactsystemapi.ContactSystem{Audit: &auditapi.Audit{}}
+		contactSystem.ContactSystemCode = input.GetContactSystemCode()
+		contactSystem.Description = input.GetDescription()
+		contactSystem.Details = input.GetDetails()
+		contactSystem.Status = input.GetStatus()
+		contactSystem.GetAudit().CreatedAt, _ = ptypes.TimestampProto(input.GetAudit().GetCreatedAt())
+		contactSystem.GetAudit().ModifiedAt, _ = ptypes.TimestampProto(input.GetAudit().GetModifiedAt())
+		contactSystem.GetAudit().Vers = input.GetAudit().GetVers()
 
 		repo.EXPECT().DoUpdate(ctx, input).Return(status.Errorf(codes.NotFound, message.DoesNotExist("Contact System")))
 
@@ -148,7 +179,7 @@ func doSaveNew(ctx context.Context, input *contactsystem.ContactSystem) func(t *
 
 		svc := NewContactSystemService(repo)
 
-		resp, err := svc.DoSave(ctx, &contactsystem.DoSaveContactSystemRequest{ContactSystem: input})
+		resp, err := svc.DoSave(ctx, &contactsystemapi.DoSaveContactSystemRequest{ContactSystem: contactSystem})
 		if err != nil {
 			t.Errorf("Expect error is nil")
 		}
@@ -159,18 +190,27 @@ func doSaveNew(ctx context.Context, input *contactsystem.ContactSystem) func(t *
 	}
 }
 
-func doSaveExisting(ctx context.Context, input *contactsystem.ContactSystem) func(t *testing.T) {
+func doSaveExisting(ctx context.Context, input *contactsystemmodel.ContactSystem) func(t *testing.T) {
 	return func(t *testing.T) {
 		ctl := gomock.NewController(t)
 		defer ctl.Finish()
 
 		repo := mock_contactsystem.NewMockIContactSystemRepository(ctl)
 
+		contactSystem := &contactsystemapi.ContactSystem{Audit: &auditapi.Audit{}}
+		contactSystem.ContactSystemCode = input.GetContactSystemCode()
+		contactSystem.Description = input.GetDescription()
+		contactSystem.Details = input.GetDetails()
+		contactSystem.Status = input.GetStatus()
+		contactSystem.GetAudit().CreatedAt, _ = ptypes.TimestampProto(input.GetAudit().GetCreatedAt())
+		contactSystem.GetAudit().ModifiedAt, _ = ptypes.TimestampProto(input.GetAudit().GetModifiedAt())
+		contactSystem.GetAudit().Vers = input.GetAudit().GetVers()
+
 		repo.EXPECT().DoUpdate(ctx, input).Return(nil)
 
 		svc := NewContactSystemService(repo)
 
-		resp, err := svc.DoSave(ctx, &contactsystem.DoSaveContactSystemRequest{ContactSystem: input})
+		resp, err := svc.DoSave(ctx, &contactsystemapi.DoSaveContactSystemRequest{ContactSystem: contactSystem})
 		if err != nil {
 			t.Errorf("Expect error is nil")
 		}
@@ -181,7 +221,7 @@ func doSaveExisting(ctx context.Context, input *contactsystem.ContactSystem) fun
 	}
 }
 
-func doDelete(ctx context.Context, input *contactsystem.ContactSystem) func(t *testing.T) {
+func doDelete(ctx context.Context, input *contactsystemmodel.ContactSystem) func(t *testing.T) {
 	return func(t *testing.T) {
 		ctl := gomock.NewController(t)
 		defer ctl.Finish()
@@ -192,7 +232,7 @@ func doDelete(ctx context.Context, input *contactsystem.ContactSystem) func(t *t
 
 		svc := NewContactSystemService(repo)
 
-		resp, err := svc.DoDelete(ctx, &contactsystem.DoDeleteContactSystemRequest{ContactSystemCode: input.GetContactSystemCode()})
+		resp, err := svc.DoDelete(ctx, &contactsystemapi.DoDeleteContactSystemRequest{ContactSystemCode: input.GetContactSystemCode()})
 		if err != nil {
 			t.Errorf("Expect error is nil")
 		}

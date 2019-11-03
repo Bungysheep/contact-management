@@ -9,9 +9,8 @@ import (
 	"time"
 
 	"github.com/DATA-DOG/go-sqlmock"
-	"github.com/bungysheep/contact-management/pkg/api/v1/audit"
-	"github.com/bungysheep/contact-management/pkg/api/v1/contactsystem"
-	"github.com/golang/protobuf/ptypes"
+	"github.com/bungysheep/contact-management/pkg/models/v1/audit"
+	"github.com/bungysheep/contact-management/pkg/models/v1/contactsystem"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
@@ -361,11 +360,10 @@ func doReadAllExistingContactSystems(ctx context.Context, input *contactsystem.C
 func doSaveNewFailContactSystem(ctx context.Context, input *contactsystem.ContactSystem) func(t *testing.T) {
 	return func(t *testing.T) {
 		tmNow := time.Now().In(time.UTC)
-		tmstpNow, _ := ptypes.TimestampProto(tmNow)
 
 		input.Audit = &audit.Audit{
-			CreatedAt:  tmstpNow,
-			ModifiedAt: tmstpNow,
+			CreatedAt:  tmNow,
+			ModifiedAt: tmNow,
 			Vers:       1,
 		}
 
@@ -389,11 +387,10 @@ func doSaveNewFailContactSystem(ctx context.Context, input *contactsystem.Contac
 func doSaveNewContactSystem(ctx context.Context, input *contactsystem.ContactSystem) func(t *testing.T) {
 	return func(t *testing.T) {
 		tmNow := time.Now().In(time.UTC)
-		tmstpNow, _ := ptypes.TimestampProto(tmNow)
 
 		input.Audit = &audit.Audit{
-			CreatedAt:  tmstpNow,
-			ModifiedAt: tmstpNow,
+			CreatedAt:  tmNow,
+			ModifiedAt: tmNow,
 			Vers:       1,
 		}
 
@@ -410,11 +407,10 @@ func doSaveNewContactSystem(ctx context.Context, input *contactsystem.ContactSys
 func doSaveExistingFailContactSystem(ctx context.Context, input *contactsystem.ContactSystem) func(t *testing.T) {
 	return func(t *testing.T) {
 		tmNow := time.Now().In(time.UTC)
-		tmstpNow, _ := ptypes.TimestampProto(tmNow)
 
 		input.Audit = &audit.Audit{
-			CreatedAt:  tmstpNow,
-			ModifiedAt: tmstpNow,
+			CreatedAt:  tmNow,
+			ModifiedAt: tmNow,
 			Vers:       2,
 		}
 
@@ -438,11 +434,10 @@ func doSaveExistingFailContactSystem(ctx context.Context, input *contactsystem.C
 func doSaveExistingContactSystem(ctx context.Context, input *contactsystem.ContactSystem) func(t *testing.T) {
 	return func(t *testing.T) {
 		tmNow := time.Now().In(time.UTC)
-		tmstpNow, _ := ptypes.TimestampProto(tmNow)
 
 		input.Audit = &audit.Audit{
-			CreatedAt:  tmstpNow,
-			ModifiedAt: tmstpNow,
+			CreatedAt:  tmNow,
+			ModifiedAt: tmNow,
 			Vers:       2,
 		}
 

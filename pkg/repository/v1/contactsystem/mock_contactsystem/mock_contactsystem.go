@@ -6,7 +6,7 @@ package mock_contactsystem
 
 import (
 	context "context"
-	contactsystem "github.com/bungysheep/contact-management/pkg/api/v1/contactsystem"
+	contactsystem "github.com/bungysheep/contact-management/pkg/models/v1/contactsystem"
 	gomock "github.com/golang/mock/gomock"
 	reflect "reflect"
 )

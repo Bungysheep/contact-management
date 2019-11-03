@@ -3,14 +3,11 @@ package contactsystem
 import (
 	"context"
 	"database/sql"
-	"time"
 
-	"github.com/bungysheep/contact-management/pkg/api/v1/audit"
-	"github.com/bungysheep/contact-management/pkg/api/v1/contactsystem"
 	"github.com/bungysheep/contact-management/pkg/common/message"
+	"github.com/bungysheep/contact-management/pkg/models/v1/contactsystem"
 	communicationmethodrepository "github.com/bungysheep/contact-management/pkg/repository/v1/communicationmethod"
 	contactrepository "github.com/bungysheep/contact-management/pkg/repository/v1/contact"
-	"github.com/golang/protobuf/ptypes"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
@@ -34,7 +31,7 @@ func NewContactSystemRepository(db *sql.DB) IContactSystemRepository {
 }
 
 func (cntsys *contactSystemRepository) DoRead(ctx context.Context, contactSystemCode string) (*contactsystem.ContactSystem, error) {
-	result := &contactsystem.ContactSystem{Audit: &audit.Audit{}}
+	result := contactsystem.NewContactSystem()
 
 	conn, err := cntsys.db.Conn(ctx)
 	if err != nil {
@@ -60,21 +57,16 @@ func (cntsys *contactSystemRepository) DoRead(ctx context.Context, contactSystem
 		return nil, status.Errorf(codes.NotFound, message.DoesNotExist("Contact System"))
 	}
 
-	var createdAt, modifiedAt time.Time
-
 	if err := rows.Scan(
 		&result.ContactSystemCode,
 		&result.Description,
 		&result.Details,
 		&result.Status,
-		&createdAt,
-		&modifiedAt,
+		&result.GetAudit().CreatedAt,
+		&result.GetAudit().ModifiedAt,
 		&result.GetAudit().Vers); err != nil {
 		return nil, status.Errorf(codes.Unknown, message.FailedRetrieveValues("Contact System", err))
 	}
-
-	result.GetAudit().CreatedAt, _ = ptypes.TimestampProto(createdAt)
-	result.GetAudit().ModifiedAt, _ = ptypes.TimestampProto(modifiedAt)
 
 	return result, nil
 }
@@ -99,8 +91,6 @@ func (cntsys *contactSystemRepository) DoReadAll(ctx context.Context) ([]*contac
 	}
 	defer rows.Close()
 
-	var createdAt, modifiedAt time.Time
-
 	for {
 		if !rows.Next() {
 			if err := rows.Err(); err != nil {
@@ -112,20 +102,17 @@ func (cntsys *contactSystemRepository) DoReadAll(ctx context.Context) ([]*contac
 			break
 		}
 
-		contactSystem := &contactsystem.ContactSystem{Audit: &audit.Audit{}}
+		contactSystem := contactsystem.NewContactSystem()
 		if err := rows.Scan(
 			&contactSystem.ContactSystemCode,
 			&contactSystem.Description,
 			&contactSystem.Details,
 			&contactSystem.Status,
-			&createdAt,
-			&modifiedAt,
+			&contactSystem.GetAudit().CreatedAt,
+			&contactSystem.GetAudit().ModifiedAt,
 			&contactSystem.GetAudit().Vers); err != nil {
 			return result, status.Errorf(codes.Unknown, message.FailedRetrieveValues("Contact System", err))
 		}
-
-		contactSystem.GetAudit().CreatedAt, _ = ptypes.TimestampProto(createdAt)
-		contactSystem.GetAudit().ModifiedAt, _ = ptypes.TimestampProto(modifiedAt)
 
 		result = append(result, contactSystem)
 	}
@@ -134,9 +121,6 @@ func (cntsys *contactSystemRepository) DoReadAll(ctx context.Context) ([]*contac
 }
 
 func (cntsys *contactSystemRepository) DoInsert(ctx context.Context, data *contactsystem.ContactSystem) error {
-	createdAt, _ := ptypes.Timestamp(data.GetAudit().GetCreatedAt())
-	modifiedAt, _ := ptypes.Timestamp(data.GetAudit().GetModifiedAt())
-
 	conn, err := cntsys.db.Conn(ctx)
 	if err != nil {
 		return status.Errorf(codes.Unknown, message.FailedConnectToDatabase(err))
@@ -148,7 +132,7 @@ func (cntsys *contactSystemRepository) DoInsert(ctx context.Context, data *conta
 		return status.Errorf(codes.Unknown, message.FailedPrepareInsert("Contact System", err))
 	}
 
-	result, err := stmt.ExecContext(ctx, data.GetContactSystemCode(), data.GetDescription(), data.GetDetails(), data.GetStatus(), createdAt, modifiedAt)
+	result, err := stmt.ExecContext(ctx, data.GetContactSystemCode(), data.GetDescription(), data.GetDetails(), data.GetStatus(), data.GetAudit().GetCreatedAt(), data.GetAudit().GetModifiedAt())
 	if err != nil {
 		return status.Errorf(codes.Unknown, message.FailedInsert("Contact System", err))
 	}
@@ -162,8 +146,6 @@ func (cntsys *contactSystemRepository) DoInsert(ctx context.Context, data *conta
 }
 
 func (cntsys *contactSystemRepository) DoUpdate(ctx context.Context, data *contactsystem.ContactSystem) error {
-	modifiedAt, _ := ptypes.Timestamp(data.GetAudit().GetModifiedAt())
-
 	conn, err := cntsys.db.Conn(ctx)
 	if err != nil {
 		return status.Errorf(codes.Unknown, message.FailedConnectToDatabase(err))
@@ -175,7 +157,7 @@ func (cntsys *contactSystemRepository) DoUpdate(ctx context.Context, data *conta
 		return status.Errorf(codes.Unknown, message.FailedPrepareUpdate("Contact System", err))
 	}
 
-	result, err := stmt.ExecContext(ctx, data.GetContactSystemCode(), data.GetDescription(), data.GetDetails(), data.GetStatus(), modifiedAt)
+	result, err := stmt.ExecContext(ctx, data.GetContactSystemCode(), data.GetDescription(), data.GetDetails(), data.GetStatus(), data.GetAudit().GetModifiedAt())
 	if err != nil {
 		return status.Errorf(codes.Unknown, message.FailedUpdate("Contact System", err))
 	}
