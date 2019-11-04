@@ -6,7 +6,7 @@ package mock_communicationmethodlabel
 
 import (
 	context "context"
-	communicationmethodlabel "github.com/bungysheep/contact-management/pkg/api/v1/communicationmethodlabel"
+	communicationmethodlabel "github.com/bungysheep/contact-management/pkg/models/v1/communicationmethodlabel"
 	gomock "github.com/golang/mock/gomock"
 	reflect "reflect"
 )

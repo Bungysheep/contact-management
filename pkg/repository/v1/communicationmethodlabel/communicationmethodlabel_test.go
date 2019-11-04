@@ -8,7 +8,7 @@ import (
 	"testing"
 
 	"github.com/DATA-DOG/go-sqlmock"
-	"github.com/bungysheep/contact-management/pkg/api/v1/communicationmethodlabel"
+	"github.com/bungysheep/contact-management/pkg/models/v1/communicationmethodlabel"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
