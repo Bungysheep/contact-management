@@ -3,12 +3,10 @@ package contactcommunicationmethod
 import (
 	"context"
 	"database/sql"
-	"time"
 
-	"github.com/bungysheep/contact-management/pkg/api/v1/audit"
-	"github.com/bungysheep/contact-management/pkg/api/v1/contactcommunicationmethod"
 	"github.com/bungysheep/contact-management/pkg/common/message"
-	"github.com/golang/protobuf/ptypes"
+	"github.com/bungysheep/contact-management/pkg/models/v1/audit"
+	"github.com/bungysheep/contact-management/pkg/models/v1/contactcommunicationmethod"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
@@ -59,24 +57,19 @@ func (cm *contactCommunicationMethodRepository) DoRead(ctx context.Context, cont
 		return nil, status.Errorf(codes.NotFound, message.DoesNotExist("Contact Communication Method"))
 	}
 
-	var createdAt, modifiedAt time.Time
-
 	if err := rows.Scan(
 		&result.ContactSystemCode,
-		&result.ContactId,
-		&result.ContactCommunicationMethodId,
+		&result.ContactID,
+		&result.ContactCommunicationMethodID,
 		&result.CommunicationMethodCode,
 		&result.CommunicationMethodLabelCode,
 		&result.FormatValue,
 		&result.IsDefault,
-		&createdAt,
-		&modifiedAt,
+		&result.GetAudit().CreatedAt,
+		&result.GetAudit().ModifiedAt,
 		&result.GetAudit().Vers); err != nil {
 		return nil, status.Errorf(codes.Unknown, message.FailedRetrieveValues("Contact Communication Method", err))
 	}
-
-	result.GetAudit().CreatedAt, _ = ptypes.TimestampProto(createdAt)
-	result.GetAudit().ModifiedAt, _ = ptypes.TimestampProto(modifiedAt)
 
 	return result, nil
 }
@@ -101,8 +94,6 @@ func (cm *contactCommunicationMethodRepository) DoReadAll(ctx context.Context, c
 	}
 	defer rows.Close()
 
-	var createdAt, modifiedAt time.Time
-
 	for {
 		if !rows.Next() {
 			if err := rows.Err(); err != nil {
@@ -117,20 +108,17 @@ func (cm *contactCommunicationMethodRepository) DoReadAll(ctx context.Context, c
 		contactCommunicationMethod := &contactcommunicationmethod.ContactCommunicationMethod{Audit: &audit.Audit{}}
 		if err := rows.Scan(
 			&contactCommunicationMethod.ContactSystemCode,
-			&contactCommunicationMethod.ContactId,
-			&contactCommunicationMethod.ContactCommunicationMethodId,
+			&contactCommunicationMethod.ContactID,
+			&contactCommunicationMethod.ContactCommunicationMethodID,
 			&contactCommunicationMethod.CommunicationMethodCode,
 			&contactCommunicationMethod.CommunicationMethodLabelCode,
 			&contactCommunicationMethod.FormatValue,
 			&contactCommunicationMethod.IsDefault,
-			&createdAt,
-			&modifiedAt,
+			&contactCommunicationMethod.GetAudit().CreatedAt,
+			&contactCommunicationMethod.GetAudit().ModifiedAt,
 			&contactCommunicationMethod.GetAudit().Vers); err != nil {
 			return result, status.Errorf(codes.Unknown, message.FailedRetrieveValues("Contact Communication Method", err))
 		}
-
-		contactCommunicationMethod.GetAudit().CreatedAt, _ = ptypes.TimestampProto(createdAt)
-		contactCommunicationMethod.GetAudit().ModifiedAt, _ = ptypes.TimestampProto(modifiedAt)
 
 		result = append(result, contactCommunicationMethod)
 	}
@@ -139,9 +127,6 @@ func (cm *contactCommunicationMethodRepository) DoReadAll(ctx context.Context, c
 }
 
 func (cm *contactCommunicationMethodRepository) DoInsert(ctx context.Context, data *contactcommunicationmethod.ContactCommunicationMethod) error {
-	createdAt, _ := ptypes.Timestamp(data.GetAudit().GetCreatedAt())
-	modifiedAt, _ := ptypes.Timestamp(data.GetAudit().GetModifiedAt())
-
 	conn, err := cm.db.Conn(ctx)
 	if err != nil {
 		return status.Errorf(codes.Unknown, message.FailedConnectToDatabase(err))
@@ -153,7 +138,7 @@ func (cm *contactCommunicationMethodRepository) DoInsert(ctx context.Context, da
 		return status.Errorf(codes.Unknown, message.FailedPrepareInsert("Contact Communication Method", err))
 	}
 
-	result, err := stmt.ExecContext(ctx, data.GetContactSystemCode(), data.GetContactId(), data.GetCommunicationMethodCode(), data.GetCommunicationMethodLabelCode(), data.GetFormatValue(), data.GetIsDefault(), createdAt, modifiedAt)
+	result, err := stmt.ExecContext(ctx, data.GetContactSystemCode(), data.GetContactID(), data.GetCommunicationMethodCode(), data.GetCommunicationMethodLabelCode(), data.GetFormatValue(), data.GetIsDefault(), data.GetAudit().GetCreatedAt(), data.GetAudit().GetModifiedAt())
 	if err != nil {
 		return status.Errorf(codes.Unknown, message.FailedInsert("Contact Communication Method", err))
 	}
@@ -167,8 +152,6 @@ func (cm *contactCommunicationMethodRepository) DoInsert(ctx context.Context, da
 }
 
 func (cm *contactCommunicationMethodRepository) DoUpdate(ctx context.Context, data *contactcommunicationmethod.ContactCommunicationMethod) error {
-	modifiedAt, _ := ptypes.Timestamp(data.GetAudit().GetModifiedAt())
-
 	conn, err := cm.db.Conn(ctx)
 	if err != nil {
 		return status.Errorf(codes.Unknown, message.FailedConnectToDatabase(err))
@@ -180,7 +163,7 @@ func (cm *contactCommunicationMethodRepository) DoUpdate(ctx context.Context, da
 		return status.Errorf(codes.Unknown, message.FailedPrepareUpdate("Contact Communication Method", err))
 	}
 
-	result, err := stmt.ExecContext(ctx, data.GetContactSystemCode(), data.GetContactId(), data.GetContactCommunicationMethodId(), data.GetCommunicationMethodCode(), data.GetCommunicationMethodLabelCode(), data.GetFormatValue(), data.GetIsDefault(), modifiedAt)
+	result, err := stmt.ExecContext(ctx, data.GetContactSystemCode(), data.GetContactID(), data.GetContactCommunicationMethodID(), data.GetCommunicationMethodCode(), data.GetCommunicationMethodLabelCode(), data.GetFormatValue(), data.GetIsDefault(), data.GetAudit().GetModifiedAt())
 	if err != nil {
 		return status.Errorf(codes.Unknown, message.FailedUpdate("Contact Communication Method", err))
 	}
