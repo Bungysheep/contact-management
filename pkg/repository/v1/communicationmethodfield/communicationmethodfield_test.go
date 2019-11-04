@@ -9,9 +9,8 @@ import (
 	"time"
 
 	"github.com/DATA-DOG/go-sqlmock"
-	"github.com/bungysheep/contact-management/pkg/api/v1/audit"
-	"github.com/bungysheep/contact-management/pkg/api/v1/communicationmethodfield"
-	"github.com/golang/protobuf/ptypes"
+	"github.com/bungysheep/contact-management/pkg/models/v1/audit"
+	"github.com/bungysheep/contact-management/pkg/models/v1/communicationmethodfield"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
@@ -376,11 +375,10 @@ func doReadAllExistingCommunicationMethodFields(ctx context.Context, input *comm
 func doSaveNewFailCommunicationMethodField(ctx context.Context, input *communicationmethodfield.CommunicationMethodField) func(t *testing.T) {
 	return func(t *testing.T) {
 		tmNow := time.Now().In(time.UTC)
-		tmstpNow, _ := ptypes.TimestampProto(tmNow)
 
 		input.Audit = &audit.Audit{
-			CreatedAt:  tmstpNow,
-			ModifiedAt: tmstpNow,
+			CreatedAt:  tmNow,
+			ModifiedAt: tmNow,
 			Vers:       1,
 		}
 
@@ -404,11 +402,10 @@ func doSaveNewFailCommunicationMethodField(ctx context.Context, input *communica
 func doSaveNewCommunicationMethodField(ctx context.Context, input *communicationmethodfield.CommunicationMethodField) func(t *testing.T) {
 	return func(t *testing.T) {
 		tmNow := time.Now().In(time.UTC)
-		tmstpNow, _ := ptypes.TimestampProto(tmNow)
 
 		input.Audit = &audit.Audit{
-			CreatedAt:  tmstpNow,
-			ModifiedAt: tmstpNow,
+			CreatedAt:  tmNow,
+			ModifiedAt: tmNow,
 			Vers:       1,
 		}
 
@@ -425,11 +422,10 @@ func doSaveNewCommunicationMethodField(ctx context.Context, input *communication
 func doSaveExistingFailCommunicationMethodField(ctx context.Context, input *communicationmethodfield.CommunicationMethodField) func(t *testing.T) {
 	return func(t *testing.T) {
 		tmNow := time.Now().In(time.UTC)
-		tmstpNow, _ := ptypes.TimestampProto(tmNow)
 
 		input.Audit = &audit.Audit{
-			CreatedAt:  tmstpNow,
-			ModifiedAt: tmstpNow,
+			CreatedAt:  tmNow,
+			ModifiedAt: tmNow,
 			Vers:       2,
 		}
 
@@ -453,11 +449,10 @@ func doSaveExistingFailCommunicationMethodField(ctx context.Context, input *comm
 func doSaveExistingCommunicationMethodField(ctx context.Context, input *communicationmethodfield.CommunicationMethodField) func(t *testing.T) {
 	return func(t *testing.T) {
 		tmNow := time.Now().In(time.UTC)
-		tmstpNow, _ := ptypes.TimestampProto(tmNow)
 
 		input.Audit = &audit.Audit{
-			CreatedAt:  tmstpNow,
-			ModifiedAt: tmstpNow,
+			CreatedAt:  tmNow,
+			ModifiedAt: tmNow,
 			Vers:       2,
 		}
 

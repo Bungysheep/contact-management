@@ -2,8 +2,8 @@ package communicationmethodfield
 
 import "github.com/bungysheep/contact-management/pkg/models/v1/audit"
 
-// CommuniationMethodField model
-type CommuniationMethodField struct {
+// CommunicationMethodField model
+type CommunicationMethodField struct {
 	ContactSystemCode       string
 	CommunicationMethodCode string
 	FieldCode               string
@@ -13,38 +13,38 @@ type CommuniationMethodField struct {
 }
 
 // NewCommunicationMethodField creates Communication Method Field
-func NewCommunicationMethodField() *CommuniationMethodField {
-	return &CommuniationMethodField{
+func NewCommunicationMethodField() *CommunicationMethodField {
+	return &CommunicationMethodField{
 		Audit: &audit.Audit{},
 	}
 }
 
 // GetContactSystemCode returns Contact System Code
-func (cmf *CommuniationMethodField) GetContactSystemCode() string {
+func (cmf *CommunicationMethodField) GetContactSystemCode() string {
 	return cmf.ContactSystemCode
 }
 
 // GetCommunicationMethodCode returns Communication Method Code
-func (cmf *CommuniationMethodField) GetCommunicationMethodCode() string {
+func (cmf *CommunicationMethodField) GetCommunicationMethodCode() string {
 	return cmf.CommunicationMethodCode
 }
 
 // GetFieldCode returns Field Code
-func (cmf *CommuniationMethodField) GetFieldCode() string {
+func (cmf *CommunicationMethodField) GetFieldCode() string {
 	return cmf.FieldCode
 }
 
 // GetCaption returns Caption
-func (cmf *CommuniationMethodField) GetCaption() string {
+func (cmf *CommunicationMethodField) GetCaption() string {
 	return cmf.Caption
 }
 
 // GetSequence returns Sequence
-func (cmf *CommuniationMethodField) GetSequence() int64 {
+func (cmf *CommunicationMethodField) GetSequence() int64 {
 	return cmf.Sequence
 }
 
 // GetAudit returns Audit
-func (cmf *CommuniationMethodField) GetAudit() *audit.Audit {
+func (cmf *CommunicationMethodField) GetAudit() *audit.Audit {
 	return cmf.Audit
 }
