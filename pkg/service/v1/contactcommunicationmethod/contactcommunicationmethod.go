@@ -24,20 +24,7 @@ func NewContactCommunicationMethodService(repo contactcommunicationmethodreposit
 func (cmm *contactcommunicationmethodService) DoRead(ctx context.Context, req *contactcommunicationmethodapi.DoReadContactCommunicationMethodRequest) (*contactcommunicationmethodapi.DoReadContactCommunicationMethodResponse, error) {
 	result, err := cmm.repo.DoRead(ctx, req.GetContactSystemCode(), req.GetContactId(), req.GetContactCommunicationMethodId())
 
-	resp := &contactcommunicationmethodapi.ContactCommunicationMethod{Audit: &auditapi.Audit{}}
-	resp.ContactSystemCode = result.GetContactSystemCode()
-	resp.ContactId = result.GetContactID()
-	resp.ContactCommunicationMethodId = result.GetContactCommunicationMethodID()
-	resp.CommunicationMethodCode = result.GetCommunicationMethodCode()
-	resp.CommunicationMethodLabelCode = result.GetCommunicationMethodLabelCode()
-	resp.CommunicationMethodLabelCaption = result.GetCommunicationMethodLabelCaption()
-	resp.FormatValue = result.GetFormatValue()
-	resp.IsDefault = result.GetIsDefault()
-	resp.GetAudit().CreatedAt, _ = ptypes.TimestampProto(result.GetAudit().GetCreatedAt())
-	resp.GetAudit().ModifiedAt, _ = ptypes.TimestampProto(result.GetAudit().GetModifiedAt())
-	resp.GetAudit().Vers = result.GetAudit().GetVers()
-
-	return &contactcommunicationmethodapi.DoReadContactCommunicationMethodResponse{ContactCommunicationMethod: resp}, err
+	return &contactcommunicationmethodapi.DoReadContactCommunicationMethodResponse{ContactCommunicationMethod: contactCommunicationMethodModelToAPI(result)}, err
 }
 
 func (cmm *contactcommunicationmethodService) DoReadAll(ctx context.Context, req *contactcommunicationmethodapi.DoReadAllContactCommunicationMethodRequest) (*contactcommunicationmethodapi.DoReadAllContactCommunicationMethodResponse, error) {
@@ -46,20 +33,7 @@ func (cmm *contactcommunicationmethodService) DoReadAll(ctx context.Context, req
 	resp := make([]*contactcommunicationmethodapi.ContactCommunicationMethod, 0)
 
 	for _, item := range result {
-		contactCommMethod := &contactcommunicationmethodapi.ContactCommunicationMethod{Audit: &auditapi.Audit{}}
-		contactCommMethod.ContactSystemCode = item.GetContactSystemCode()
-		contactCommMethod.ContactId = item.GetContactID()
-		contactCommMethod.ContactCommunicationMethodId = item.GetContactCommunicationMethodID()
-		contactCommMethod.CommunicationMethodCode = item.GetCommunicationMethodCode()
-		contactCommMethod.CommunicationMethodLabelCode = item.GetCommunicationMethodLabelCode()
-		contactCommMethod.CommunicationMethodLabelCaption = item.GetCommunicationMethodLabelCaption()
-		contactCommMethod.FormatValue = item.GetFormatValue()
-		contactCommMethod.IsDefault = item.GetIsDefault()
-		contactCommMethod.GetAudit().CreatedAt, _ = ptypes.TimestampProto(item.GetAudit().GetCreatedAt())
-		contactCommMethod.GetAudit().ModifiedAt, _ = ptypes.TimestampProto(item.GetAudit().GetModifiedAt())
-		contactCommMethod.GetAudit().Vers = item.GetAudit().GetVers()
-
-		resp = append(resp, contactCommMethod)
+		resp = append(resp, contactCommunicationMethodModelToAPI(item))
 	}
 
 	return &contactcommunicationmethodapi.DoReadAllContactCommunicationMethodResponse{ContactCommunicationMethod: resp}, err
@@ -86,39 +60,45 @@ func (cmm *contactcommunicationmethodService) DoDelete(ctx context.Context, req 
 }
 
 func doInsert(ctx context.Context, repo contactcommunicationmethodrepository.IContactCommunicationMethodRepository, req *contactcommunicationmethodapi.DoSaveContactCommunicationMethodRequest) (*contactcommunicationmethodapi.DoSaveContactCommunicationMethodResponse, error) {
-	contactCommMethod := contactcommunicationmethodmodel.NewContactCommunicationMethod()
-	contactCommMethod.ContactSystemCode = req.GetContactCommunicationMethod().GetContactSystemCode()
-	contactCommMethod.ContactID = req.GetContactCommunicationMethod().GetContactId()
-	contactCommMethod.ContactCommunicationMethodID = req.GetContactCommunicationMethod().GetContactCommunicationMethodId()
-	contactCommMethod.CommunicationMethodCode = req.GetContactCommunicationMethod().GetCommunicationMethodCode()
-	contactCommMethod.CommunicationMethodLabelCode = req.GetContactCommunicationMethod().GetCommunicationMethodLabelCode()
-	contactCommMethod.CommunicationMethodLabelCaption = req.GetContactCommunicationMethod().GetCommunicationMethodLabelCaption()
-	contactCommMethod.FormatValue = req.GetContactCommunicationMethod().GetFormatValue()
-	contactCommMethod.IsDefault = req.GetContactCommunicationMethod().GetIsDefault()
-	contactCommMethod.GetAudit().CreatedAt, _ = ptypes.Timestamp(req.GetContactCommunicationMethod().GetAudit().GetCreatedAt())
-	contactCommMethod.GetAudit().ModifiedAt, _ = ptypes.Timestamp(req.GetContactCommunicationMethod().GetAudit().GetModifiedAt())
-	contactCommMethod.GetAudit().Vers = req.GetContactCommunicationMethod().GetAudit().GetVers()
-
-	err := repo.DoInsert(ctx, contactCommMethod)
+	err := repo.DoInsert(ctx, contactCommunicationMethodAPIToModel(req.GetContactCommunicationMethod()))
 
 	return &contactcommunicationmethodapi.DoSaveContactCommunicationMethodResponse{Result: err == nil}, err
 }
 
 func doUpdate(ctx context.Context, repo contactcommunicationmethodrepository.IContactCommunicationMethodRepository, req *contactcommunicationmethodapi.DoSaveContactCommunicationMethodRequest) (*contactcommunicationmethodapi.DoSaveContactCommunicationMethodResponse, error) {
-	contactCommMethod := contactcommunicationmethodmodel.NewContactCommunicationMethod()
-	contactCommMethod.ContactSystemCode = req.GetContactCommunicationMethod().GetContactSystemCode()
-	contactCommMethod.ContactID = req.GetContactCommunicationMethod().GetContactId()
-	contactCommMethod.ContactCommunicationMethodID = req.GetContactCommunicationMethod().GetContactCommunicationMethodId()
-	contactCommMethod.CommunicationMethodCode = req.GetContactCommunicationMethod().GetCommunicationMethodCode()
-	contactCommMethod.CommunicationMethodLabelCode = req.GetContactCommunicationMethod().GetCommunicationMethodLabelCode()
-	contactCommMethod.CommunicationMethodLabelCaption = req.GetContactCommunicationMethod().GetCommunicationMethodLabelCaption()
-	contactCommMethod.FormatValue = req.GetContactCommunicationMethod().GetFormatValue()
-	contactCommMethod.IsDefault = req.GetContactCommunicationMethod().GetIsDefault()
-	contactCommMethod.GetAudit().CreatedAt, _ = ptypes.Timestamp(req.GetContactCommunicationMethod().GetAudit().GetCreatedAt())
-	contactCommMethod.GetAudit().ModifiedAt, _ = ptypes.Timestamp(req.GetContactCommunicationMethod().GetAudit().GetModifiedAt())
-	contactCommMethod.GetAudit().Vers = req.GetContactCommunicationMethod().GetAudit().GetVers()
-
-	err := repo.DoUpdate(ctx, contactCommMethod)
+	err := repo.DoUpdate(ctx, contactCommunicationMethodAPIToModel(req.GetContactCommunicationMethod()))
 
 	return &contactcommunicationmethodapi.DoSaveContactCommunicationMethodResponse{Result: err == nil}, err
+}
+
+func contactCommunicationMethodModelToAPI(dataModel *contactcommunicationmethodmodel.ContactCommunicationMethod) *contactcommunicationmethodapi.ContactCommunicationMethod {
+	contactCommMethod := &contactcommunicationmethodapi.ContactCommunicationMethod{Audit: &auditapi.Audit{}}
+	contactCommMethod.ContactSystemCode = dataModel.GetContactSystemCode()
+	contactCommMethod.ContactId = dataModel.GetContactID()
+	contactCommMethod.ContactCommunicationMethodId = dataModel.GetContactCommunicationMethodID()
+	contactCommMethod.CommunicationMethodCode = dataModel.GetCommunicationMethodCode()
+	contactCommMethod.CommunicationMethodLabelCode = dataModel.GetCommunicationMethodLabelCode()
+	contactCommMethod.CommunicationMethodLabelCaption = dataModel.GetCommunicationMethodLabelCaption()
+	contactCommMethod.FormatValue = dataModel.GetFormatValue()
+	contactCommMethod.IsDefault = dataModel.GetIsDefault()
+	contactCommMethod.GetAudit().CreatedAt, _ = ptypes.TimestampProto(dataModel.GetAudit().GetCreatedAt())
+	contactCommMethod.GetAudit().ModifiedAt, _ = ptypes.TimestampProto(dataModel.GetAudit().GetModifiedAt())
+	contactCommMethod.GetAudit().Vers = dataModel.GetAudit().GetVers()
+	return contactCommMethod
+}
+
+func contactCommunicationMethodAPIToModel(data *contactcommunicationmethodapi.ContactCommunicationMethod) *contactcommunicationmethodmodel.ContactCommunicationMethod {
+	contactCommMethod := contactcommunicationmethodmodel.NewContactCommunicationMethod()
+	contactCommMethod.ContactSystemCode = data.GetContactSystemCode()
+	contactCommMethod.ContactID = data.GetContactId()
+	contactCommMethod.ContactCommunicationMethodID = data.GetContactCommunicationMethodId()
+	contactCommMethod.CommunicationMethodCode = data.GetCommunicationMethodCode()
+	contactCommMethod.CommunicationMethodLabelCode = data.GetCommunicationMethodLabelCode()
+	contactCommMethod.CommunicationMethodLabelCaption = data.GetCommunicationMethodLabelCaption()
+	contactCommMethod.FormatValue = data.GetFormatValue()
+	contactCommMethod.IsDefault = data.GetIsDefault()
+	contactCommMethod.GetAudit().CreatedAt, _ = ptypes.Timestamp(data.GetAudit().GetCreatedAt())
+	contactCommMethod.GetAudit().ModifiedAt, _ = ptypes.Timestamp(data.GetAudit().GetModifiedAt())
+	contactCommMethod.GetAudit().Vers = data.GetAudit().GetVers()
+	return contactCommMethod
 }

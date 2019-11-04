@@ -24,18 +24,7 @@ func NewCommunicationMethodService(repo communicationmethodrepository.ICommunica
 func (cm *communicationMethodService) DoRead(ctx context.Context, req *communicationmethodapi.DoReadCommunicationMethodRequest) (*communicationmethodapi.DoReadCommunicationMethodResponse, error) {
 	result, err := cm.repo.DoRead(ctx, req.GetContactSystemCode(), req.GetCommunicationMethodCode())
 
-	resp := &communicationmethodapi.CommunicationMethod{Audit: &auditapi.Audit{}}
-	resp.ContactSystemCode = result.GetContactSystemCode()
-	resp.CommunicationMethodCode = result.GetCommunicationMethodCode()
-	resp.Description = result.GetDescription()
-	resp.Details = result.GetDetails()
-	resp.Status = result.GetStatus()
-	resp.FormatField = result.GetFormatField()
-	resp.GetAudit().CreatedAt, _ = ptypes.TimestampProto(result.GetAudit().GetCreatedAt())
-	resp.GetAudit().ModifiedAt, _ = ptypes.TimestampProto(result.GetAudit().GetModifiedAt())
-	resp.GetAudit().Vers = result.GetAudit().GetVers()
-
-	return &communicationmethodapi.DoReadCommunicationMethodResponse{CommunicationMethod: resp}, err
+	return &communicationmethodapi.DoReadCommunicationMethodResponse{CommunicationMethod: communicationMethodModelToAPI(result)}, err
 }
 
 func (cm *communicationMethodService) DoReadAll(ctx context.Context, req *communicationmethodapi.DoReadAllCommunicationMethodRequest) (*communicationmethodapi.DoReadAllCommunicationMethodResponse, error) {
@@ -44,18 +33,7 @@ func (cm *communicationMethodService) DoReadAll(ctx context.Context, req *commun
 	resp := make([]*communicationmethodapi.CommunicationMethod, 0)
 
 	for _, item := range result {
-		contactSystem := &communicationmethodapi.CommunicationMethod{Audit: &auditapi.Audit{}}
-		contactSystem.ContactSystemCode = item.GetContactSystemCode()
-		contactSystem.CommunicationMethodCode = item.GetCommunicationMethodCode()
-		contactSystem.Description = item.GetDescription()
-		contactSystem.Details = item.GetDetails()
-		contactSystem.Status = item.GetStatus()
-		contactSystem.FormatField = item.GetFormatField()
-		contactSystem.GetAudit().CreatedAt, _ = ptypes.TimestampProto(item.GetAudit().GetCreatedAt())
-		contactSystem.GetAudit().ModifiedAt, _ = ptypes.TimestampProto(item.GetAudit().GetModifiedAt())
-		contactSystem.GetAudit().Vers = item.GetAudit().GetVers()
-
-		resp = append(resp, contactSystem)
+		resp = append(resp, communicationMethodModelToAPI(item))
 	}
 
 	return &communicationmethodapi.DoReadAllCommunicationMethodResponse{CommunicationMethod: resp}, err
@@ -82,35 +60,41 @@ func (cm *communicationMethodService) DoDelete(ctx context.Context, req *communi
 }
 
 func doInsert(ctx context.Context, repo communicationmethodrepository.ICommunicationMethodRepository, req *communicationmethodapi.DoSaveCommunicationMethodRequest) (*communicationmethodapi.DoSaveCommunicationMethodResponse, error) {
-	communicationMethod := communicationmethodmodel.NewCommunicationMethod()
-	communicationMethod.ContactSystemCode = req.GetCommunicationMethod().GetContactSystemCode()
-	communicationMethod.CommunicationMethodCode = req.GetCommunicationMethod().GetCommunicationMethodCode()
-	communicationMethod.Description = req.GetCommunicationMethod().GetDescription()
-	communicationMethod.Details = req.GetCommunicationMethod().GetDetails()
-	communicationMethod.Status = req.GetCommunicationMethod().GetStatus()
-	communicationMethod.FormatField = req.GetCommunicationMethod().GetFormatField()
-	communicationMethod.GetAudit().CreatedAt, _ = ptypes.Timestamp(req.GetCommunicationMethod().GetAudit().GetCreatedAt())
-	communicationMethod.GetAudit().ModifiedAt, _ = ptypes.Timestamp(req.GetCommunicationMethod().GetAudit().GetModifiedAt())
-	communicationMethod.GetAudit().Vers = req.GetCommunicationMethod().GetAudit().GetVers()
-
-	err := repo.DoInsert(ctx, communicationMethod)
+	err := repo.DoInsert(ctx, communicationMethodAPIToModel(req.GetCommunicationMethod()))
 
 	return &communicationmethodapi.DoSaveCommunicationMethodResponse{Result: err == nil}, err
 }
 
 func doUpdate(ctx context.Context, repo communicationmethodrepository.ICommunicationMethodRepository, req *communicationmethodapi.DoSaveCommunicationMethodRequest) (*communicationmethodapi.DoSaveCommunicationMethodResponse, error) {
-	communicationMethod := communicationmethodmodel.NewCommunicationMethod()
-	communicationMethod.ContactSystemCode = req.GetCommunicationMethod().GetContactSystemCode()
-	communicationMethod.CommunicationMethodCode = req.GetCommunicationMethod().GetCommunicationMethodCode()
-	communicationMethod.Description = req.GetCommunicationMethod().GetDescription()
-	communicationMethod.Details = req.GetCommunicationMethod().GetDetails()
-	communicationMethod.Status = req.GetCommunicationMethod().GetStatus()
-	communicationMethod.FormatField = req.GetCommunicationMethod().GetFormatField()
-	communicationMethod.GetAudit().CreatedAt, _ = ptypes.Timestamp(req.GetCommunicationMethod().GetAudit().GetCreatedAt())
-	communicationMethod.GetAudit().ModifiedAt, _ = ptypes.Timestamp(req.GetCommunicationMethod().GetAudit().GetModifiedAt())
-	communicationMethod.GetAudit().Vers = req.GetCommunicationMethod().GetAudit().GetVers()
-
-	err := repo.DoUpdate(ctx, communicationMethod)
+	err := repo.DoUpdate(ctx, communicationMethodAPIToModel(req.GetCommunicationMethod()))
 
 	return &communicationmethodapi.DoSaveCommunicationMethodResponse{Result: err == nil}, err
+}
+
+func communicationMethodModelToAPI(dataModel *communicationmethodmodel.CommunicationMethod) *communicationmethodapi.CommunicationMethod {
+	communicationMethod := &communicationmethodapi.CommunicationMethod{Audit: &auditapi.Audit{}}
+	communicationMethod.ContactSystemCode = dataModel.GetContactSystemCode()
+	communicationMethod.CommunicationMethodCode = dataModel.GetCommunicationMethodCode()
+	communicationMethod.Description = dataModel.GetDescription()
+	communicationMethod.Details = dataModel.GetDetails()
+	communicationMethod.Status = dataModel.GetStatus()
+	communicationMethod.FormatField = dataModel.GetFormatField()
+	communicationMethod.GetAudit().CreatedAt, _ = ptypes.TimestampProto(dataModel.GetAudit().GetCreatedAt())
+	communicationMethod.GetAudit().ModifiedAt, _ = ptypes.TimestampProto(dataModel.GetAudit().GetModifiedAt())
+	communicationMethod.GetAudit().Vers = dataModel.GetAudit().GetVers()
+	return communicationMethod
+}
+
+func communicationMethodAPIToModel(data *communicationmethodapi.CommunicationMethod) *communicationmethodmodel.CommunicationMethod {
+	communicationMethod := communicationmethodmodel.NewCommunicationMethod()
+	communicationMethod.ContactSystemCode = data.GetContactSystemCode()
+	communicationMethod.CommunicationMethodCode = data.GetCommunicationMethodCode()
+	communicationMethod.Description = data.GetDescription()
+	communicationMethod.Details = data.GetDetails()
+	communicationMethod.Status = data.GetStatus()
+	communicationMethod.FormatField = data.GetFormatField()
+	communicationMethod.GetAudit().CreatedAt, _ = ptypes.Timestamp(data.GetAudit().GetCreatedAt())
+	communicationMethod.GetAudit().ModifiedAt, _ = ptypes.Timestamp(data.GetAudit().GetModifiedAt())
+	communicationMethod.GetAudit().Vers = data.GetAudit().GetVers()
+	return communicationMethod
 }
