@@ -22,13 +22,7 @@ func NewCommunicationMethodLabelService(repo communicationmethodlabelrepository.
 func (cm *communicationMethodLabelService) DoRead(ctx context.Context, req *communicationmethodlabelapi.DoReadCommunicationMethodLabelRequest) (*communicationmethodlabelapi.DoReadCommunicationMethodLabelResponse, error) {
 	result, err := cm.repo.DoRead(ctx, req.GetContactSystemCode(), req.GetCommunicationMethodCode(), req.GetCommunicationMethodLabelCode())
 
-	resp := &communicationmethodlabelapi.CommunicationMethodLabel{}
-	resp.ContactSystemCode = result.GetContactSystemCode()
-	resp.CommunicationMethodCode = result.GetCommunicationMethodCode()
-	resp.CommunicationMethodLabelCode = result.GetCommunicationMethodLabelCode()
-	resp.Caption = result.GetCaption()
-
-	return &communicationmethodlabelapi.DoReadCommunicationMethodLabelResponse{CommunicationMethodLabel: resp}, err
+	return &communicationmethodlabelapi.DoReadCommunicationMethodLabelResponse{CommunicationMethodLabel: communicationMethodLabelModelToAPI(result)}, err
 }
 
 func (cm *communicationMethodLabelService) DoReadAll(ctx context.Context, req *communicationmethodlabelapi.DoReadAllCommunicationMethodLabelRequest) (*communicationmethodlabelapi.DoReadAllCommunicationMethodLabelResponse, error) {
@@ -37,13 +31,7 @@ func (cm *communicationMethodLabelService) DoReadAll(ctx context.Context, req *c
 	resp := make([]*communicationmethodlabelapi.CommunicationMethodLabel, 0)
 
 	for _, item := range result {
-		communicationMethodLabel := &communicationmethodlabelapi.CommunicationMethodLabel{}
-		communicationMethodLabel.ContactSystemCode = item.GetContactSystemCode()
-		communicationMethodLabel.CommunicationMethodCode = item.GetCommunicationMethodCode()
-		communicationMethodLabel.CommunicationMethodLabelCode = item.GetCommunicationMethodLabelCode()
-		communicationMethodLabel.Caption = item.GetCaption()
-
-		resp = append(resp, communicationMethodLabel)
+		resp = append(resp, communicationMethodLabelModelToAPI(item))
 	}
 
 	return &communicationmethodlabelapi.DoReadAllCommunicationMethodLabelResponse{CommunicationMethodLabel: resp}, err
@@ -70,25 +58,32 @@ func (cm *communicationMethodLabelService) DoDelete(ctx context.Context, req *co
 }
 
 func doInsert(ctx context.Context, repo communicationmethodlabelrepository.ICommunicationMethodLabelRepository, req *communicationmethodlabelapi.DoSaveCommunicationMethodLabelRequest) (*communicationmethodlabelapi.DoSaveCommunicationMethodLabelResponse, error) {
-	communicationMethodLabel := communicationmethodlabelmodel.NewCommunicationMethodLabel()
-	communicationMethodLabel.ContactSystemCode = req.GetCommunicationMethodLabel().GetContactSystemCode()
-	communicationMethodLabel.CommunicationMethodCode = req.GetCommunicationMethodLabel().GetCommunicationMethodCode()
-	communicationMethodLabel.CommunicationMethodLabelCode = req.GetCommunicationMethodLabel().GetCommunicationMethodLabelCode()
-	communicationMethodLabel.Caption = req.GetCommunicationMethodLabel().GetCaption()
-
-	err := repo.DoInsert(ctx, communicationMethodLabel)
+	err := repo.DoInsert(ctx, communicationMethodLabelAPIToModel(req.GetCommunicationMethodLabel()))
 
 	return &communicationmethodlabelapi.DoSaveCommunicationMethodLabelResponse{Result: err == nil}, err
 }
 
 func doUpdate(ctx context.Context, repo communicationmethodlabelrepository.ICommunicationMethodLabelRepository, req *communicationmethodlabelapi.DoSaveCommunicationMethodLabelRequest) (*communicationmethodlabelapi.DoSaveCommunicationMethodLabelResponse, error) {
-	communicationMethodLabel := communicationmethodlabelmodel.NewCommunicationMethodLabel()
-	communicationMethodLabel.ContactSystemCode = req.GetCommunicationMethodLabel().GetContactSystemCode()
-	communicationMethodLabel.CommunicationMethodCode = req.GetCommunicationMethodLabel().GetCommunicationMethodCode()
-	communicationMethodLabel.CommunicationMethodLabelCode = req.GetCommunicationMethodLabel().GetCommunicationMethodLabelCode()
-	communicationMethodLabel.Caption = req.GetCommunicationMethodLabel().GetCaption()
 
-	err := repo.DoUpdate(ctx, communicationMethodLabel)
+	err := repo.DoUpdate(ctx, communicationMethodLabelAPIToModel(req.GetCommunicationMethodLabel()))
 
 	return &communicationmethodlabelapi.DoSaveCommunicationMethodLabelResponse{Result: err == nil}, err
+}
+
+func communicationMethodLabelModelToAPI(dataModel *communicationmethodlabelmodel.CommunicationMethodLabel) *communicationmethodlabelapi.CommunicationMethodLabel {
+	communicationMethodLabel := &communicationmethodlabelapi.CommunicationMethodLabel{}
+	communicationMethodLabel.ContactSystemCode = dataModel.GetContactSystemCode()
+	communicationMethodLabel.CommunicationMethodCode = dataModel.GetCommunicationMethodCode()
+	communicationMethodLabel.CommunicationMethodLabelCode = dataModel.GetCommunicationMethodLabelCode()
+	communicationMethodLabel.Caption = dataModel.GetCaption()
+	return communicationMethodLabel
+}
+
+func communicationMethodLabelAPIToModel(data *communicationmethodlabelapi.CommunicationMethodLabel) *communicationmethodlabelmodel.CommunicationMethodLabel {
+	communicationMethodLabel := communicationmethodlabelmodel.NewCommunicationMethodLabel()
+	communicationMethodLabel.ContactSystemCode = data.GetContactSystemCode()
+	communicationMethodLabel.CommunicationMethodCode = data.GetCommunicationMethodCode()
+	communicationMethodLabel.CommunicationMethodLabelCode = data.GetCommunicationMethodLabelCode()
+	communicationMethodLabel.Caption = data.GetCaption()
+	return communicationMethodLabel
 }

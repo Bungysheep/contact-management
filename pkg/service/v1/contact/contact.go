@@ -24,17 +24,7 @@ func NewContactService(repo contactrepository.IContactRepository) contactapi.Con
 func (cnt *contactService) DoRead(ctx context.Context, req *contactapi.DoReadContactRequest) (*contactapi.DoReadContactResponse, error) {
 	result, err := cnt.repo.DoRead(ctx, req.GetContactSystemCode(), req.GetContactId())
 
-	resp := &contactapi.Contact{Audit: &auditapi.Audit{}}
-	resp.ContactSystemCode = result.GetContactSystemCode()
-	resp.ContactId = result.GetContactID()
-	resp.FirstName = result.GetFirstName()
-	resp.LastName = result.GetLastName()
-	resp.Status = result.GetStatus()
-	resp.GetAudit().CreatedAt, _ = ptypes.TimestampProto(result.GetAudit().GetCreatedAt())
-	resp.GetAudit().ModifiedAt, _ = ptypes.TimestampProto(result.GetAudit().GetModifiedAt())
-	resp.GetAudit().Vers = result.GetAudit().GetVers()
-
-	return &contactapi.DoReadContactResponse{Contact: resp}, err
+	return &contactapi.DoReadContactResponse{Contact: contactModelToAPI(result)}, err
 }
 
 func (cnt *contactService) DoReadAll(ctx context.Context, req *contactapi.DoReadAllContactRequest) (*contactapi.DoReadAllContactResponse, error) {
@@ -43,17 +33,7 @@ func (cnt *contactService) DoReadAll(ctx context.Context, req *contactapi.DoRead
 	resp := make([]*contactapi.Contact, 0)
 
 	for _, item := range result {
-		contact := &contactapi.Contact{Audit: &auditapi.Audit{}}
-		contact.ContactSystemCode = item.GetContactSystemCode()
-		contact.ContactId = item.GetContactID()
-		contact.FirstName = item.GetFirstName()
-		contact.LastName = item.GetLastName()
-		contact.Status = item.GetStatus()
-		contact.GetAudit().CreatedAt, _ = ptypes.TimestampProto(item.GetAudit().GetCreatedAt())
-		contact.GetAudit().ModifiedAt, _ = ptypes.TimestampProto(item.GetAudit().GetModifiedAt())
-		contact.GetAudit().Vers = item.GetAudit().GetVers()
-
-		resp = append(resp, contact)
+		resp = append(resp, contactModelToAPI(item))
 	}
 
 	return &contactapi.DoReadAllContactResponse{Contact: resp}, err
@@ -80,33 +60,39 @@ func (cnt *contactService) DoDelete(ctx context.Context, req *contactapi.DoDelet
 }
 
 func doInsert(ctx context.Context, repo contactrepository.IContactRepository, req *contactapi.DoSaveContactRequest) (*contactapi.DoSaveContactResponse, error) {
-	contact := contactmodel.NewContact()
-	contact.ContactSystemCode = req.GetContact().GetContactSystemCode()
-	contact.ContactID = req.GetContact().GetContactId()
-	contact.FirstName = req.GetContact().GetFirstName()
-	contact.LastName = req.GetContact().GetLastName()
-	contact.Status = req.GetContact().GetStatus()
-	contact.GetAudit().CreatedAt, _ = ptypes.Timestamp(req.GetContact().GetAudit().GetCreatedAt())
-	contact.GetAudit().ModifiedAt, _ = ptypes.Timestamp(req.GetContact().GetAudit().GetModifiedAt())
-	contact.GetAudit().Vers = req.GetContact().GetAudit().GetVers()
-
-	err := repo.DoInsert(ctx, contact)
+	err := repo.DoInsert(ctx, contactAPIToModel(req.GetContact()))
 
 	return &contactapi.DoSaveContactResponse{Result: err == nil}, err
 }
 
 func doUpdate(ctx context.Context, repo contactrepository.IContactRepository, req *contactapi.DoSaveContactRequest) (*contactapi.DoSaveContactResponse, error) {
-	contact := contactmodel.NewContact()
-	contact.ContactSystemCode = req.GetContact().GetContactSystemCode()
-	contact.ContactID = req.GetContact().GetContactId()
-	contact.FirstName = req.GetContact().GetFirstName()
-	contact.LastName = req.GetContact().GetLastName()
-	contact.Status = req.GetContact().GetStatus()
-	contact.GetAudit().CreatedAt, _ = ptypes.Timestamp(req.GetContact().GetAudit().GetCreatedAt())
-	contact.GetAudit().ModifiedAt, _ = ptypes.Timestamp(req.GetContact().GetAudit().GetModifiedAt())
-	contact.GetAudit().Vers = req.GetContact().GetAudit().GetVers()
-
-	err := repo.DoUpdate(ctx, contact)
+	err := repo.DoUpdate(ctx, contactAPIToModel(req.GetContact()))
 
 	return &contactapi.DoSaveContactResponse{Result: err == nil}, err
+}
+
+func contactModelToAPI(dataModel *contactmodel.Contact) *contactapi.Contact {
+	contact := &contactapi.Contact{Audit: &auditapi.Audit{}}
+	contact.ContactSystemCode = dataModel.GetContactSystemCode()
+	contact.ContactId = dataModel.GetContactID()
+	contact.FirstName = dataModel.GetFirstName()
+	contact.LastName = dataModel.GetLastName()
+	contact.Status = dataModel.GetStatus()
+	contact.GetAudit().CreatedAt, _ = ptypes.TimestampProto(dataModel.GetAudit().GetCreatedAt())
+	contact.GetAudit().ModifiedAt, _ = ptypes.TimestampProto(dataModel.GetAudit().GetModifiedAt())
+	contact.GetAudit().Vers = dataModel.GetAudit().GetVers()
+	return contact
+}
+
+func contactAPIToModel(data *contactapi.Contact) *contactmodel.Contact {
+	contact := contactmodel.NewContact()
+	contact.ContactSystemCode = data.GetContactSystemCode()
+	contact.ContactID = data.GetContactId()
+	contact.FirstName = data.GetFirstName()
+	contact.LastName = data.GetLastName()
+	contact.Status = data.GetStatus()
+	contact.GetAudit().CreatedAt, _ = ptypes.Timestamp(data.GetAudit().GetCreatedAt())
+	contact.GetAudit().ModifiedAt, _ = ptypes.Timestamp(data.GetAudit().GetModifiedAt())
+	contact.GetAudit().Vers = data.GetAudit().GetVers()
+	return contact
 }
