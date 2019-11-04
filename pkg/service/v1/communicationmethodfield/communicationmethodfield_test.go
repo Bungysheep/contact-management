@@ -4,41 +4,63 @@ import (
 	"context"
 	"os"
 	"testing"
+	"time"
 
-	"github.com/bungysheep/contact-management/pkg/api/v1/communicationmethodfield"
+	auditapi "github.com/bungysheep/contact-management/pkg/api/v1/audit"
+	communicationmethodfieldapi "github.com/bungysheep/contact-management/pkg/api/v1/communicationmethodfield"
 	"github.com/bungysheep/contact-management/pkg/common/message"
+	auditmodel "github.com/bungysheep/contact-management/pkg/models/v1/audit"
+	communicationmethodfieldmodel "github.com/bungysheep/contact-management/pkg/models/v1/communicationmethodfield"
 	"github.com/bungysheep/contact-management/pkg/repository/v1/communicationmethodfield/mock_communicationmethodfield"
 	"github.com/golang/mock/gomock"
+	"github.com/golang/protobuf/ptypes"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
 
 var (
 	ctx  context.Context
-	data []*communicationmethodfield.CommunicationMethodField
+	data []*communicationmethodfieldmodel.CommunicationMethodField
 )
 
 func TestMain(m *testing.M) {
 	ctx = context.TODO()
 
-	data = append(data, &communicationmethodfield.CommunicationMethodField{
+	tmNow := time.Now().In(time.UTC)
+
+	data = append(data, &communicationmethodfieldmodel.CommunicationMethodField{
 		ContactSystemCode:       "CNTSYS001",
 		CommunicationMethodCode: "EMAIL",
 		FieldCode:               "EMAIL_ADDRESS",
 		Caption:                 "Email Address",
 		Sequence:                1,
-	}, &communicationmethodfield.CommunicationMethodField{
+		Audit: &auditmodel.Audit{
+			CreatedAt:  tmNow,
+			ModifiedAt: tmNow,
+			Vers:       1,
+		},
+	}, &communicationmethodfieldmodel.CommunicationMethodField{
 		ContactSystemCode:       "CNTSYS001",
 		CommunicationMethodCode: "MOBILE",
 		FieldCode:               "MOBILE_NO",
 		Caption:                 "Mobile No",
 		Sequence:                1,
-	}, &communicationmethodfield.CommunicationMethodField{
+		Audit: &auditmodel.Audit{
+			CreatedAt:  tmNow,
+			ModifiedAt: tmNow,
+			Vers:       1,
+		},
+	}, &communicationmethodfieldmodel.CommunicationMethodField{
 		ContactSystemCode:       "CNTSYS001",
 		CommunicationMethodCode: "FAX",
 		FieldCode:               "FAX_NO",
 		Caption:                 "Fax No",
 		Sequence:                1,
+		Audit: &auditmodel.Audit{
+			CreatedAt:  tmNow,
+			ModifiedAt: tmNow,
+			Vers:       1,
+		},
 	})
 
 	exitCode := m.Run()
@@ -58,7 +80,7 @@ func TestCommunicationMethodFieldService(t *testing.T) {
 	t.Run("DoDelete Communication Method Field", doDelete(ctx, data[0]))
 }
 
-func doRead(ctx context.Context, input *communicationmethodfield.CommunicationMethodField) func(t *testing.T) {
+func doRead(ctx context.Context, input *communicationmethodfieldmodel.CommunicationMethodField) func(t *testing.T) {
 	return func(t *testing.T) {
 		ctl := gomock.NewController(t)
 		defer ctl.Finish()
@@ -69,7 +91,7 @@ func doRead(ctx context.Context, input *communicationmethodfield.CommunicationMe
 
 		svc := NewCommunicationMethodFieldService(repo)
 
-		resp, err := svc.DoRead(ctx, &communicationmethodfield.DoReadCommunicationMethodFieldRequest{ContactSystemCode: input.GetContactSystemCode(), CommunicationMethodCode: input.GetCommunicationMethodCode(), FieldCode: input.GetFieldCode()})
+		resp, err := svc.DoRead(ctx, &communicationmethodfieldapi.DoReadCommunicationMethodFieldRequest{ContactSystemCode: input.GetContactSystemCode(), CommunicationMethodCode: input.GetCommunicationMethodCode(), FieldCode: input.GetFieldCode()})
 		if err != nil {
 			t.Errorf("Expect error is nil")
 		}
@@ -100,7 +122,7 @@ func doRead(ctx context.Context, input *communicationmethodfield.CommunicationMe
 	}
 }
 
-func doReadAll(ctx context.Context, input *communicationmethodfield.CommunicationMethodField) func(t *testing.T) {
+func doReadAll(ctx context.Context, input *communicationmethodfieldmodel.CommunicationMethodField) func(t *testing.T) {
 	return func(t *testing.T) {
 		ctl := gomock.NewController(t)
 		defer ctl.Finish()
@@ -111,7 +133,7 @@ func doReadAll(ctx context.Context, input *communicationmethodfield.Communicatio
 
 		svc := NewCommunicationMethodFieldService(repo)
 
-		resp, err := svc.DoReadAll(ctx, &communicationmethodfield.DoReadAllCommunicationMethodFieldRequest{ContactSystemCode: input.GetContactSystemCode(), CommunicationMethodCode: input.GetCommunicationMethodCode()})
+		resp, err := svc.DoReadAll(ctx, &communicationmethodfieldapi.DoReadAllCommunicationMethodFieldRequest{ContactSystemCode: input.GetContactSystemCode(), CommunicationMethodCode: input.GetCommunicationMethodCode()})
 		if err != nil {
 			t.Errorf("Expect error is nil")
 		}
@@ -146,12 +168,22 @@ func doReadAll(ctx context.Context, input *communicationmethodfield.Communicatio
 	}
 }
 
-func doSaveNew(ctx context.Context, input *communicationmethodfield.CommunicationMethodField) func(t *testing.T) {
+func doSaveNew(ctx context.Context, input *communicationmethodfieldmodel.CommunicationMethodField) func(t *testing.T) {
 	return func(t *testing.T) {
 		ctl := gomock.NewController(t)
 		defer ctl.Finish()
 
 		repo := mock_communicationmethodfield.NewMockICommunicationMethodFieldRepository(ctl)
+
+		communicationMethodField := &communicationmethodfieldapi.CommunicationMethodField{Audit: &auditapi.Audit{}}
+		communicationMethodField.ContactSystemCode = input.GetContactSystemCode()
+		communicationMethodField.CommunicationMethodCode = input.GetCommunicationMethodCode()
+		communicationMethodField.FieldCode = input.GetFieldCode()
+		communicationMethodField.Caption = input.GetCaption()
+		communicationMethodField.Sequence = input.GetSequence()
+		communicationMethodField.GetAudit().CreatedAt, _ = ptypes.TimestampProto(input.GetAudit().GetCreatedAt())
+		communicationMethodField.GetAudit().ModifiedAt, _ = ptypes.TimestampProto(input.GetAudit().GetModifiedAt())
+		communicationMethodField.GetAudit().Vers = input.GetAudit().GetVers()
 
 		repo.EXPECT().DoUpdate(ctx, input).Return(status.Errorf(codes.NotFound, message.DoesNotExist("Communication Method Field")))
 
@@ -159,7 +191,7 @@ func doSaveNew(ctx context.Context, input *communicationmethodfield.Communicatio
 
 		svc := NewCommunicationMethodFieldService(repo)
 
-		resp, err := svc.DoSave(ctx, &communicationmethodfield.DoSaveCommunicationMethodFieldRequest{CommunicationMethodField: input})
+		resp, err := svc.DoSave(ctx, &communicationmethodfieldapi.DoSaveCommunicationMethodFieldRequest{CommunicationMethodField: communicationMethodField})
 		if err != nil {
 			t.Errorf("Expect error is nil")
 		}
@@ -170,18 +202,28 @@ func doSaveNew(ctx context.Context, input *communicationmethodfield.Communicatio
 	}
 }
 
-func doSaveExisting(ctx context.Context, input *communicationmethodfield.CommunicationMethodField) func(t *testing.T) {
+func doSaveExisting(ctx context.Context, input *communicationmethodfieldmodel.CommunicationMethodField) func(t *testing.T) {
 	return func(t *testing.T) {
 		ctl := gomock.NewController(t)
 		defer ctl.Finish()
 
 		repo := mock_communicationmethodfield.NewMockICommunicationMethodFieldRepository(ctl)
 
+		communicationMethodField := &communicationmethodfieldapi.CommunicationMethodField{Audit: &auditapi.Audit{}}
+		communicationMethodField.ContactSystemCode = input.GetContactSystemCode()
+		communicationMethodField.CommunicationMethodCode = input.GetCommunicationMethodCode()
+		communicationMethodField.FieldCode = input.GetFieldCode()
+		communicationMethodField.Caption = input.GetCaption()
+		communicationMethodField.Sequence = input.GetSequence()
+		communicationMethodField.GetAudit().CreatedAt, _ = ptypes.TimestampProto(input.GetAudit().GetCreatedAt())
+		communicationMethodField.GetAudit().ModifiedAt, _ = ptypes.TimestampProto(input.GetAudit().GetModifiedAt())
+		communicationMethodField.GetAudit().Vers = input.GetAudit().GetVers()
+
 		repo.EXPECT().DoUpdate(ctx, input).Return(nil)
 
 		svc := NewCommunicationMethodFieldService(repo)
 
-		resp, err := svc.DoSave(ctx, &communicationmethodfield.DoSaveCommunicationMethodFieldRequest{CommunicationMethodField: input})
+		resp, err := svc.DoSave(ctx, &communicationmethodfieldapi.DoSaveCommunicationMethodFieldRequest{CommunicationMethodField: communicationMethodField})
 		if err != nil {
 			t.Errorf("Expect error is nil")
 		}
@@ -192,7 +234,7 @@ func doSaveExisting(ctx context.Context, input *communicationmethodfield.Communi
 	}
 }
 
-func doDelete(ctx context.Context, input *communicationmethodfield.CommunicationMethodField) func(t *testing.T) {
+func doDelete(ctx context.Context, input *communicationmethodfieldmodel.CommunicationMethodField) func(t *testing.T) {
 	return func(t *testing.T) {
 		ctl := gomock.NewController(t)
 		defer ctl.Finish()
@@ -203,7 +245,7 @@ func doDelete(ctx context.Context, input *communicationmethodfield.Communication
 
 		svc := NewCommunicationMethodFieldService(repo)
 
-		resp, err := svc.DoDelete(ctx, &communicationmethodfield.DoDeleteCommunicationMethodFieldRequest{ContactSystemCode: input.GetContactSystemCode(), CommunicationMethodCode: input.GetCommunicationMethodCode(), FieldCode: input.GetFieldCode()})
+		resp, err := svc.DoDelete(ctx, &communicationmethodfieldapi.DoDeleteCommunicationMethodFieldRequest{ContactSystemCode: input.GetContactSystemCode(), CommunicationMethodCode: input.GetCommunicationMethodCode(), FieldCode: input.GetFieldCode()})
 		if err != nil {
 			t.Errorf("Expect error is nil")
 		}

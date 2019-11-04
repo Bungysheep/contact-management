@@ -6,7 +6,7 @@ package mock_communicationmethodfield
 
 import (
 	context "context"
-	communicationmethodfield "github.com/bungysheep/contact-management/pkg/api/v1/communicationmethodfield"
+	communicationmethodfield "github.com/bungysheep/contact-management/pkg/models/v1/communicationmethodfield"
 	gomock "github.com/golang/mock/gomock"
 	reflect "reflect"
 )
