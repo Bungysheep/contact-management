@@ -4,44 +4,66 @@ import (
 	"context"
 	"os"
 	"testing"
+	"time"
 
-	"github.com/bungysheep/contact-management/pkg/api/v1/communicationmethod"
+	auditapi "github.com/bungysheep/contact-management/pkg/api/v1/audit"
+	communicationmethodapi "github.com/bungysheep/contact-management/pkg/api/v1/communicationmethod"
 	"github.com/bungysheep/contact-management/pkg/common/message"
+	auditmodel "github.com/bungysheep/contact-management/pkg/models/v1/audit"
+	communicationmethodmodel "github.com/bungysheep/contact-management/pkg/models/v1/communicationmethod"
 	"github.com/bungysheep/contact-management/pkg/repository/v1/communicationmethod/mock_communicationmethod"
 	"github.com/golang/mock/gomock"
+	"github.com/golang/protobuf/ptypes"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
 
 var (
 	ctx  context.Context
-	data []*communicationmethod.CommunicationMethod
+	data []*communicationmethodmodel.CommunicationMethod
 )
 
 func TestMain(m *testing.M) {
 	ctx = context.TODO()
 
-	data = append(data, &communicationmethod.CommunicationMethod{
+	tmNow := time.Now().In(time.UTC)
+
+	data = append(data, &communicationmethodmodel.CommunicationMethod{
 		ContactSystemCode:       "CNTSYS001",
 		CommunicationMethodCode: "EMAIL",
 		Description:             "Email",
 		Details:                 "Email",
 		Status:                  "A",
 		FormatField:             "[EMAIL_ADDRESS]",
-	}, &communicationmethod.CommunicationMethod{
+		Audit: &auditmodel.Audit{
+			CreatedAt:  tmNow,
+			ModifiedAt: tmNow,
+			Vers:       1,
+		},
+	}, &communicationmethodmodel.CommunicationMethod{
 		ContactSystemCode:       "CNTSYS001",
 		CommunicationMethodCode: "MOBILE",
 		Description:             "Mobile",
 		Details:                 "Mobile",
 		Status:                  "A",
 		FormatField:             "[MOBILE_NO]",
-	}, &communicationmethod.CommunicationMethod{
+		Audit: &auditmodel.Audit{
+			CreatedAt:  tmNow,
+			ModifiedAt: tmNow,
+			Vers:       1,
+		},
+	}, &communicationmethodmodel.CommunicationMethod{
 		ContactSystemCode:       "CNTSYS001",
 		CommunicationMethodCode: "FAX",
 		Description:             "Fax",
 		Details:                 "Fax",
 		Status:                  "A",
 		FormatField:             "[FAX_NO]",
+		Audit: &auditmodel.Audit{
+			CreatedAt:  tmNow,
+			ModifiedAt: tmNow,
+			Vers:       1,
+		},
 	})
 
 	exitCode := m.Run()
@@ -61,7 +83,7 @@ func TestCommunicationMethodService(t *testing.T) {
 	t.Run("DoDelete Communication Method", doDelete(ctx, data[0]))
 }
 
-func doRead(ctx context.Context, input *communicationmethod.CommunicationMethod) func(t *testing.T) {
+func doRead(ctx context.Context, input *communicationmethodmodel.CommunicationMethod) func(t *testing.T) {
 	return func(t *testing.T) {
 		ctl := gomock.NewController(t)
 		defer ctl.Finish()
@@ -72,7 +94,7 @@ func doRead(ctx context.Context, input *communicationmethod.CommunicationMethod)
 
 		svc := NewCommunicationMethodService(repo)
 
-		resp, err := svc.DoRead(ctx, &communicationmethod.DoReadCommunicationMethodRequest{ContactSystemCode: input.GetContactSystemCode(), CommunicationMethodCode: input.GetCommunicationMethodCode()})
+		resp, err := svc.DoRead(ctx, &communicationmethodapi.DoReadCommunicationMethodRequest{ContactSystemCode: input.GetContactSystemCode(), CommunicationMethodCode: input.GetCommunicationMethodCode()})
 		if err != nil {
 			t.Errorf("Expect error is nil")
 		}
@@ -107,7 +129,7 @@ func doRead(ctx context.Context, input *communicationmethod.CommunicationMethod)
 	}
 }
 
-func doReadAll(ctx context.Context, input *communicationmethod.CommunicationMethod) func(t *testing.T) {
+func doReadAll(ctx context.Context, input *communicationmethodmodel.CommunicationMethod) func(t *testing.T) {
 	return func(t *testing.T) {
 		ctl := gomock.NewController(t)
 		defer ctl.Finish()
@@ -118,7 +140,7 @@ func doReadAll(ctx context.Context, input *communicationmethod.CommunicationMeth
 
 		svc := NewCommunicationMethodService(repo)
 
-		resp, err := svc.DoReadAll(ctx, &communicationmethod.DoReadAllCommunicationMethodRequest{ContactSystemCode: input.GetContactSystemCode()})
+		resp, err := svc.DoReadAll(ctx, &communicationmethodapi.DoReadAllCommunicationMethodRequest{ContactSystemCode: input.GetContactSystemCode()})
 		if err != nil {
 			t.Errorf("Expect error is nil")
 		}
@@ -157,12 +179,23 @@ func doReadAll(ctx context.Context, input *communicationmethod.CommunicationMeth
 	}
 }
 
-func doSaveNew(ctx context.Context, input *communicationmethod.CommunicationMethod) func(t *testing.T) {
+func doSaveNew(ctx context.Context, input *communicationmethodmodel.CommunicationMethod) func(t *testing.T) {
 	return func(t *testing.T) {
 		ctl := gomock.NewController(t)
 		defer ctl.Finish()
 
 		repo := mock_communicationmethod.NewMockICommunicationMethodRepository(ctl)
+
+		communicationMethod := &communicationmethodapi.CommunicationMethod{Audit: &auditapi.Audit{}}
+		communicationMethod.ContactSystemCode = input.GetContactSystemCode()
+		communicationMethod.CommunicationMethodCode = input.GetCommunicationMethodCode()
+		communicationMethod.Description = input.GetDescription()
+		communicationMethod.Details = input.GetDetails()
+		communicationMethod.Status = input.GetStatus()
+		communicationMethod.FormatField = input.GetFormatField()
+		communicationMethod.GetAudit().CreatedAt, _ = ptypes.TimestampProto(input.GetAudit().GetCreatedAt())
+		communicationMethod.GetAudit().ModifiedAt, _ = ptypes.TimestampProto(input.GetAudit().GetModifiedAt())
+		communicationMethod.GetAudit().Vers = input.GetAudit().GetVers()
 
 		repo.EXPECT().DoUpdate(ctx, input).Return(status.Errorf(codes.NotFound, message.DoesNotExist("Communication Method")))
 
@@ -170,7 +203,7 @@ func doSaveNew(ctx context.Context, input *communicationmethod.CommunicationMeth
 
 		svc := NewCommunicationMethodService(repo)
 
-		resp, err := svc.DoSave(ctx, &communicationmethod.DoSaveCommunicationMethodRequest{CommunicationMethod: input})
+		resp, err := svc.DoSave(ctx, &communicationmethodapi.DoSaveCommunicationMethodRequest{CommunicationMethod: communicationMethod})
 		if err != nil {
 			t.Errorf("Expect error is nil")
 		}
@@ -181,18 +214,29 @@ func doSaveNew(ctx context.Context, input *communicationmethod.CommunicationMeth
 	}
 }
 
-func doSaveExisting(ctx context.Context, input *communicationmethod.CommunicationMethod) func(t *testing.T) {
+func doSaveExisting(ctx context.Context, input *communicationmethodmodel.CommunicationMethod) func(t *testing.T) {
 	return func(t *testing.T) {
 		ctl := gomock.NewController(t)
 		defer ctl.Finish()
 
 		repo := mock_communicationmethod.NewMockICommunicationMethodRepository(ctl)
 
+		communicationMethod := &communicationmethodapi.CommunicationMethod{Audit: &auditapi.Audit{}}
+		communicationMethod.ContactSystemCode = input.GetContactSystemCode()
+		communicationMethod.CommunicationMethodCode = input.GetCommunicationMethodCode()
+		communicationMethod.Description = input.GetDescription()
+		communicationMethod.Details = input.GetDetails()
+		communicationMethod.Status = input.GetStatus()
+		communicationMethod.FormatField = input.GetFormatField()
+		communicationMethod.GetAudit().CreatedAt, _ = ptypes.TimestampProto(input.GetAudit().GetCreatedAt())
+		communicationMethod.GetAudit().ModifiedAt, _ = ptypes.TimestampProto(input.GetAudit().GetModifiedAt())
+		communicationMethod.GetAudit().Vers = input.GetAudit().GetVers()
+
 		repo.EXPECT().DoUpdate(ctx, input).Return(nil)
 
 		svc := NewCommunicationMethodService(repo)
 
-		resp, err := svc.DoSave(ctx, &communicationmethod.DoSaveCommunicationMethodRequest{CommunicationMethod: input})
+		resp, err := svc.DoSave(ctx, &communicationmethodapi.DoSaveCommunicationMethodRequest{CommunicationMethod: communicationMethod})
 		if err != nil {
 			t.Errorf("Expect error is nil")
 		}
@@ -203,7 +247,7 @@ func doSaveExisting(ctx context.Context, input *communicationmethod.Communicatio
 	}
 }
 
-func doDelete(ctx context.Context, input *communicationmethod.CommunicationMethod) func(t *testing.T) {
+func doDelete(ctx context.Context, input *communicationmethodmodel.CommunicationMethod) func(t *testing.T) {
 	return func(t *testing.T) {
 		ctl := gomock.NewController(t)
 		defer ctl.Finish()
@@ -214,7 +258,7 @@ func doDelete(ctx context.Context, input *communicationmethod.CommunicationMetho
 
 		svc := NewCommunicationMethodService(repo)
 
-		resp, err := svc.DoDelete(ctx, &communicationmethod.DoDeleteCommunicationMethodRequest{ContactSystemCode: input.GetContactSystemCode(), CommunicationMethodCode: input.GetCommunicationMethodCode()})
+		resp, err := svc.DoDelete(ctx, &communicationmethodapi.DoDeleteCommunicationMethodRequest{ContactSystemCode: input.GetContactSystemCode(), CommunicationMethodCode: input.GetCommunicationMethodCode()})
 		if err != nil {
 			t.Errorf("Expect error is nil")
 		}
