@@ -4,7 +4,7 @@ import (
 	"context"
 	"database/sql"
 
-	"github.com/bungysheep/contact-management/pkg/api/v1/communicationmethodlabel"
+	"github.com/bungysheep/contact-management/pkg/models/v1/communicationmethodlabel"
 	"github.com/bungysheep/contact-management/pkg/common/message"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"

@@ -5,8 +5,9 @@ import (
 	"os"
 	"testing"
 
-	"github.com/bungysheep/contact-management/pkg/api/v1/communicationmethodlabel"
+	communicationmethodlabelapi "github.com/bungysheep/contact-management/pkg/api/v1/communicationmethodlabel"
 	"github.com/bungysheep/contact-management/pkg/common/message"
+	communicationmethodlabelmodel "github.com/bungysheep/contact-management/pkg/models/v1/communicationmethodlabel"
 	"github.com/bungysheep/contact-management/pkg/repository/v1/communicationmethodlabel/mock_communicationmethodlabel"
 	"github.com/golang/mock/gomock"
 	"google.golang.org/grpc/codes"
@@ -15,23 +16,23 @@ import (
 
 var (
 	ctx  context.Context
-	data []*communicationmethodlabel.CommunicationMethodLabel
+	data []*communicationmethodlabelmodel.CommunicationMethodLabel
 )
 
 func TestMain(m *testing.M) {
 	ctx = context.TODO()
 
-	data = append(data, &communicationmethodlabel.CommunicationMethodLabel{
+	data = append(data, &communicationmethodlabelmodel.CommunicationMethodLabel{
 		ContactSystemCode:            "CNTSYS001",
 		CommunicationMethodCode:      "EMAIL",
 		CommunicationMethodLabelCode: "HOME",
 		Caption:                      "Home",
-	}, &communicationmethodlabel.CommunicationMethodLabel{
+	}, &communicationmethodlabelmodel.CommunicationMethodLabel{
 		ContactSystemCode:            "CNTSYS001",
 		CommunicationMethodCode:      "MOBILE",
 		CommunicationMethodLabelCode: "WORK",
 		Caption:                      "Work",
-	}, &communicationmethodlabel.CommunicationMethodLabel{
+	}, &communicationmethodlabelmodel.CommunicationMethodLabel{
 		ContactSystemCode:            "CNTSYS001",
 		CommunicationMethodCode:      "FAX",
 		CommunicationMethodLabelCode: "SCHOOL",
@@ -55,7 +56,7 @@ func TestCommunicationMethodLabelService(t *testing.T) {
 	t.Run("DoDelete Communication Method Label", doDelete(ctx, data[0]))
 }
 
-func doRead(ctx context.Context, input *communicationmethodlabel.CommunicationMethodLabel) func(t *testing.T) {
+func doRead(ctx context.Context, input *communicationmethodlabelmodel.CommunicationMethodLabel) func(t *testing.T) {
 	return func(t *testing.T) {
 		ctl := gomock.NewController(t)
 		defer ctl.Finish()
@@ -66,7 +67,7 @@ func doRead(ctx context.Context, input *communicationmethodlabel.CommunicationMe
 
 		svc := NewCommunicationMethodLabelService(repo)
 
-		resp, err := svc.DoRead(ctx, &communicationmethodlabel.DoReadCommunicationMethodLabelRequest{ContactSystemCode: input.GetContactSystemCode(), CommunicationMethodCode: input.GetCommunicationMethodCode(), CommunicationMethodLabelCode: input.GetCommunicationMethodLabelCode()})
+		resp, err := svc.DoRead(ctx, &communicationmethodlabelapi.DoReadCommunicationMethodLabelRequest{ContactSystemCode: input.GetContactSystemCode(), CommunicationMethodCode: input.GetCommunicationMethodCode(), CommunicationMethodLabelCode: input.GetCommunicationMethodLabelCode()})
 		if err != nil {
 			t.Errorf("Expect error is nil")
 		}
@@ -93,7 +94,7 @@ func doRead(ctx context.Context, input *communicationmethodlabel.CommunicationMe
 	}
 }
 
-func doReadAll(ctx context.Context, input *communicationmethodlabel.CommunicationMethodLabel) func(t *testing.T) {
+func doReadAll(ctx context.Context, input *communicationmethodlabelmodel.CommunicationMethodLabel) func(t *testing.T) {
 	return func(t *testing.T) {
 		ctl := gomock.NewController(t)
 		defer ctl.Finish()
@@ -104,7 +105,7 @@ func doReadAll(ctx context.Context, input *communicationmethodlabel.Communicatio
 
 		svc := NewCommunicationMethodLabelService(repo)
 
-		resp, err := svc.DoReadAll(ctx, &communicationmethodlabel.DoReadAllCommunicationMethodLabelRequest{ContactSystemCode: input.GetContactSystemCode(), CommunicationMethodCode: input.GetCommunicationMethodCode()})
+		resp, err := svc.DoReadAll(ctx, &communicationmethodlabelapi.DoReadAllCommunicationMethodLabelRequest{ContactSystemCode: input.GetContactSystemCode(), CommunicationMethodCode: input.GetCommunicationMethodCode()})
 		if err != nil {
 			t.Errorf("Expect error is nil")
 		}
@@ -135,12 +136,18 @@ func doReadAll(ctx context.Context, input *communicationmethodlabel.Communicatio
 	}
 }
 
-func doSaveNew(ctx context.Context, input *communicationmethodlabel.CommunicationMethodLabel) func(t *testing.T) {
+func doSaveNew(ctx context.Context, input *communicationmethodlabelmodel.CommunicationMethodLabel) func(t *testing.T) {
 	return func(t *testing.T) {
 		ctl := gomock.NewController(t)
 		defer ctl.Finish()
 
 		repo := mock_communicationmethodlabel.NewMockICommunicationMethodLabelRepository(ctl)
+
+		communicationMethodLabel := &communicationmethodlabelapi.CommunicationMethodLabel{}
+		communicationMethodLabel.ContactSystemCode = input.GetContactSystemCode()
+		communicationMethodLabel.CommunicationMethodCode = input.GetCommunicationMethodCode()
+		communicationMethodLabel.CommunicationMethodLabelCode = input.GetCommunicationMethodLabelCode()
+		communicationMethodLabel.Caption = input.GetCaption()
 
 		repo.EXPECT().DoUpdate(ctx, input).Return(status.Errorf(codes.NotFound, message.DoesNotExist("Communication Method Label")))
 
@@ -148,7 +155,7 @@ func doSaveNew(ctx context.Context, input *communicationmethodlabel.Communicatio
 
 		svc := NewCommunicationMethodLabelService(repo)
 
-		resp, err := svc.DoSave(ctx, &communicationmethodlabel.DoSaveCommunicationMethodLabelRequest{CommunicationMethodLabel: input})
+		resp, err := svc.DoSave(ctx, &communicationmethodlabelapi.DoSaveCommunicationMethodLabelRequest{CommunicationMethodLabel: communicationMethodLabel})
 		if err != nil {
 			t.Errorf("Expect error is nil")
 		}
@@ -159,18 +166,24 @@ func doSaveNew(ctx context.Context, input *communicationmethodlabel.Communicatio
 	}
 }
 
-func doSaveExisting(ctx context.Context, input *communicationmethodlabel.CommunicationMethodLabel) func(t *testing.T) {
+func doSaveExisting(ctx context.Context, input *communicationmethodlabelmodel.CommunicationMethodLabel) func(t *testing.T) {
 	return func(t *testing.T) {
 		ctl := gomock.NewController(t)
 		defer ctl.Finish()
 
 		repo := mock_communicationmethodlabel.NewMockICommunicationMethodLabelRepository(ctl)
 
+		communicationMethodLabel := &communicationmethodlabelapi.CommunicationMethodLabel{}
+		communicationMethodLabel.ContactSystemCode = input.GetContactSystemCode()
+		communicationMethodLabel.CommunicationMethodCode = input.GetCommunicationMethodCode()
+		communicationMethodLabel.CommunicationMethodLabelCode = input.GetCommunicationMethodLabelCode()
+		communicationMethodLabel.Caption = input.GetCaption()
+
 		repo.EXPECT().DoUpdate(ctx, input).Return(nil)
 
 		svc := NewCommunicationMethodLabelService(repo)
 
-		resp, err := svc.DoSave(ctx, &communicationmethodlabel.DoSaveCommunicationMethodLabelRequest{CommunicationMethodLabel: input})
+		resp, err := svc.DoSave(ctx, &communicationmethodlabelapi.DoSaveCommunicationMethodLabelRequest{CommunicationMethodLabel: communicationMethodLabel})
 		if err != nil {
 			t.Errorf("Expect error is nil")
 		}
@@ -181,7 +194,7 @@ func doSaveExisting(ctx context.Context, input *communicationmethodlabel.Communi
 	}
 }
 
-func doDelete(ctx context.Context, input *communicationmethodlabel.CommunicationMethodLabel) func(t *testing.T) {
+func doDelete(ctx context.Context, input *communicationmethodlabelmodel.CommunicationMethodLabel) func(t *testing.T) {
 	return func(t *testing.T) {
 		ctl := gomock.NewController(t)
 		defer ctl.Finish()
@@ -192,7 +205,7 @@ func doDelete(ctx context.Context, input *communicationmethodlabel.Communication
 
 		svc := NewCommunicationMethodLabelService(repo)
 
-		resp, err := svc.DoDelete(ctx, &communicationmethodlabel.DoDeleteCommunicationMethodLabelRequest{ContactSystemCode: input.GetContactSystemCode(), CommunicationMethodCode: input.GetCommunicationMethodCode(), CommunicationMethodLabelCode: input.GetCommunicationMethodLabelCode()})
+		resp, err := svc.DoDelete(ctx, &communicationmethodlabelapi.DoDeleteCommunicationMethodLabelRequest{ContactSystemCode: input.GetContactSystemCode(), CommunicationMethodCode: input.GetCommunicationMethodCode(), CommunicationMethodLabelCode: input.GetCommunicationMethodLabelCode()})
 		if err != nil {
 			t.Errorf("Expect error is nil")
 		}
