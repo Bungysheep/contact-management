@@ -2,95 +2,54 @@ package contactsystem
 
 import (
 	"context"
+	"database/sql"
 
-	auditapi "github.com/bungysheep/contact-management/pkg/api/v1/audit"
-	contactsystemapi "github.com/bungysheep/contact-management/pkg/api/v1/contactsystem"
 	contactsystemmodel "github.com/bungysheep/contact-management/pkg/models/v1/contactsystem"
 	contactsystemrepository "github.com/bungysheep/contact-management/pkg/repository/v1/contactsystem"
-	"github.com/golang/protobuf/ptypes"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
 
+// IContactSystemService - Contact System service interface
+type IContactSystemService interface {
+	DoRead(context.Context, string) (*contactsystemmodel.ContactSystem, error)
+	DoReadAll(context.Context) ([]*contactsystemmodel.ContactSystem, error)
+	DoSave(context.Context, *contactsystemmodel.ContactSystem) error
+	DoDelete(context.Context, string) error
+}
+
 type contactSystemService struct {
-	repo contactsystemrepository.IContactSystemRepository
+	contactSystemRepo contactsystemrepository.IContactSystemRepository
 }
 
 // NewContactSystemService - Contact System service implementation
-func NewContactSystemService(repo contactsystemrepository.IContactSystemRepository) contactsystemapi.ContactSystemServiceServer {
-	return &contactSystemService{repo: repo}
-}
-
-func (cntsys *contactSystemService) DoRead(ctx context.Context, req *contactsystemapi.DoReadContactSystemRequest) (*contactsystemapi.DoReadContactSystemResponse, error) {
-	result, err := cntsys.repo.DoRead(ctx, req.GetContactSystemCode())
-
-	return &contactsystemapi.DoReadContactSystemResponse{ContactSystem: contactSystemModelToAPI(result)}, err
-}
-
-func (cntsys *contactSystemService) DoReadAll(ctx context.Context, req *contactsystemapi.DoReadAllContactSystemRequest) (*contactsystemapi.DoReadAllContactSystemResponse, error) {
-	result, err := cntsys.repo.DoReadAll(ctx)
-
-	resp := make([]*contactsystemapi.ContactSystem, 0)
-
-	for _, item := range result {
-		resp = append(resp, contactSystemModelToAPI(item))
+func NewContactSystemService(db *sql.DB) IContactSystemService {
+	return &contactSystemService{
+		contactSystemRepo: contactsystemrepository.NewContactSystemRepository(db),
 	}
-
-	return &contactsystemapi.DoReadAllContactSystemResponse{ContactSystems: resp}, err
 }
 
-func (cntsys *contactSystemService) DoSave(ctx context.Context, req *contactsystemapi.DoSaveContactSystemRequest) (*contactsystemapi.DoSaveContactSystemResponse, error) {
-	res, err := doUpdate(ctx, cntsys.repo, req)
-	if err != nil {
+func (cntsys *contactSystemService) DoRead(ctx context.Context, contactSystemCode string) (*contactsystemmodel.ContactSystem, error) {
+	return cntsys.contactSystemRepo.DoRead(ctx, contactSystemCode)
+}
+
+func (cntsys *contactSystemService) DoReadAll(ctx context.Context) ([]*contactsystemmodel.ContactSystem, error) {
+	return cntsys.contactSystemRepo.DoReadAll(ctx)
+}
+
+func (cntsys *contactSystemService) DoSave(ctx context.Context, data *contactsystemmodel.ContactSystem) error {
+	if err := cntsys.contactSystemRepo.DoUpdate(ctx, data); err != nil {
 		s, ok := status.FromError(err)
 		if ok {
 			if s.Code() == codes.NotFound {
-				return doInsert(ctx, cntsys.repo, req)
+				return cntsys.contactSystemRepo.DoInsert(ctx, data)
 			}
 		}
 	}
 
-	return res, err
+	return nil
 }
 
-func (cntsys *contactSystemService) DoDelete(ctx context.Context, req *contactsystemapi.DoDeleteContactSystemRequest) (*contactsystemapi.DoDeleteContactSystemResponse, error) {
-	err := cntsys.repo.DoDelete(ctx, req.GetContactSystemCode())
-
-	return &contactsystemapi.DoDeleteContactSystemResponse{Result: err == nil}, err
-}
-
-func doInsert(ctx context.Context, repo contactsystemrepository.IContactSystemRepository, req *contactsystemapi.DoSaveContactSystemRequest) (*contactsystemapi.DoSaveContactSystemResponse, error) {
-	err := repo.DoInsert(ctx, contactSystemAPIToModel(req.GetContactSystem()))
-
-	return &contactsystemapi.DoSaveContactSystemResponse{Result: err == nil}, err
-}
-
-func doUpdate(ctx context.Context, repo contactsystemrepository.IContactSystemRepository, req *contactsystemapi.DoSaveContactSystemRequest) (*contactsystemapi.DoSaveContactSystemResponse, error) {
-	err := repo.DoUpdate(ctx, contactSystemAPIToModel(req.GetContactSystem()))
-
-	return &contactsystemapi.DoSaveContactSystemResponse{Result: err == nil}, err
-}
-
-func contactSystemModelToAPI(dataModel *contactsystemmodel.ContactSystem) *contactsystemapi.ContactSystem {
-	contactSystem := &contactsystemapi.ContactSystem{Audit: &auditapi.Audit{}}
-	contactSystem.ContactSystemCode = dataModel.GetContactSystemCode()
-	contactSystem.Description = dataModel.GetDescription()
-	contactSystem.Details = dataModel.GetDetails()
-	contactSystem.Status = dataModel.GetStatus()
-	contactSystem.GetAudit().CreatedAt, _ = ptypes.TimestampProto(dataModel.GetAudit().GetCreatedAt())
-	contactSystem.GetAudit().ModifiedAt, _ = ptypes.TimestampProto(dataModel.GetAudit().GetModifiedAt())
-	contactSystem.GetAudit().Vers = dataModel.GetAudit().GetVers()
-	return contactSystem
-}
-
-func contactSystemAPIToModel(data *contactsystemapi.ContactSystem) *contactsystemmodel.ContactSystem {
-	contactSystem := contactsystemmodel.NewContactSystem()
-	contactSystem.ContactSystemCode = data.GetContactSystemCode()
-	contactSystem.Description = data.GetDescription()
-	contactSystem.Details = data.GetDetails()
-	contactSystem.Status = data.GetStatus()
-	contactSystem.GetAudit().CreatedAt, _ = ptypes.Timestamp(data.GetAudit().GetCreatedAt())
-	contactSystem.GetAudit().ModifiedAt, _ = ptypes.Timestamp(data.GetAudit().GetModifiedAt())
-	contactSystem.GetAudit().Vers = data.GetAudit().GetVers()
-	return contactSystem
+func (cntsys *contactSystemService) DoDelete(ctx context.Context, contactSystemCode string) error {
+	return cntsys.contactSystemRepo.DoDelete(ctx, contactSystemCode)
 }
