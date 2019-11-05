@@ -5,19 +5,17 @@ import (
 	"database/sql"
 
 	"github.com/bungysheep/contact-management/pkg/common/message"
-	"github.com/bungysheep/contact-management/pkg/models/v1/contactsystem"
-	communicationmethodrepository "github.com/bungysheep/contact-management/pkg/repository/v1/communicationmethod"
-	contactrepository "github.com/bungysheep/contact-management/pkg/repository/v1/contact"
+	contactsystemmodel "github.com/bungysheep/contact-management/pkg/models/v1/contactsystem"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
 
 // IContactSystemRepository - Contact System repository interface
 type IContactSystemRepository interface {
-	DoRead(context.Context, string) (*contactsystem.ContactSystem, error)
-	DoReadAll(context.Context) ([]*contactsystem.ContactSystem, error)
-	DoInsert(context.Context, *contactsystem.ContactSystem) error
-	DoUpdate(context.Context, *contactsystem.ContactSystem) error
+	DoRead(context.Context, string) (*contactsystemmodel.ContactSystem, error)
+	DoReadAll(context.Context) ([]*contactsystemmodel.ContactSystem, error)
+	DoInsert(context.Context, *contactsystemmodel.ContactSystem) error
+	DoUpdate(context.Context, *contactsystemmodel.ContactSystem) error
 	DoDelete(context.Context, string) error
 }
 
@@ -30,8 +28,8 @@ func NewContactSystemRepository(db *sql.DB) IContactSystemRepository {
 	return &contactSystemRepository{db: db}
 }
 
-func (cntsys *contactSystemRepository) DoRead(ctx context.Context, contactSystemCode string) (*contactsystem.ContactSystem, error) {
-	result := contactsystem.NewContactSystem()
+func (cntsys *contactSystemRepository) DoRead(ctx context.Context, contactSystemCode string) (*contactsystemmodel.ContactSystem, error) {
+	result := contactsystemmodel.NewContactSystem()
 
 	conn, err := cntsys.db.Conn(ctx)
 	if err != nil {
@@ -71,8 +69,8 @@ func (cntsys *contactSystemRepository) DoRead(ctx context.Context, contactSystem
 	return result, nil
 }
 
-func (cntsys *contactSystemRepository) DoReadAll(ctx context.Context) ([]*contactsystem.ContactSystem, error) {
-	result := make([]*contactsystem.ContactSystem, 0)
+func (cntsys *contactSystemRepository) DoReadAll(ctx context.Context) ([]*contactsystemmodel.ContactSystem, error) {
+	result := make([]*contactsystemmodel.ContactSystem, 0)
 
 	conn, err := cntsys.db.Conn(ctx)
 	if err != nil {
@@ -102,7 +100,7 @@ func (cntsys *contactSystemRepository) DoReadAll(ctx context.Context) ([]*contac
 			break
 		}
 
-		contactSystem := contactsystem.NewContactSystem()
+		contactSystem := contactsystemmodel.NewContactSystem()
 		if err := rows.Scan(
 			&contactSystem.ContactSystemCode,
 			&contactSystem.Description,
@@ -120,7 +118,7 @@ func (cntsys *contactSystemRepository) DoReadAll(ctx context.Context) ([]*contac
 	return result, nil
 }
 
-func (cntsys *contactSystemRepository) DoInsert(ctx context.Context, data *contactsystem.ContactSystem) error {
+func (cntsys *contactSystemRepository) DoInsert(ctx context.Context, data *contactsystemmodel.ContactSystem) error {
 	conn, err := cntsys.db.Conn(ctx)
 	if err != nil {
 		return status.Errorf(codes.Unknown, message.FailedConnectToDatabase(err))
@@ -145,7 +143,7 @@ func (cntsys *contactSystemRepository) DoInsert(ctx context.Context, data *conta
 	return nil
 }
 
-func (cntsys *contactSystemRepository) DoUpdate(ctx context.Context, data *contactsystem.ContactSystem) error {
+func (cntsys *contactSystemRepository) DoUpdate(ctx context.Context, data *contactsystemmodel.ContactSystem) error {
 	conn, err := cntsys.db.Conn(ctx)
 	if err != nil {
 		return status.Errorf(codes.Unknown, message.FailedConnectToDatabase(err))
@@ -171,10 +169,6 @@ func (cntsys *contactSystemRepository) DoUpdate(ctx context.Context, data *conta
 }
 
 func (cntsys *contactSystemRepository) DoDelete(ctx context.Context, contactSystemCode string) error {
-	if err := cntsys.anyReferences(ctx, contactSystemCode); err != nil {
-		return err
-	}
-
 	conn, err := cntsys.db.Conn(ctx)
 	if err != nil {
 		return status.Errorf(codes.Unknown, message.FailedConnectToDatabase(err))
@@ -194,28 +188,6 @@ func (cntsys *contactSystemRepository) DoDelete(ctx context.Context, contactSyst
 	rows, _ := result.RowsAffected()
 	if rows == 0 {
 		return status.Errorf(codes.NotFound, message.DoesNotExist("Contact System"))
-	}
-
-	return nil
-}
-
-func (cntsys *contactSystemRepository) anyReferences(ctx context.Context, contactSystemCode string) error {
-	// Check if any Communication Method references
-	cm := communicationmethodrepository.NewCommunicationMethodRepository(cntsys.db)
-	anyRef, err := cm.AnyReference(ctx, contactSystemCode)
-	if err != nil {
-		return err
-	} else if anyRef {
-		return status.Errorf(codes.Unknown, message.FailedDeleteAsReferenceExist("Communication Method"))
-	}
-
-	// Check if any Contact references
-	cnt := contactrepository.NewContactRepository(cntsys.db)
-	anyRef, err = cnt.AnyReference(ctx, contactSystemCode)
-	if err != nil {
-		return err
-	} else if anyRef {
-		return status.Errorf(codes.Unknown, message.FailedDeleteAsReferenceExist("Contact"))
 	}
 
 	return nil

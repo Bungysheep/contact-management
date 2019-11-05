@@ -4,7 +4,10 @@ import (
 	"context"
 	"database/sql"
 
+	"github.com/bungysheep/contact-management/pkg/common/message"
 	contactsystemmodel "github.com/bungysheep/contact-management/pkg/models/v1/contactsystem"
+	communicationmethodrepository "github.com/bungysheep/contact-management/pkg/repository/v1/communicationmethod"
+	contactrepository "github.com/bungysheep/contact-management/pkg/repository/v1/contact"
 	contactsystemrepository "github.com/bungysheep/contact-management/pkg/repository/v1/contactsystem"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -19,13 +22,17 @@ type IContactSystemService interface {
 }
 
 type contactSystemService struct {
-	contactSystemRepo contactsystemrepository.IContactSystemRepository
+	communicationMethodRepo communicationmethodrepository.ICommunicationMethodRepository
+	contactRepo             contactrepository.IContactRepository
+	contactSystemRepo       contactsystemrepository.IContactSystemRepository
 }
 
 // NewContactSystemService - Contact System service implementation
 func NewContactSystemService(db *sql.DB) IContactSystemService {
 	return &contactSystemService{
-		contactSystemRepo: contactsystemrepository.NewContactSystemRepository(db),
+		communicationMethodRepo: communicationmethodrepository.NewCommunicationMethodRepository(db),
+		contactRepo:             contactrepository.NewContactRepository(db),
+		contactSystemRepo:       contactsystemrepository.NewContactSystemRepository(db),
 	}
 }
 
@@ -51,5 +58,19 @@ func (cntsys *contactSystemService) DoSave(ctx context.Context, data *contactsys
 }
 
 func (cntsys *contactSystemService) DoDelete(ctx context.Context, contactSystemCode string) error {
+	anyRef, err := cntsys.communicationMethodRepo.AnyReference(ctx, contactSystemCode)
+	if err != nil {
+		return err
+	} else if anyRef {
+		return status.Errorf(codes.Unknown, message.FailedDeleteAsReferenceExist("Communication Method"))
+	}
+
+	anyRef, err = cntsys.contactRepo.AnyReference(ctx, contactSystemCode)
+	if err != nil {
+		return err
+	} else if anyRef {
+		return status.Errorf(codes.Unknown, message.FailedDeleteAsReferenceExist("Contact"))
+	}
+
 	return cntsys.contactSystemRepo.DoDelete(ctx, contactSystemCode)
 }
