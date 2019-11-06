@@ -2,31 +2,31 @@ package communicationmethodfield
 
 import (
 	"context"
+	"database/sql"
 	"os"
 	"testing"
 	"time"
 
-	auditapi "github.com/bungysheep/contact-management/pkg/api/v1/audit"
-	communicationmethodfieldapi "github.com/bungysheep/contact-management/pkg/api/v1/communicationmethodfield"
-	"github.com/bungysheep/contact-management/pkg/common/message"
+	"github.com/DATA-DOG/go-sqlmock"
 	auditmodel "github.com/bungysheep/contact-management/pkg/models/v1/audit"
 	communicationmethodfieldmodel "github.com/bungysheep/contact-management/pkg/models/v1/communicationmethodfield"
-	"github.com/bungysheep/contact-management/pkg/repository/v1/communicationmethodfield/mock_communicationmethodfield"
-	"github.com/golang/mock/gomock"
-	"github.com/golang/protobuf/ptypes"
-	"google.golang.org/grpc/codes"
-	"google.golang.org/grpc/status"
 )
 
 var (
 	ctx  context.Context
+	svc  ICommunicationMethodFieldService
+	db   *sql.DB
+	mock sqlmock.Sqlmock
 	data []*communicationmethodfieldmodel.CommunicationMethodField
 )
 
 func TestMain(m *testing.M) {
 	ctx = context.TODO()
 
-	tmNow := time.Now().In(time.UTC)
+	db, mock, _ = sqlmock.New()
+	defer db.Close()
+
+	svc = NewCommunicationMethodFieldService(db)
 
 	data = append(data, &communicationmethodfieldmodel.CommunicationMethodField{
 		ContactSystemCode:       "CNTSYS001",
@@ -34,33 +34,18 @@ func TestMain(m *testing.M) {
 		FieldCode:               "EMAIL_ADDRESS",
 		Caption:                 "Email Address",
 		Sequence:                1,
-		Audit: &auditmodel.Audit{
-			CreatedAt:  tmNow,
-			ModifiedAt: tmNow,
-			Vers:       1,
-		},
 	}, &communicationmethodfieldmodel.CommunicationMethodField{
 		ContactSystemCode:       "CNTSYS001",
 		CommunicationMethodCode: "MOBILE",
 		FieldCode:               "MOBILE_NO",
 		Caption:                 "Mobile No",
 		Sequence:                1,
-		Audit: &auditmodel.Audit{
-			CreatedAt:  tmNow,
-			ModifiedAt: tmNow,
-			Vers:       1,
-		},
 	}, &communicationmethodfieldmodel.CommunicationMethodField{
 		ContactSystemCode:       "CNTSYS001",
 		CommunicationMethodCode: "FAX",
 		FieldCode:               "FAX_NO",
 		Caption:                 "Fax No",
 		Sequence:                1,
-		Audit: &auditmodel.Audit{
-			CreatedAt:  tmNow,
-			ModifiedAt: tmNow,
-			Vers:       1,
-		},
 	})
 
 	exitCode := m.Run()
@@ -73,185 +58,158 @@ func TestCommunicationMethodFieldService(t *testing.T) {
 
 	t.Run("DoReadAll Communication Method Field", doReadAll(ctx, data[0]))
 
-	t.Run("DoSave new Communication Method Field", doSaveNew(ctx, data[0]))
-
-	t.Run("DoSave existing Communication Method Field", doSaveExisting(ctx, data[0]))
+	t.Run("DoSave Communication Method Field", doSave(ctx, data[0]))
 
 	t.Run("DoDelete Communication Method Field", doDelete(ctx, data[0]))
 }
 
 func doRead(ctx context.Context, input *communicationmethodfieldmodel.CommunicationMethodField) func(t *testing.T) {
 	return func(t *testing.T) {
-		ctl := gomock.NewController(t)
-		defer ctl.Finish()
+		tmNow := time.Now().In(time.UTC)
 
-		repo := mock_communicationmethodfield.NewMockICommunicationMethodFieldRepository(ctl)
+		rows := sqlmock.NewRows([]string{"contact_system_code", "communication_method_code", "field_code", "caption", "sequence", "created_at", "modified_at", "vers"}).
+			AddRow(input.GetContactSystemCode(), input.GetCommunicationMethodCode(), input.GetFieldCode(), input.GetCaption(), input.GetSequence(), tmNow, tmNow, 1)
 
-		repo.EXPECT().DoRead(ctx, input.GetContactSystemCode(), input.GetCommunicationMethodCode(), input.GetFieldCode()).Return(input, nil)
+		expQuery := mock.ExpectPrepare("SELECT contact_system_code, communication_method_code, field_code, caption, sequence, created_at, modified_at, vers FROM communication_method_field").ExpectQuery()
+		expQuery.WithArgs(input.GetContactSystemCode(), input.GetCommunicationMethodCode(), input.GetFieldCode()).WillReturnRows(rows)
 
-		svc := NewCommunicationMethodFieldService(repo)
-
-		resp, err := svc.DoRead(ctx, &communicationmethodfieldapi.DoReadCommunicationMethodFieldRequest{ContactSystemCode: input.GetContactSystemCode(), CommunicationMethodCode: input.GetCommunicationMethodCode(), FieldCode: input.GetFieldCode()})
+		resp, err := svc.DoRead(ctx, input.GetContactSystemCode(), input.GetCommunicationMethodCode(), input.GetFieldCode())
 		if err != nil {
-			t.Errorf("Expect error is nil")
+			t.Errorf("Expect error is nil, but got %s", err)
 		}
 
-		if resp.GetCommunicationMethodField() == nil {
+		if resp == nil {
 			t.Errorf("Expect communication method field is not nil")
 		}
 
-		if resp.GetCommunicationMethodField().GetContactSystemCode() != input.GetContactSystemCode() {
-			t.Errorf("Expect contact system code %s, but got %s", input.GetContactSystemCode(), resp.GetCommunicationMethodField().GetContactSystemCode())
+		if resp.GetContactSystemCode() != input.GetContactSystemCode() {
+			t.Errorf("Expect contact system code %s, but got %s", input.GetContactSystemCode(), resp.GetContactSystemCode())
 		}
 
-		if resp.GetCommunicationMethodField().GetCommunicationMethodCode() != input.GetCommunicationMethodCode() {
-			t.Errorf("Expect communication method code %s, but got %s", input.GetCommunicationMethodCode(), resp.GetCommunicationMethodField().GetCommunicationMethodCode())
+		if resp.GetCommunicationMethodCode() != input.GetCommunicationMethodCode() {
+			t.Errorf("Expect communication method code %s, but got %s", input.GetCommunicationMethodCode(), resp.GetCommunicationMethodCode())
 		}
 
-		if resp.GetCommunicationMethodField().GetFieldCode() != input.GetFieldCode() {
-			t.Errorf("Expect field code %s, but got %s", input.GetFieldCode(), resp.GetCommunicationMethodField().GetFieldCode())
+		if resp.GetFieldCode() != input.GetFieldCode() {
+			t.Errorf("Expect field code %s, but got %s", input.GetFieldCode(), resp.GetFieldCode())
 		}
 
-		if resp.GetCommunicationMethodField().GetCaption() != input.GetCaption() {
-			t.Errorf("Expect caption %s, but got %s", input.GetCaption(), resp.GetCommunicationMethodField().GetCaption())
+		if resp.GetCaption() != input.GetCaption() {
+			t.Errorf("Expect caption %s, but got %s", input.GetCaption(), resp.GetCaption())
 		}
 
-		if resp.GetCommunicationMethodField().GetSequence() != input.GetSequence() {
-			t.Errorf("Expect sequence %d, but got %d", input.GetSequence(), resp.GetCommunicationMethodField().GetSequence())
+		if resp.GetSequence() != input.GetSequence() {
+			t.Errorf("Expect sequence %d, but got %d", input.GetSequence(), resp.GetSequence())
 		}
 	}
 }
 
 func doReadAll(ctx context.Context, input *communicationmethodfieldmodel.CommunicationMethodField) func(t *testing.T) {
 	return func(t *testing.T) {
-		ctl := gomock.NewController(t)
-		defer ctl.Finish()
+		tmNow := time.Now().In(time.UTC)
 
-		repo := mock_communicationmethodfield.NewMockICommunicationMethodFieldRepository(ctl)
+		rows := sqlmock.NewRows([]string{"contact_system_code", "communication_method_code", "field_code", "caption", "sequence", "created_at", "modified_at", "vers"}).
+			AddRow(data[0].GetContactSystemCode(), data[0].GetCommunicationMethodCode(), data[0].GetFieldCode(), data[0].GetCaption(), data[0].GetSequence(), tmNow, tmNow, 1).
+			AddRow(data[1].GetContactSystemCode(), data[1].GetCommunicationMethodCode(), data[1].GetFieldCode(), data[1].GetCaption(), data[1].GetSequence(), tmNow, tmNow, 1).
+			AddRow(data[2].GetContactSystemCode(), data[2].GetCommunicationMethodCode(), data[2].GetFieldCode(), data[2].GetCaption(), data[2].GetSequence(), tmNow, tmNow, 1)
 
-		repo.EXPECT().DoReadAll(ctx, input.GetContactSystemCode(), input.GetCommunicationMethodCode()).Return(data, nil)
+		expQuery := mock.ExpectPrepare("SELECT contact_system_code, communication_method_code, field_code, caption, sequence, created_at, modified_at, vers FROM communication_method_field").ExpectQuery()
+		expQuery.WithArgs(input.GetContactSystemCode(), input.GetCommunicationMethodCode()).WillReturnRows(rows)
 
-		svc := NewCommunicationMethodFieldService(repo)
-
-		resp, err := svc.DoReadAll(ctx, &communicationmethodfieldapi.DoReadAllCommunicationMethodFieldRequest{ContactSystemCode: input.GetContactSystemCode(), CommunicationMethodCode: input.GetCommunicationMethodCode()})
+		resp, err := svc.DoReadAll(ctx, input.GetContactSystemCode(), input.GetCommunicationMethodCode())
 		if err != nil {
-			t.Errorf("Expect error is nil")
+			t.Errorf("Expect error is nil, but got %s", err)
 		}
 
-		if resp.GetCommunicationMethodField() == nil {
+		if resp == nil {
 			t.Errorf("Expect communication method field is not nil")
 		}
 
-		if len(resp.GetCommunicationMethodField()) < 3 {
+		if len(resp) < 3 {
 			t.Errorf("Expect there are communication method fields retrieved")
 		}
 
-		if resp.GetCommunicationMethodField()[0].GetContactSystemCode() != input.GetContactSystemCode() {
-			t.Errorf("Expect contact system code %s, but got %s", input.GetContactSystemCode(), resp.GetCommunicationMethodField()[0].GetContactSystemCode())
+		if resp[0].GetContactSystemCode() != input.GetContactSystemCode() {
+			t.Errorf("Expect contact system code %s, but got %s", input.GetContactSystemCode(), resp[0].GetContactSystemCode())
 		}
 
-		if resp.GetCommunicationMethodField()[0].GetCommunicationMethodCode() != input.GetCommunicationMethodCode() {
-			t.Errorf("Expect communication method code %s, but got %s", input.GetCommunicationMethodCode(), resp.GetCommunicationMethodField()[0].GetCommunicationMethodCode())
+		if resp[0].GetCommunicationMethodCode() != input.GetCommunicationMethodCode() {
+			t.Errorf("Expect communication method code %s, but got %s", input.GetCommunicationMethodCode(), resp[0].GetCommunicationMethodCode())
 		}
 
-		if resp.GetCommunicationMethodField()[0].GetFieldCode() != input.GetFieldCode() {
-			t.Errorf("Expect field code %s, but got %s", input.GetFieldCode(), resp.GetCommunicationMethodField()[0].GetFieldCode())
+		if resp[0].GetFieldCode() != input.GetFieldCode() {
+			t.Errorf("Expect field code %s, but got %s", input.GetFieldCode(), resp[0].GetFieldCode())
 		}
 
-		if resp.GetCommunicationMethodField()[0].GetCaption() != input.GetCaption() {
-			t.Errorf("Expect caption %s, but got %s", input.GetCaption(), resp.GetCommunicationMethodField()[0].GetCaption())
+		if resp[0].GetCaption() != input.GetCaption() {
+			t.Errorf("Expect caption %s, but got %s", input.GetCaption(), resp[0].GetCaption())
 		}
 
-		if resp.GetCommunicationMethodField()[0].GetSequence() != input.GetSequence() {
-			t.Errorf("Expect sequence %d, but got %d", input.GetSequence(), resp.GetCommunicationMethodField()[0].GetSequence())
+		if resp[0].GetSequence() != input.GetSequence() {
+			t.Errorf("Expect sequence %d, but got %d", input.GetSequence(), resp[0].GetSequence())
 		}
+	}
+}
+
+func doSave(ctx context.Context, input *communicationmethodfieldmodel.CommunicationMethodField) func(t *testing.T) {
+	return func(t *testing.T) {
+		t.Run("DoSave new Communication Method Field", doSaveNew(ctx, input))
+
+		t.Run("DoSave existing Communication Method Field", doSaveExisting(ctx, input))
 	}
 }
 
 func doSaveNew(ctx context.Context, input *communicationmethodfieldmodel.CommunicationMethodField) func(t *testing.T) {
 	return func(t *testing.T) {
-		ctl := gomock.NewController(t)
-		defer ctl.Finish()
+		tmNow := time.Now().In(time.UTC)
 
-		repo := mock_communicationmethodfield.NewMockICommunicationMethodFieldRepository(ctl)
-
-		communicationMethodField := &communicationmethodfieldapi.CommunicationMethodField{Audit: &auditapi.Audit{}}
-		communicationMethodField.ContactSystemCode = input.GetContactSystemCode()
-		communicationMethodField.CommunicationMethodCode = input.GetCommunicationMethodCode()
-		communicationMethodField.FieldCode = input.GetFieldCode()
-		communicationMethodField.Caption = input.GetCaption()
-		communicationMethodField.Sequence = input.GetSequence()
-		communicationMethodField.GetAudit().CreatedAt, _ = ptypes.TimestampProto(input.GetAudit().GetCreatedAt())
-		communicationMethodField.GetAudit().ModifiedAt, _ = ptypes.TimestampProto(input.GetAudit().GetModifiedAt())
-		communicationMethodField.GetAudit().Vers = input.GetAudit().GetVers()
-
-		repo.EXPECT().DoUpdate(ctx, input).Return(status.Errorf(codes.NotFound, message.DoesNotExist("Communication Method Field")))
-
-		repo.EXPECT().DoInsert(ctx, input).Return(nil)
-
-		svc := NewCommunicationMethodFieldService(repo)
-
-		resp, err := svc.DoSave(ctx, &communicationmethodfieldapi.DoSaveCommunicationMethodFieldRequest{CommunicationMethodField: communicationMethodField})
-		if err != nil {
-			t.Errorf("Expect error is nil")
+		input.Audit = &auditmodel.Audit{
+			CreatedAt:  tmNow,
+			ModifiedAt: tmNow,
+			Vers:       1,
 		}
 
-		if !resp.GetResult() {
-			t.Errorf("Expect the result is successful")
+		expUpdQuery := mock.ExpectPrepare("UPDATE communication_method_field").ExpectExec()
+		expUpdQuery.WithArgs(input.GetContactSystemCode(), input.GetCommunicationMethodCode(), input.GetFieldCode(), input.GetCaption(), input.GetSequence(), tmNow).WillReturnResult(sqlmock.NewResult(0, 0))
+
+		expInsQuery := mock.ExpectPrepare("INSERT INTO communication_method_field").ExpectExec()
+		expInsQuery.WithArgs(input.GetContactSystemCode(), input.GetCommunicationMethodCode(), input.GetFieldCode(), input.GetCaption(), input.GetSequence(), tmNow, tmNow).WillReturnResult(sqlmock.NewResult(0, 1))
+
+		err := svc.DoSave(ctx, input)
+		if err != nil {
+			t.Errorf("Expect error is nil, but got %s", err)
 		}
 	}
 }
 
 func doSaveExisting(ctx context.Context, input *communicationmethodfieldmodel.CommunicationMethodField) func(t *testing.T) {
 	return func(t *testing.T) {
-		ctl := gomock.NewController(t)
-		defer ctl.Finish()
+		tmNow := time.Now().In(time.UTC)
 
-		repo := mock_communicationmethodfield.NewMockICommunicationMethodFieldRepository(ctl)
-
-		communicationMethodField := &communicationmethodfieldapi.CommunicationMethodField{Audit: &auditapi.Audit{}}
-		communicationMethodField.ContactSystemCode = input.GetContactSystemCode()
-		communicationMethodField.CommunicationMethodCode = input.GetCommunicationMethodCode()
-		communicationMethodField.FieldCode = input.GetFieldCode()
-		communicationMethodField.Caption = input.GetCaption()
-		communicationMethodField.Sequence = input.GetSequence()
-		communicationMethodField.GetAudit().CreatedAt, _ = ptypes.TimestampProto(input.GetAudit().GetCreatedAt())
-		communicationMethodField.GetAudit().ModifiedAt, _ = ptypes.TimestampProto(input.GetAudit().GetModifiedAt())
-		communicationMethodField.GetAudit().Vers = input.GetAudit().GetVers()
-
-		repo.EXPECT().DoUpdate(ctx, input).Return(nil)
-
-		svc := NewCommunicationMethodFieldService(repo)
-
-		resp, err := svc.DoSave(ctx, &communicationmethodfieldapi.DoSaveCommunicationMethodFieldRequest{CommunicationMethodField: communicationMethodField})
-		if err != nil {
-			t.Errorf("Expect error is nil")
+		input.Audit = &auditmodel.Audit{
+			CreatedAt:  tmNow,
+			ModifiedAt: tmNow,
+			Vers:       2,
 		}
 
-		if !resp.GetResult() {
-			t.Errorf("Expect the result is successful")
+		expUpdQuery := mock.ExpectPrepare("UPDATE communication_method_field").ExpectExec()
+		expUpdQuery.WithArgs(input.GetContactSystemCode(), input.GetCommunicationMethodCode(), input.GetFieldCode(), input.GetCaption(), input.GetSequence(), tmNow).WillReturnResult(sqlmock.NewResult(0, 1))
+
+		err := svc.DoSave(ctx, input)
+		if err != nil {
+			t.Errorf("Expect error is nil, but got %s", err)
 		}
 	}
 }
 
 func doDelete(ctx context.Context, input *communicationmethodfieldmodel.CommunicationMethodField) func(t *testing.T) {
 	return func(t *testing.T) {
-		ctl := gomock.NewController(t)
-		defer ctl.Finish()
+		expQuery := mock.ExpectPrepare("DELETE FROM communication_method_field").ExpectExec()
+		expQuery.WithArgs(input.GetContactSystemCode(), input.GetCommunicationMethodCode(), input.GetFieldCode()).WillReturnResult(sqlmock.NewResult(0, 1))
 
-		repo := mock_communicationmethodfield.NewMockICommunicationMethodFieldRepository(ctl)
-
-		repo.EXPECT().DoDelete(ctx, input.GetContactSystemCode(), input.GetCommunicationMethodCode(), input.GetFieldCode()).Return(nil)
-
-		svc := NewCommunicationMethodFieldService(repo)
-
-		resp, err := svc.DoDelete(ctx, &communicationmethodfieldapi.DoDeleteCommunicationMethodFieldRequest{ContactSystemCode: input.GetContactSystemCode(), CommunicationMethodCode: input.GetCommunicationMethodCode(), FieldCode: input.GetFieldCode()})
+		err := svc.DoDelete(ctx, input.GetContactSystemCode(), input.GetCommunicationMethodCode(), input.GetFieldCode())
 		if err != nil {
-			t.Errorf("Expect error is nil")
-		}
-
-		if !resp.GetResult() {
-			t.Errorf("Expect the result is successful")
+			t.Errorf("Expect error is nil, but got %s", err)
 		}
 	}
 }

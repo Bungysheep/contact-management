@@ -136,9 +136,9 @@ func doReadAll(ctx context.Context, input *communicationmethodlabelmodel.Communi
 
 func doSave(ctx context.Context, input *communicationmethodlabelmodel.CommunicationMethodLabel) func(t *testing.T) {
 	return func(t *testing.T) {
-		t.Run("DoSave new Contact System", doSaveNew(ctx, data[0]))
+		t.Run("DoSave new Contact System", doSaveNew(ctx, input))
 
-		t.Run("DoSave existing Contact System", doSaveExisting(ctx, data[0]))
+		t.Run("DoSave existing Contact System", doSaveExisting(ctx, input))
 	}
 }
 

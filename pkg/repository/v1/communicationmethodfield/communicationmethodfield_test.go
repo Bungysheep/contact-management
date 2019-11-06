@@ -9,8 +9,8 @@ import (
 	"time"
 
 	"github.com/DATA-DOG/go-sqlmock"
-	"github.com/bungysheep/contact-management/pkg/models/v1/audit"
-	"github.com/bungysheep/contact-management/pkg/models/v1/communicationmethodfield"
+	auditmodel "github.com/bungysheep/contact-management/pkg/models/v1/audit"
+	communicationmethodfieldmodel "github.com/bungysheep/contact-management/pkg/models/v1/communicationmethodfield"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
@@ -20,7 +20,7 @@ var (
 	repo ICommunicationMethodFieldRepository
 	db   *sql.DB
 	mock sqlmock.Sqlmock
-	data []*communicationmethodfield.CommunicationMethodField
+	data []*communicationmethodfieldmodel.CommunicationMethodField
 )
 
 func TestMain(m *testing.M) {
@@ -31,19 +31,19 @@ func TestMain(m *testing.M) {
 
 	repo = NewCommunicationMethodFieldRepository(db)
 
-	data = append(data, &communicationmethodfield.CommunicationMethodField{
+	data = append(data, &communicationmethodfieldmodel.CommunicationMethodField{
 		ContactSystemCode:       "CNTSYS001",
 		CommunicationMethodCode: "EMAIL",
 		FieldCode:               "EMAIL_ADDRESS",
 		Caption:                 "Email Address",
 		Sequence:                1,
-	}, &communicationmethodfield.CommunicationMethodField{
+	}, &communicationmethodfieldmodel.CommunicationMethodField{
 		ContactSystemCode:       "CNTSYS001",
 		CommunicationMethodCode: "MOBILE",
 		FieldCode:               "MOBILE_NO",
 		Caption:                 "Mobile No",
 		Sequence:                1,
-	}, &communicationmethodfield.CommunicationMethodField{
+	}, &communicationmethodfieldmodel.CommunicationMethodField{
 		ContactSystemCode:       "CNTSYS001",
 		CommunicationMethodCode: "FAX",
 		FieldCode:               "FAX_NO",
@@ -124,7 +124,7 @@ func doDeleteAll(ctx context.Context) func(t *testing.T) {
 	}
 }
 
-func doReadFailCommunicationMethodField(ctx context.Context, input *communicationmethodfield.CommunicationMethodField) func(t *testing.T) {
+func doReadFailCommunicationMethodField(ctx context.Context, input *communicationmethodfieldmodel.CommunicationMethodField) func(t *testing.T) {
 	return func(t *testing.T) {
 		expQuery := mock.ExpectPrepare("SELECT contact_system_code, communication_method_code, field_code, caption, sequence, created_at, modified_at, vers FROM communication_method_field").ExpectQuery()
 		expQuery.WithArgs(input.GetContactSystemCode(), input.GetCommunicationMethodCode(), input.GetFieldCode()).WillReturnError(fmt.Errorf("DoRead communication method field failed"))
@@ -147,7 +147,7 @@ func doReadFailCommunicationMethodField(ctx context.Context, input *communicatio
 	}
 }
 
-func doReadUnexistingCommunicationMethodField(ctx context.Context, input *communicationmethodfield.CommunicationMethodField) func(t *testing.T) {
+func doReadUnexistingCommunicationMethodField(ctx context.Context, input *communicationmethodfieldmodel.CommunicationMethodField) func(t *testing.T) {
 	return func(t *testing.T) {
 		rows := sqlmock.NewRows([]string{"contact_system_code", "communication_method_code", "field_code", "caption", "sequence", "created_at", "modified_at", "vers"})
 
@@ -172,7 +172,7 @@ func doReadUnexistingCommunicationMethodField(ctx context.Context, input *commun
 	}
 }
 
-func doReadRowErrorCommunicationMethodField(ctx context.Context, input *communicationmethodfield.CommunicationMethodField) func(t *testing.T) {
+func doReadRowErrorCommunicationMethodField(ctx context.Context, input *communicationmethodfieldmodel.CommunicationMethodField) func(t *testing.T) {
 	return func(t *testing.T) {
 		tmNow := time.Now().In(time.UTC)
 
@@ -201,7 +201,7 @@ func doReadRowErrorCommunicationMethodField(ctx context.Context, input *communic
 	}
 }
 
-func doReadExistingCommunicationMethodField(ctx context.Context, input *communicationmethodfield.CommunicationMethodField) func(t *testing.T) {
+func doReadExistingCommunicationMethodField(ctx context.Context, input *communicationmethodfieldmodel.CommunicationMethodField) func(t *testing.T) {
 	return func(t *testing.T) {
 		tmNow := time.Now().In(time.UTC)
 
@@ -242,7 +242,7 @@ func doReadExistingCommunicationMethodField(ctx context.Context, input *communic
 	}
 }
 
-func doReadAllFailCommunicationMethodFields(ctx context.Context, input *communicationmethodfield.CommunicationMethodField) func(t *testing.T) {
+func doReadAllFailCommunicationMethodFields(ctx context.Context, input *communicationmethodfieldmodel.CommunicationMethodField) func(t *testing.T) {
 	return func(t *testing.T) {
 		expQuery := mock.ExpectPrepare("SELECT contact_system_code, communication_method_code, field_code, caption, sequence, created_at, modified_at, vers FROM communication_method_field").ExpectQuery()
 		expQuery.WithArgs(input.GetContactSystemCode(), input.GetCommunicationMethodCode()).WillReturnError(fmt.Errorf("DoReadAll communication method field failed"))
@@ -265,7 +265,7 @@ func doReadAllFailCommunicationMethodFields(ctx context.Context, input *communic
 	}
 }
 
-func doReadAllUnexistingCommunicationMethodFields(ctx context.Context, input *communicationmethodfield.CommunicationMethodField) func(t *testing.T) {
+func doReadAllUnexistingCommunicationMethodFields(ctx context.Context, input *communicationmethodfieldmodel.CommunicationMethodField) func(t *testing.T) {
 	return func(t *testing.T) {
 		rows := sqlmock.NewRows([]string{"contact_system_code", "communication_method_code", "field_code", "caption", "sequence", "created_at", "modified_at", "vers"})
 
@@ -294,7 +294,7 @@ func doReadAllUnexistingCommunicationMethodFields(ctx context.Context, input *co
 	}
 }
 
-func doReadAllRowErrorCommunicationMethodFields(ctx context.Context, input *communicationmethodfield.CommunicationMethodField) func(t *testing.T) {
+func doReadAllRowErrorCommunicationMethodFields(ctx context.Context, input *communicationmethodfieldmodel.CommunicationMethodField) func(t *testing.T) {
 	return func(t *testing.T) {
 		tmNow := time.Now().In(time.UTC)
 
@@ -325,7 +325,7 @@ func doReadAllRowErrorCommunicationMethodFields(ctx context.Context, input *comm
 	}
 }
 
-func doReadAllExistingCommunicationMethodFields(ctx context.Context, input *communicationmethodfield.CommunicationMethodField) func(t *testing.T) {
+func doReadAllExistingCommunicationMethodFields(ctx context.Context, input *communicationmethodfieldmodel.CommunicationMethodField) func(t *testing.T) {
 	return func(t *testing.T) {
 		tmNow := time.Now().In(time.UTC)
 
@@ -372,11 +372,11 @@ func doReadAllExistingCommunicationMethodFields(ctx context.Context, input *comm
 	}
 }
 
-func doSaveNewFailCommunicationMethodField(ctx context.Context, input *communicationmethodfield.CommunicationMethodField) func(t *testing.T) {
+func doSaveNewFailCommunicationMethodField(ctx context.Context, input *communicationmethodfieldmodel.CommunicationMethodField) func(t *testing.T) {
 	return func(t *testing.T) {
 		tmNow := time.Now().In(time.UTC)
 
-		input.Audit = &audit.Audit{
+		input.Audit = &auditmodel.Audit{
 			CreatedAt:  tmNow,
 			ModifiedAt: tmNow,
 			Vers:       1,
@@ -399,11 +399,11 @@ func doSaveNewFailCommunicationMethodField(ctx context.Context, input *communica
 	}
 }
 
-func doSaveNewCommunicationMethodField(ctx context.Context, input *communicationmethodfield.CommunicationMethodField) func(t *testing.T) {
+func doSaveNewCommunicationMethodField(ctx context.Context, input *communicationmethodfieldmodel.CommunicationMethodField) func(t *testing.T) {
 	return func(t *testing.T) {
 		tmNow := time.Now().In(time.UTC)
 
-		input.Audit = &audit.Audit{
+		input.Audit = &auditmodel.Audit{
 			CreatedAt:  tmNow,
 			ModifiedAt: tmNow,
 			Vers:       1,
@@ -419,11 +419,11 @@ func doSaveNewCommunicationMethodField(ctx context.Context, input *communication
 	}
 }
 
-func doSaveExistingFailCommunicationMethodField(ctx context.Context, input *communicationmethodfield.CommunicationMethodField) func(t *testing.T) {
+func doSaveExistingFailCommunicationMethodField(ctx context.Context, input *communicationmethodfieldmodel.CommunicationMethodField) func(t *testing.T) {
 	return func(t *testing.T) {
 		tmNow := time.Now().In(time.UTC)
 
-		input.Audit = &audit.Audit{
+		input.Audit = &auditmodel.Audit{
 			CreatedAt:  tmNow,
 			ModifiedAt: tmNow,
 			Vers:       2,
@@ -446,11 +446,11 @@ func doSaveExistingFailCommunicationMethodField(ctx context.Context, input *comm
 	}
 }
 
-func doSaveExistingCommunicationMethodField(ctx context.Context, input *communicationmethodfield.CommunicationMethodField) func(t *testing.T) {
+func doSaveExistingCommunicationMethodField(ctx context.Context, input *communicationmethodfieldmodel.CommunicationMethodField) func(t *testing.T) {
 	return func(t *testing.T) {
 		tmNow := time.Now().In(time.UTC)
 
-		input.Audit = &audit.Audit{
+		input.Audit = &auditmodel.Audit{
 			CreatedAt:  tmNow,
 			ModifiedAt: tmNow,
 			Vers:       2,
@@ -466,7 +466,7 @@ func doSaveExistingCommunicationMethodField(ctx context.Context, input *communic
 	}
 }
 
-func doDeleteFailCommunicationMethodField(ctx context.Context, input *communicationmethodfield.CommunicationMethodField) func(t *testing.T) {
+func doDeleteFailCommunicationMethodField(ctx context.Context, input *communicationmethodfieldmodel.CommunicationMethodField) func(t *testing.T) {
 	return func(t *testing.T) {
 		expQuery := mock.ExpectPrepare("DELETE FROM communication_method_field").ExpectExec()
 		expQuery.WithArgs(input.GetContactSystemCode(), input.GetCommunicationMethodCode(), input.GetFieldCode()).WillReturnError(fmt.Errorf("Delete communication method field failed"))
@@ -485,7 +485,7 @@ func doDeleteFailCommunicationMethodField(ctx context.Context, input *communicat
 	}
 }
 
-func doDeleteUnexistingCommunicationMethodField(ctx context.Context, input *communicationmethodfield.CommunicationMethodField) func(t *testing.T) {
+func doDeleteUnexistingCommunicationMethodField(ctx context.Context, input *communicationmethodfieldmodel.CommunicationMethodField) func(t *testing.T) {
 	return func(t *testing.T) {
 		expQuery := mock.ExpectPrepare("DELETE FROM communication_method_field").ExpectExec()
 		expQuery.WithArgs(input.GetContactSystemCode(), input.GetCommunicationMethodCode(), input.GetFieldCode()).WillReturnResult(sqlmock.NewResult(0, 0))
@@ -504,7 +504,7 @@ func doDeleteUnexistingCommunicationMethodField(ctx context.Context, input *comm
 	}
 }
 
-func doDeleteExistingCommunicationMethodField(ctx context.Context, input *communicationmethodfield.CommunicationMethodField) func(t *testing.T) {
+func doDeleteExistingCommunicationMethodField(ctx context.Context, input *communicationmethodfieldmodel.CommunicationMethodField) func(t *testing.T) {
 	return func(t *testing.T) {
 		expQuery := mock.ExpectPrepare("DELETE FROM communication_method_field").ExpectExec()
 		expQuery.WithArgs(input.GetContactSystemCode(), input.GetCommunicationMethodCode(), input.GetFieldCode()).WillReturnResult(sqlmock.NewResult(0, 1))
@@ -516,7 +516,7 @@ func doDeleteExistingCommunicationMethodField(ctx context.Context, input *commun
 	}
 }
 
-func doDeleteAllFailCommunicationMethodField(ctx context.Context, input *communicationmethodfield.CommunicationMethodField) func(t *testing.T) {
+func doDeleteAllFailCommunicationMethodField(ctx context.Context, input *communicationmethodfieldmodel.CommunicationMethodField) func(t *testing.T) {
 	return func(t *testing.T) {
 		expQuery := mock.ExpectPrepare("DELETE FROM communication_method_field").ExpectExec()
 		expQuery.WithArgs(input.GetContactSystemCode(), input.GetCommunicationMethodCode()).WillReturnError(fmt.Errorf("Delete all communication method fields failed"))
@@ -535,7 +535,7 @@ func doDeleteAllFailCommunicationMethodField(ctx context.Context, input *communi
 	}
 }
 
-func doDeleteAllUnexistingCommunicationMethodField(ctx context.Context, input *communicationmethodfield.CommunicationMethodField) func(t *testing.T) {
+func doDeleteAllUnexistingCommunicationMethodField(ctx context.Context, input *communicationmethodfieldmodel.CommunicationMethodField) func(t *testing.T) {
 	return func(t *testing.T) {
 		expQuery := mock.ExpectPrepare("DELETE FROM communication_method_field").ExpectExec()
 		expQuery.WithArgs(input.GetContactSystemCode(), input.GetCommunicationMethodCode()).WillReturnResult(sqlmock.NewResult(0, 0))
@@ -552,7 +552,7 @@ func doDeleteAllUnexistingCommunicationMethodField(ctx context.Context, input *c
 	}
 }
 
-func doDeleteAllExistingCommunicationMethodField(ctx context.Context, input *communicationmethodfield.CommunicationMethodField) func(t *testing.T) {
+func doDeleteAllExistingCommunicationMethodField(ctx context.Context, input *communicationmethodfieldmodel.CommunicationMethodField) func(t *testing.T) {
 	return func(t *testing.T) {
 		expQuery := mock.ExpectPrepare("DELETE FROM communication_method_field").ExpectExec()
 		expQuery.WithArgs(input.GetContactSystemCode(), input.GetCommunicationMethodCode()).WillReturnResult(sqlmock.NewResult(0, 1))
