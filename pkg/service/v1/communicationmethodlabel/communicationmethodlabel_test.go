@@ -2,25 +2,29 @@ package communicationmethodlabel
 
 import (
 	"context"
+	"database/sql"
 	"os"
 	"testing"
 
-	communicationmethodlabelapi "github.com/bungysheep/contact-management/pkg/api/v1/communicationmethodlabel"
-	"github.com/bungysheep/contact-management/pkg/common/message"
+	"github.com/DATA-DOG/go-sqlmock"
 	communicationmethodlabelmodel "github.com/bungysheep/contact-management/pkg/models/v1/communicationmethodlabel"
-	"github.com/bungysheep/contact-management/pkg/repository/v1/communicationmethodlabel/mock_communicationmethodlabel"
-	"github.com/golang/mock/gomock"
-	"google.golang.org/grpc/codes"
-	"google.golang.org/grpc/status"
 )
 
 var (
 	ctx  context.Context
+	svc  ICommunicationMethodLabelService
+	db   *sql.DB
+	mock sqlmock.Sqlmock
 	data []*communicationmethodlabelmodel.CommunicationMethodLabel
 )
 
 func TestMain(m *testing.M) {
 	ctx = context.TODO()
+
+	db, mock, _ = sqlmock.New()
+	defer db.Close()
+
+	svc = NewCommunicationMethodLabelService(db)
 
 	data = append(data, &communicationmethodlabelmodel.CommunicationMethodLabel{
 		ContactSystemCode:            "CNTSYS001",
@@ -49,169 +53,130 @@ func TestCommunicationMethodLabelService(t *testing.T) {
 
 	t.Run("DoReadAll Communication Method Label", doReadAll(ctx, data[0]))
 
-	t.Run("DoSave new Communication Method Label", doSaveNew(ctx, data[0]))
-
-	t.Run("DoSave existing Communication Method Label", doSaveExisting(ctx, data[0]))
+	t.Run("DoSave Communication Method Label", doSave(ctx, data[0]))
 
 	t.Run("DoDelete Communication Method Label", doDelete(ctx, data[0]))
 }
 
 func doRead(ctx context.Context, input *communicationmethodlabelmodel.CommunicationMethodLabel) func(t *testing.T) {
 	return func(t *testing.T) {
-		ctl := gomock.NewController(t)
-		defer ctl.Finish()
+		rows := sqlmock.NewRows([]string{"contact_system_code", "communication_method_code", "communication_method_label_code", "caption"}).
+			AddRow(input.GetContactSystemCode(), input.GetCommunicationMethodCode(), input.GetCommunicationMethodLabelCode(), input.GetCaption())
 
-		repo := mock_communicationmethodlabel.NewMockICommunicationMethodLabelRepository(ctl)
+		expQuery := mock.ExpectPrepare("SELECT contact_system_code, communication_method_code, communication_method_label_code, caption FROM communication_method_label").ExpectQuery()
+		expQuery.WithArgs(input.GetContactSystemCode(), input.GetCommunicationMethodCode(), input.GetCommunicationMethodLabelCode()).WillReturnRows(rows)
 
-		repo.EXPECT().DoRead(ctx, input.GetContactSystemCode(), input.GetCommunicationMethodCode(), input.GetCommunicationMethodLabelCode()).Return(input, nil)
-
-		svc := NewCommunicationMethodLabelService(repo)
-
-		resp, err := svc.DoRead(ctx, &communicationmethodlabelapi.DoReadCommunicationMethodLabelRequest{ContactSystemCode: input.GetContactSystemCode(), CommunicationMethodCode: input.GetCommunicationMethodCode(), CommunicationMethodLabelCode: input.GetCommunicationMethodLabelCode()})
+		resp, err := svc.DoRead(ctx, input.GetContactSystemCode(), input.GetCommunicationMethodCode(), input.GetCommunicationMethodLabelCode())
 		if err != nil {
-			t.Errorf("Expect error is nil")
+			t.Errorf("Expect error is nil, but got %v", err)
 		}
 
-		if resp.GetCommunicationMethodLabel() == nil {
+		if resp == nil {
 			t.Errorf("Expect communication method is not nil")
 		}
 
-		if resp.GetCommunicationMethodLabel().GetContactSystemCode() != input.GetContactSystemCode() {
-			t.Errorf("Expect contact system code %s, but got %s", input.GetContactSystemCode(), resp.GetCommunicationMethodLabel().GetContactSystemCode())
+		if resp.GetContactSystemCode() != input.GetContactSystemCode() {
+			t.Errorf("Expect contact system code %s, but got %s", input.GetContactSystemCode(), resp.GetContactSystemCode())
 		}
 
-		if resp.GetCommunicationMethodLabel().GetCommunicationMethodCode() != input.GetCommunicationMethodCode() {
-			t.Errorf("Expect communication method code %s, but got %s", input.GetCommunicationMethodCode(), resp.GetCommunicationMethodLabel().GetCommunicationMethodCode())
+		if resp.GetCommunicationMethodCode() != input.GetCommunicationMethodCode() {
+			t.Errorf("Expect communication method code %s, but got %s", input.GetCommunicationMethodCode(), resp.GetCommunicationMethodCode())
 		}
 
-		if resp.GetCommunicationMethodLabel().GetCommunicationMethodLabelCode() != input.GetCommunicationMethodLabelCode() {
-			t.Errorf("Expect communication method label code %s, but got %s", input.GetCommunicationMethodLabelCode(), resp.GetCommunicationMethodLabel().GetCommunicationMethodLabelCode())
+		if resp.GetCommunicationMethodLabelCode() != input.GetCommunicationMethodLabelCode() {
+			t.Errorf("Expect communication method label code %s, but got %s", input.GetCommunicationMethodLabelCode(), resp.GetCommunicationMethodLabelCode())
 		}
 
-		if resp.GetCommunicationMethodLabel().GetCaption() != input.GetCaption() {
-			t.Errorf("Expect caption %s, but got %s", input.GetCaption(), resp.GetCommunicationMethodLabel().GetCaption())
+		if resp.GetCaption() != input.GetCaption() {
+			t.Errorf("Expect caption %s, but got %s", input.GetCaption(), resp.GetCaption())
 		}
 	}
 }
 
 func doReadAll(ctx context.Context, input *communicationmethodlabelmodel.CommunicationMethodLabel) func(t *testing.T) {
 	return func(t *testing.T) {
-		ctl := gomock.NewController(t)
-		defer ctl.Finish()
+		rows := sqlmock.NewRows([]string{"contact_system_code", "communication_method_code", "communication_method_label_code", "caption"}).
+			AddRow(data[0].GetContactSystemCode(), data[0].GetCommunicationMethodCode(), data[0].GetCommunicationMethodLabelCode(), data[0].GetCaption()).
+			AddRow(data[1].GetContactSystemCode(), data[1].GetCommunicationMethodCode(), data[1].GetCommunicationMethodLabelCode(), data[1].GetCaption()).
+			AddRow(data[2].GetContactSystemCode(), data[2].GetCommunicationMethodCode(), data[2].GetCommunicationMethodLabelCode(), data[2].GetCaption())
 
-		repo := mock_communicationmethodlabel.NewMockICommunicationMethodLabelRepository(ctl)
+		expQuery := mock.ExpectPrepare("SELECT contact_system_code, communication_method_code, communication_method_label_code, caption FROM communication_method_label").ExpectQuery()
+		expQuery.WithArgs(input.GetContactSystemCode(), input.GetCommunicationMethodCode()).WillReturnRows(rows)
 
-		repo.EXPECT().DoReadAll(ctx, input.GetContactSystemCode(), input.GetCommunicationMethodCode()).Return(data, nil)
-
-		svc := NewCommunicationMethodLabelService(repo)
-
-		resp, err := svc.DoReadAll(ctx, &communicationmethodlabelapi.DoReadAllCommunicationMethodLabelRequest{ContactSystemCode: input.GetContactSystemCode(), CommunicationMethodCode: input.GetCommunicationMethodCode()})
+		resp, err := svc.DoReadAll(ctx, input.GetContactSystemCode(), input.GetCommunicationMethodCode())
 		if err != nil {
-			t.Errorf("Expect error is nil")
+			t.Errorf("Expect error is nil, but got %v", err)
 		}
 
-		if resp.GetCommunicationMethodLabel() == nil {
+		if resp == nil {
 			t.Errorf("Expect communication method is not nil")
 		}
 
-		if len(resp.GetCommunicationMethodLabel()) < 3 {
+		if len(resp) < 3 {
 			t.Errorf("Expect there are communication methods retrieved")
 		}
 
-		if resp.GetCommunicationMethodLabel()[0].GetContactSystemCode() != input.GetContactSystemCode() {
-			t.Errorf("Expect contact system code %s, but got %s", input.GetContactSystemCode(), resp.GetCommunicationMethodLabel()[0].GetContactSystemCode())
+		if resp[0].GetContactSystemCode() != input.GetContactSystemCode() {
+			t.Errorf("Expect contact system code %s, but got %s", input.GetContactSystemCode(), resp[0].GetContactSystemCode())
 		}
 
-		if resp.GetCommunicationMethodLabel()[0].GetCommunicationMethodCode() != input.GetCommunicationMethodCode() {
-			t.Errorf("Expect communication method code %s, but got %s", input.GetCommunicationMethodCode(), resp.GetCommunicationMethodLabel()[0].GetCommunicationMethodCode())
+		if resp[0].GetCommunicationMethodCode() != input.GetCommunicationMethodCode() {
+			t.Errorf("Expect communication method code %s, but got %s", input.GetCommunicationMethodCode(), resp[0].GetCommunicationMethodCode())
 		}
 
-		if resp.GetCommunicationMethodLabel()[0].GetCommunicationMethodLabelCode() != input.GetCommunicationMethodLabelCode() {
-			t.Errorf("Expect communication method label %s, but got %s", input.GetCommunicationMethodLabelCode(), resp.GetCommunicationMethodLabel()[0].GetCommunicationMethodLabelCode())
+		if resp[0].GetCommunicationMethodLabelCode() != input.GetCommunicationMethodLabelCode() {
+			t.Errorf("Expect communication method label %s, but got %s", input.GetCommunicationMethodLabelCode(), resp[0].GetCommunicationMethodLabelCode())
 		}
 
-		if resp.GetCommunicationMethodLabel()[0].GetCaption() != input.GetCaption() {
-			t.Errorf("Expect caption %s, but got %s", input.GetCaption(), resp.GetCommunicationMethodLabel()[0].GetCaption())
+		if resp[0].GetCaption() != input.GetCaption() {
+			t.Errorf("Expect caption %s, but got %s", input.GetCaption(), resp[0].GetCaption())
 		}
+	}
+}
+
+func doSave(ctx context.Context, input *communicationmethodlabelmodel.CommunicationMethodLabel) func(t *testing.T) {
+	return func(t *testing.T) {
+		t.Run("DoSave new Contact System", doSaveNew(ctx, data[0]))
+
+		t.Run("DoSave existing Contact System", doSaveExisting(ctx, data[0]))
 	}
 }
 
 func doSaveNew(ctx context.Context, input *communicationmethodlabelmodel.CommunicationMethodLabel) func(t *testing.T) {
 	return func(t *testing.T) {
-		ctl := gomock.NewController(t)
-		defer ctl.Finish()
+		expUpdQuery := mock.ExpectPrepare("UPDATE communication_method_label").ExpectExec()
+		expUpdQuery.WithArgs(input.GetContactSystemCode(), input.GetCommunicationMethodCode(), input.GetCommunicationMethodLabelCode(), input.GetCaption()).WillReturnResult(sqlmock.NewResult(0, 0))
 
-		repo := mock_communicationmethodlabel.NewMockICommunicationMethodLabelRepository(ctl)
+		expInsQuery := mock.ExpectPrepare("INSERT INTO communication_method_label").ExpectExec()
+		expInsQuery.WithArgs(input.GetContactSystemCode(), input.GetCommunicationMethodCode(), input.GetCommunicationMethodLabelCode(), input.GetCaption()).WillReturnResult(sqlmock.NewResult(0, 1))
 
-		communicationMethodLabel := &communicationmethodlabelapi.CommunicationMethodLabel{}
-		communicationMethodLabel.ContactSystemCode = input.GetContactSystemCode()
-		communicationMethodLabel.CommunicationMethodCode = input.GetCommunicationMethodCode()
-		communicationMethodLabel.CommunicationMethodLabelCode = input.GetCommunicationMethodLabelCode()
-		communicationMethodLabel.Caption = input.GetCaption()
-
-		repo.EXPECT().DoUpdate(ctx, input).Return(status.Errorf(codes.NotFound, message.DoesNotExist("Communication Method Label")))
-
-		repo.EXPECT().DoInsert(ctx, input).Return(nil)
-
-		svc := NewCommunicationMethodLabelService(repo)
-
-		resp, err := svc.DoSave(ctx, &communicationmethodlabelapi.DoSaveCommunicationMethodLabelRequest{CommunicationMethodLabel: communicationMethodLabel})
+		err := svc.DoSave(ctx, input)
 		if err != nil {
-			t.Errorf("Expect error is nil")
-		}
-
-		if !resp.GetResult() {
-			t.Errorf("Expect the result is successful")
+			t.Errorf("Expect error is nil, but got %v", err)
 		}
 	}
 }
 
 func doSaveExisting(ctx context.Context, input *communicationmethodlabelmodel.CommunicationMethodLabel) func(t *testing.T) {
 	return func(t *testing.T) {
-		ctl := gomock.NewController(t)
-		defer ctl.Finish()
+		expUpdQuery := mock.ExpectPrepare("UPDATE communication_method_label").ExpectExec()
+		expUpdQuery.WithArgs(input.GetContactSystemCode(), input.GetCommunicationMethodCode(), input.GetCommunicationMethodLabelCode(), input.GetCaption()).WillReturnResult(sqlmock.NewResult(0, 1))
 
-		repo := mock_communicationmethodlabel.NewMockICommunicationMethodLabelRepository(ctl)
-
-		communicationMethodLabel := &communicationmethodlabelapi.CommunicationMethodLabel{}
-		communicationMethodLabel.ContactSystemCode = input.GetContactSystemCode()
-		communicationMethodLabel.CommunicationMethodCode = input.GetCommunicationMethodCode()
-		communicationMethodLabel.CommunicationMethodLabelCode = input.GetCommunicationMethodLabelCode()
-		communicationMethodLabel.Caption = input.GetCaption()
-
-		repo.EXPECT().DoUpdate(ctx, input).Return(nil)
-
-		svc := NewCommunicationMethodLabelService(repo)
-
-		resp, err := svc.DoSave(ctx, &communicationmethodlabelapi.DoSaveCommunicationMethodLabelRequest{CommunicationMethodLabel: communicationMethodLabel})
+		err := svc.DoSave(ctx, input)
 		if err != nil {
-			t.Errorf("Expect error is nil")
-		}
-
-		if !resp.GetResult() {
-			t.Errorf("Expect the result is successful")
+			t.Errorf("Expect error is nil, but got %v", err)
 		}
 	}
 }
 
 func doDelete(ctx context.Context, input *communicationmethodlabelmodel.CommunicationMethodLabel) func(t *testing.T) {
 	return func(t *testing.T) {
-		ctl := gomock.NewController(t)
-		defer ctl.Finish()
+		expQuery := mock.ExpectPrepare("DELETE FROM communication_method_label").ExpectExec()
+		expQuery.WithArgs(input.GetContactSystemCode(), input.GetCommunicationMethodCode(), input.GetCommunicationMethodLabelCode()).WillReturnResult(sqlmock.NewResult(0, 1))
 
-		repo := mock_communicationmethodlabel.NewMockICommunicationMethodLabelRepository(ctl)
-
-		repo.EXPECT().DoDelete(ctx, input.GetContactSystemCode(), input.GetCommunicationMethodCode(), input.GetCommunicationMethodLabelCode()).Return(nil)
-
-		svc := NewCommunicationMethodLabelService(repo)
-
-		resp, err := svc.DoDelete(ctx, &communicationmethodlabelapi.DoDeleteCommunicationMethodLabelRequest{ContactSystemCode: input.GetContactSystemCode(), CommunicationMethodCode: input.GetCommunicationMethodCode(), CommunicationMethodLabelCode: input.GetCommunicationMethodLabelCode()})
+		err := svc.DoDelete(ctx, input.GetContactSystemCode(), input.GetCommunicationMethodCode(), input.GetCommunicationMethodLabelCode())
 		if err != nil {
-			t.Errorf("Expect error is nil")
-		}
-
-		if !resp.GetResult() {
-			t.Errorf("Expect the result is successful")
+			t.Errorf("Expect error is nil, but got %v", err)
 		}
 	}
 }

@@ -6,26 +6,26 @@ import (
 	auditapi "github.com/bungysheep/contact-management/pkg/api/v1/audit"
 	contactsystemapi "github.com/bungysheep/contact-management/pkg/api/v1/contactsystem"
 	contactsystemmodel "github.com/bungysheep/contact-management/pkg/models/v1/contactsystem"
-	contactsystemreservice "github.com/bungysheep/contact-management/pkg/service/v1/contactsystem"
+	contactsystemservice "github.com/bungysheep/contact-management/pkg/service/v1/contactsystem"
 	"github.com/golang/protobuf/ptypes"
 )
 
-type contactSystemService struct {
-	svc contactsystemreservice.IContactSystemService
+type contactSystemServiceServer struct {
+	svc contactsystemservice.IContactSystemService
 }
 
 // NewContactSystemServiceServer - Contact System service server implementation
-func NewContactSystemServiceServer(svc contactsystemreservice.IContactSystemService) contactsystemapi.ContactSystemServiceServer {
-	return &contactSystemService{svc: svc}
+func NewContactSystemServiceServer(svc contactsystemservice.IContactSystemService) contactsystemapi.ContactSystemServiceServer {
+	return &contactSystemServiceServer{svc: svc}
 }
 
-func (cntsys *contactSystemService) DoRead(ctx context.Context, req *contactsystemapi.DoReadContactSystemRequest) (*contactsystemapi.DoReadContactSystemResponse, error) {
+func (cntsys *contactSystemServiceServer) DoRead(ctx context.Context, req *contactsystemapi.DoReadContactSystemRequest) (*contactsystemapi.DoReadContactSystemResponse, error) {
 	result, err := cntsys.svc.DoRead(ctx, req.GetContactSystemCode())
 
 	return &contactsystemapi.DoReadContactSystemResponse{ContactSystem: contactSystemModelToAPI(result)}, err
 }
 
-func (cntsys *contactSystemService) DoReadAll(ctx context.Context, req *contactsystemapi.DoReadAllContactSystemRequest) (*contactsystemapi.DoReadAllContactSystemResponse, error) {
+func (cntsys *contactSystemServiceServer) DoReadAll(ctx context.Context, req *contactsystemapi.DoReadAllContactSystemRequest) (*contactsystemapi.DoReadAllContactSystemResponse, error) {
 	result, err := cntsys.svc.DoReadAll(ctx)
 
 	resp := make([]*contactsystemapi.ContactSystem, 0)
@@ -37,13 +37,13 @@ func (cntsys *contactSystemService) DoReadAll(ctx context.Context, req *contacts
 	return &contactsystemapi.DoReadAllContactSystemResponse{ContactSystems: resp}, err
 }
 
-func (cntsys *contactSystemService) DoSave(ctx context.Context, req *contactsystemapi.DoSaveContactSystemRequest) (*contactsystemapi.DoSaveContactSystemResponse, error) {
+func (cntsys *contactSystemServiceServer) DoSave(ctx context.Context, req *contactsystemapi.DoSaveContactSystemRequest) (*contactsystemapi.DoSaveContactSystemResponse, error) {
 	err := cntsys.svc.DoSave(ctx, contactSystemAPIToModel(req.GetContactSystem()))
 
 	return &contactsystemapi.DoSaveContactSystemResponse{Result: err == nil}, err
 }
 
-func (cntsys *contactSystemService) DoDelete(ctx context.Context, req *contactsystemapi.DoDeleteContactSystemRequest) (*contactsystemapi.DoDeleteContactSystemResponse, error) {
+func (cntsys *contactSystemServiceServer) DoDelete(ctx context.Context, req *contactsystemapi.DoDeleteContactSystemRequest) (*contactsystemapi.DoDeleteContactSystemResponse, error) {
 	err := cntsys.svc.DoDelete(ctx, req.GetContactSystemCode())
 
 	return &contactsystemapi.DoDeleteContactSystemResponse{Result: err == nil}, err

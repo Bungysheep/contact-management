@@ -4,18 +4,18 @@ import (
 	"context"
 	"database/sql"
 
-	"github.com/bungysheep/contact-management/pkg/models/v1/communicationmethodlabel"
 	"github.com/bungysheep/contact-management/pkg/common/message"
+	communicationmethodlabelmodel "github.com/bungysheep/contact-management/pkg/models/v1/communicationmethodlabel"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
 
 // ICommunicationMethodLabelRepository - Communication Method Label repository interface
 type ICommunicationMethodLabelRepository interface {
-	DoRead(context.Context, string, string, string) (*communicationmethodlabel.CommunicationMethodLabel, error)
-	DoReadAll(context.Context, string, string) ([]*communicationmethodlabel.CommunicationMethodLabel, error)
-	DoInsert(context.Context, *communicationmethodlabel.CommunicationMethodLabel) error
-	DoUpdate(context.Context, *communicationmethodlabel.CommunicationMethodLabel) error
+	DoRead(context.Context, string, string, string) (*communicationmethodlabelmodel.CommunicationMethodLabel, error)
+	DoReadAll(context.Context, string, string) ([]*communicationmethodlabelmodel.CommunicationMethodLabel, error)
+	DoInsert(context.Context, *communicationmethodlabelmodel.CommunicationMethodLabel) error
+	DoUpdate(context.Context, *communicationmethodlabelmodel.CommunicationMethodLabel) error
 	DoDelete(context.Context, string, string, string) error
 	DoDeleteAll(context.Context, string, string) error
 }
@@ -29,8 +29,8 @@ func NewCommunicationMethodLabelRepository(db *sql.DB) ICommunicationMethodLabel
 	return &communicationMethodLabelRepository{db: db}
 }
 
-func (cm *communicationMethodLabelRepository) DoRead(ctx context.Context, contactSystemCode string, communicationMethodCode string, communicationMethodLabelCode string) (*communicationmethodlabel.CommunicationMethodLabel, error) {
-	result := &communicationmethodlabel.CommunicationMethodLabel{}
+func (cm *communicationMethodLabelRepository) DoRead(ctx context.Context, contactSystemCode string, communicationMethodCode string, communicationMethodLabelCode string) (*communicationmethodlabelmodel.CommunicationMethodLabel, error) {
+	result := &communicationmethodlabelmodel.CommunicationMethodLabel{}
 
 	conn, err := cm.db.Conn(ctx)
 	if err != nil {
@@ -67,8 +67,8 @@ func (cm *communicationMethodLabelRepository) DoRead(ctx context.Context, contac
 	return result, nil
 }
 
-func (cm *communicationMethodLabelRepository) DoReadAll(ctx context.Context, contactSystemCode string, communicatonMethodCode string) ([]*communicationmethodlabel.CommunicationMethodLabel, error) {
-	result := make([]*communicationmethodlabel.CommunicationMethodLabel, 0)
+func (cm *communicationMethodLabelRepository) DoReadAll(ctx context.Context, contactSystemCode string, communicatonMethodCode string) ([]*communicationmethodlabelmodel.CommunicationMethodLabel, error) {
+	result := make([]*communicationmethodlabelmodel.CommunicationMethodLabel, 0)
 
 	conn, err := cm.db.Conn(ctx)
 	if err != nil {
@@ -98,7 +98,7 @@ func (cm *communicationMethodLabelRepository) DoReadAll(ctx context.Context, con
 			break
 		}
 
-		communicationMethodLabel := &communicationmethodlabel.CommunicationMethodLabel{}
+		communicationMethodLabel := &communicationmethodlabelmodel.CommunicationMethodLabel{}
 		if err := rows.Scan(
 			&communicationMethodLabel.ContactSystemCode,
 			&communicationMethodLabel.CommunicationMethodCode,
@@ -113,7 +113,7 @@ func (cm *communicationMethodLabelRepository) DoReadAll(ctx context.Context, con
 	return result, nil
 }
 
-func (cm *communicationMethodLabelRepository) DoInsert(ctx context.Context, data *communicationmethodlabel.CommunicationMethodLabel) error {
+func (cm *communicationMethodLabelRepository) DoInsert(ctx context.Context, data *communicationmethodlabelmodel.CommunicationMethodLabel) error {
 	conn, err := cm.db.Conn(ctx)
 	if err != nil {
 		return status.Errorf(codes.Unknown, message.FailedConnectToDatabase(err))
@@ -138,7 +138,7 @@ func (cm *communicationMethodLabelRepository) DoInsert(ctx context.Context, data
 	return nil
 }
 
-func (cm *communicationMethodLabelRepository) DoUpdate(ctx context.Context, data *communicationmethodlabel.CommunicationMethodLabel) error {
+func (cm *communicationMethodLabelRepository) DoUpdate(ctx context.Context, data *communicationmethodlabelmodel.CommunicationMethodLabel) error {
 	conn, err := cm.db.Conn(ctx)
 	if err != nil {
 		return status.Errorf(codes.Unknown, message.FailedConnectToDatabase(err))
