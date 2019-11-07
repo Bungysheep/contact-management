@@ -9,8 +9,8 @@ import (
 	"time"
 
 	"github.com/DATA-DOG/go-sqlmock"
-	"github.com/bungysheep/contact-management/pkg/models/v1/audit"
-	"github.com/bungysheep/contact-management/pkg/models/v1/contact"
+	auditmodel "github.com/bungysheep/contact-management/pkg/models/v1/audit"
+	contactmodel "github.com/bungysheep/contact-management/pkg/models/v1/contact"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
@@ -20,7 +20,7 @@ var (
 	repo IContactRepository
 	db   *sql.DB
 	mock sqlmock.Sqlmock
-	data []*contact.Contact
+	data []*contactmodel.Contact
 )
 
 func TestMain(m *testing.M) {
@@ -31,19 +31,19 @@ func TestMain(m *testing.M) {
 
 	repo = NewContactRepository(db)
 
-	data = append(data, &contact.Contact{
+	data = append(data, &contactmodel.Contact{
 		ContactSystemCode: "CNTSYS001",
 		ContactID:         1,
 		FirstName:         "James",
 		LastName:          "Embongbulan",
 		Status:            "A",
-	}, &contact.Contact{
+	}, &contactmodel.Contact{
 		ContactSystemCode: "CNTSYS001",
 		ContactID:         2,
 		FirstName:         "Rindi",
 		LastName:          "Allorerung",
 		Status:            "A",
-	}, &contact.Contact{
+	}, &contactmodel.Contact{
 		ContactSystemCode: "CNTSYS001",
 		ContactID:         3,
 		FirstName:         "Marvel",
@@ -110,8 +110,6 @@ func doDelete(ctx context.Context) func(t *testing.T) {
 
 		t.Run("DoDelete unexisting", doDeleteUnexistingContact(ctx, data[0]))
 
-		t.Run("DoDelete all communication methods fail", doDeleteFailContactCommunicationMethod(ctx, data[0]))
-
 		t.Run("DoDelete existing", doDeleteExistingContact(ctx, data[0]))
 	}
 }
@@ -128,7 +126,7 @@ func anyReference(ctx context.Context) func(t *testing.T) {
 	}
 }
 
-func doReadFailContact(ctx context.Context, input *contact.Contact) func(t *testing.T) {
+func doReadFailContact(ctx context.Context, input *contactmodel.Contact) func(t *testing.T) {
 	return func(t *testing.T) {
 		expQuery := mock.ExpectPrepare("SELECT contact_system_code, contact_id, first_name, last_name, status, created_at, modified_at, vers FROM contact").ExpectQuery()
 		expQuery.WithArgs(input.GetContactSystemCode(), input.GetContactID()).WillReturnError(fmt.Errorf("DoRead contact failed"))
@@ -151,7 +149,7 @@ func doReadFailContact(ctx context.Context, input *contact.Contact) func(t *test
 	}
 }
 
-func doReadUnexistingContact(ctx context.Context, input *contact.Contact) func(t *testing.T) {
+func doReadUnexistingContact(ctx context.Context, input *contactmodel.Contact) func(t *testing.T) {
 	return func(t *testing.T) {
 		rows := sqlmock.NewRows([]string{"contact_system_code", "contact_id", "first_name", "last_name", "status", "created_at", "modified_at", "vers"})
 
@@ -176,7 +174,7 @@ func doReadUnexistingContact(ctx context.Context, input *contact.Contact) func(t
 	}
 }
 
-func doReadRowErrorContact(ctx context.Context, input *contact.Contact) func(t *testing.T) {
+func doReadRowErrorContact(ctx context.Context, input *contactmodel.Contact) func(t *testing.T) {
 	return func(t *testing.T) {
 		tmNow := time.Now().In(time.UTC)
 
@@ -205,7 +203,7 @@ func doReadRowErrorContact(ctx context.Context, input *contact.Contact) func(t *
 	}
 }
 
-func doReadExistingContact(ctx context.Context, input *contact.Contact) func(t *testing.T) {
+func doReadExistingContact(ctx context.Context, input *contactmodel.Contact) func(t *testing.T) {
 	return func(t *testing.T) {
 		tmNow := time.Now().In(time.UTC)
 
@@ -246,7 +244,7 @@ func doReadExistingContact(ctx context.Context, input *contact.Contact) func(t *
 	}
 }
 
-func doReadAllFailContacts(ctx context.Context, input *contact.Contact) func(t *testing.T) {
+func doReadAllFailContacts(ctx context.Context, input *contactmodel.Contact) func(t *testing.T) {
 	return func(t *testing.T) {
 		expQuery := mock.ExpectPrepare("SELECT contact_system_code, contact_id, first_name, last_name, status, created_at, modified_at, vers FROM contact").ExpectQuery()
 		expQuery.WithArgs(input.GetContactSystemCode()).WillReturnError(fmt.Errorf("DoReadAll contact failed"))
@@ -269,7 +267,7 @@ func doReadAllFailContacts(ctx context.Context, input *contact.Contact) func(t *
 	}
 }
 
-func doReadAllUnexistingContacts(ctx context.Context, input *contact.Contact) func(t *testing.T) {
+func doReadAllUnexistingContacts(ctx context.Context, input *contactmodel.Contact) func(t *testing.T) {
 	return func(t *testing.T) {
 		rows := sqlmock.NewRows([]string{"contact_system_code", "contact_id", "first_name", "last_name", "status", "created_at", "modified_at", "vers"})
 
@@ -298,7 +296,7 @@ func doReadAllUnexistingContacts(ctx context.Context, input *contact.Contact) fu
 	}
 }
 
-func doReadAllRowErrorContacts(ctx context.Context, input *contact.Contact) func(t *testing.T) {
+func doReadAllRowErrorContacts(ctx context.Context, input *contactmodel.Contact) func(t *testing.T) {
 	return func(t *testing.T) {
 		tmNow := time.Now().In(time.UTC)
 
@@ -329,7 +327,7 @@ func doReadAllRowErrorContacts(ctx context.Context, input *contact.Contact) func
 	}
 }
 
-func doReadAllExistingContacts(ctx context.Context, input *contact.Contact) func(t *testing.T) {
+func doReadAllExistingContacts(ctx context.Context, input *contactmodel.Contact) func(t *testing.T) {
 	return func(t *testing.T) {
 		tmNow := time.Now().In(time.UTC)
 
@@ -376,11 +374,11 @@ func doReadAllExistingContacts(ctx context.Context, input *contact.Contact) func
 	}
 }
 
-func doSaveNewFailContact(ctx context.Context, input *contact.Contact) func(t *testing.T) {
+func doSaveNewFailContact(ctx context.Context, input *contactmodel.Contact) func(t *testing.T) {
 	return func(t *testing.T) {
 		tmNow := time.Now().In(time.UTC)
 
-		input.Audit = &audit.Audit{
+		input.Audit = &auditmodel.Audit{
 			CreatedAt:  tmNow,
 			ModifiedAt: tmNow,
 			Vers:       1,
@@ -403,11 +401,11 @@ func doSaveNewFailContact(ctx context.Context, input *contact.Contact) func(t *t
 	}
 }
 
-func doSaveNewContact(ctx context.Context, input *contact.Contact) func(t *testing.T) {
+func doSaveNewContact(ctx context.Context, input *contactmodel.Contact) func(t *testing.T) {
 	return func(t *testing.T) {
 		tmNow := time.Now().In(time.UTC)
 
-		input.Audit = &audit.Audit{
+		input.Audit = &auditmodel.Audit{
 			CreatedAt:  tmNow,
 			ModifiedAt: tmNow,
 			Vers:       1,
@@ -423,11 +421,11 @@ func doSaveNewContact(ctx context.Context, input *contact.Contact) func(t *testi
 	}
 }
 
-func doSaveExistingFailContact(ctx context.Context, input *contact.Contact) func(t *testing.T) {
+func doSaveExistingFailContact(ctx context.Context, input *contactmodel.Contact) func(t *testing.T) {
 	return func(t *testing.T) {
 		tmNow := time.Now().In(time.UTC)
 
-		input.Audit = &audit.Audit{
+		input.Audit = &auditmodel.Audit{
 			CreatedAt:  tmNow,
 			ModifiedAt: tmNow,
 			Vers:       2,
@@ -450,11 +448,11 @@ func doSaveExistingFailContact(ctx context.Context, input *contact.Contact) func
 	}
 }
 
-func doSaveExistingContact(ctx context.Context, input *contact.Contact) func(t *testing.T) {
+func doSaveExistingContact(ctx context.Context, input *contactmodel.Contact) func(t *testing.T) {
 	return func(t *testing.T) {
 		tmNow := time.Now().In(time.UTC)
 
-		input.Audit = &audit.Audit{
+		input.Audit = &auditmodel.Audit{
 			CreatedAt:  tmNow,
 			ModifiedAt: tmNow,
 			Vers:       2,
@@ -470,7 +468,7 @@ func doSaveExistingContact(ctx context.Context, input *contact.Contact) func(t *
 	}
 }
 
-func doDeleteFailContact(ctx context.Context, input *contact.Contact) func(t *testing.T) {
+func doDeleteFailContact(ctx context.Context, input *contactmodel.Contact) func(t *testing.T) {
 	return func(t *testing.T) {
 		expQuery := mock.ExpectPrepare("DELETE FROM contact").ExpectExec()
 		expQuery.WithArgs(input.GetContactSystemCode(), input.GetContactID()).WillReturnError(fmt.Errorf("Delete contact failed"))
@@ -489,7 +487,7 @@ func doDeleteFailContact(ctx context.Context, input *contact.Contact) func(t *te
 	}
 }
 
-func doDeleteUnexistingContact(ctx context.Context, input *contact.Contact) func(t *testing.T) {
+func doDeleteUnexistingContact(ctx context.Context, input *contactmodel.Contact) func(t *testing.T) {
 	return func(t *testing.T) {
 		expQuery := mock.ExpectPrepare("DELETE FROM contact").ExpectExec()
 		expQuery.WithArgs(input.GetContactSystemCode(), input.GetContactID()).WillReturnResult(sqlmock.NewResult(0, 0))
@@ -508,33 +506,10 @@ func doDeleteUnexistingContact(ctx context.Context, input *contact.Contact) func
 	}
 }
 
-func doDeleteFailContactCommunicationMethod(ctx context.Context, input *contact.Contact) func(t *testing.T) {
+func doDeleteExistingContact(ctx context.Context, input *contactmodel.Contact) func(t *testing.T) {
 	return func(t *testing.T) {
-		expContactQuery := mock.ExpectPrepare("DELETE FROM contact").ExpectExec()
-		expContactQuery.WithArgs(input.GetContactSystemCode(), input.GetContactID()).WillReturnResult(sqlmock.NewResult(0, 1))
-
-		expContactCommMethodQuery := mock.ExpectPrepare("DELETE FROM contact_communication_method").ExpectExec()
-		expContactCommMethodQuery.WithArgs(input.GetContactSystemCode(), input.GetContactID()).WillReturnError(fmt.Errorf("Delete all contact communication methods failed"))
-
-		err := repo.DoDelete(ctx, input.GetContactSystemCode(), input.GetContactID())
-		if err != nil {
-			s, ok := status.FromError(err)
-			if ok {
-				if s.Code() != codes.Unknown {
-					t.Fatalf("Expect a Unknown error, but got %s", s.Code())
-				}
-			}
-		}
-	}
-}
-
-func doDeleteExistingContact(ctx context.Context, input *contact.Contact) func(t *testing.T) {
-	return func(t *testing.T) {
-		expContactQuery := mock.ExpectPrepare("DELETE FROM contact").ExpectExec()
-		expContactQuery.WithArgs(input.GetContactSystemCode(), input.GetContactID()).WillReturnResult(sqlmock.NewResult(0, 1))
-
-		expContactCommMethodQuery := mock.ExpectPrepare("DELETE FROM contact_communication_method").ExpectExec()
-		expContactCommMethodQuery.WithArgs(input.GetContactSystemCode(), input.GetContactID()).WillReturnResult(sqlmock.NewResult(0, 1))
+		expQuery := mock.ExpectPrepare("DELETE FROM contact").ExpectExec()
+		expQuery.WithArgs(input.GetContactSystemCode(), input.GetContactID()).WillReturnResult(sqlmock.NewResult(0, 1))
 
 		err := repo.DoDelete(ctx, input.GetContactSystemCode(), input.GetContactID())
 		if err != nil {
@@ -543,7 +518,7 @@ func doDeleteExistingContact(ctx context.Context, input *contact.Contact) func(t
 	}
 }
 
-func anyReferenceFailContact(ctx context.Context, input *contact.Contact) func(t *testing.T) {
+func anyReferenceFailContact(ctx context.Context, input *contactmodel.Contact) func(t *testing.T) {
 	return func(t *testing.T) {
 		expQuery := mock.ExpectPrepare("SELECT 1 FROM contact").ExpectQuery()
 		expQuery.WithArgs(input.GetContactSystemCode()).WillReturnError(fmt.Errorf("AnyReference contact failed"))
@@ -566,7 +541,7 @@ func anyReferenceFailContact(ctx context.Context, input *contact.Contact) func(t
 	}
 }
 
-func anyReferenceUnexistingContact(ctx context.Context, input *contact.Contact) func(t *testing.T) {
+func anyReferenceUnexistingContact(ctx context.Context, input *contactmodel.Contact) func(t *testing.T) {
 	return func(t *testing.T) {
 		rows := sqlmock.NewRows([]string{"exists"})
 
@@ -584,7 +559,7 @@ func anyReferenceUnexistingContact(ctx context.Context, input *contact.Contact) 
 	}
 }
 
-func anyReferenceRowErrorContact(ctx context.Context, input *contact.Contact) func(t *testing.T) {
+func anyReferenceRowErrorContact(ctx context.Context, input *contactmodel.Contact) func(t *testing.T) {
 	return func(t *testing.T) {
 		rows := sqlmock.NewRows([]string{"exists"}).
 			AddRow(1).
@@ -611,7 +586,7 @@ func anyReferenceRowErrorContact(ctx context.Context, input *contact.Contact) fu
 	}
 }
 
-func anyReferenceExistingContact(ctx context.Context, input *contact.Contact) func(t *testing.T) {
+func anyReferenceExistingContact(ctx context.Context, input *contactmodel.Contact) func(t *testing.T) {
 	return func(t *testing.T) {
 		rows := sqlmock.NewRows([]string{"exists"}).AddRow("1")
 
