@@ -7,4 +7,5 @@ mockgen -source=./pkg/repository/v1/contactsystem/contactsystem.go -destination=
 
 mockgen -source=./pkg/service/v1/communicationmethodfield/communicationmethodfield.go -destination=./pkg/service/v1/communicationmethodfield/mock_communicationmethodfield/mock_communicationmethodfield.go
 mockgen -source=./pkg/service/v1/communicationmethodlabel/communicationmethodlabel.go -destination=./pkg/service/v1/communicationmethodlabel/mock_communicationmethodlabel/mock_communicationmethodlabel.go
+mockgen -source=./pkg/service/v1/contactcommunicationmethod/contactcommunicationmethod.go -destination=./pkg/service/v1/contactcommunicationmethod/mock_contactcommunicationmethod/mock_contactcommunicationmethod.go
 mockgen -source=./pkg/service/v1/contactsystem/contactsystem.go -destination=./pkg/service/v1/contactsystem/mock_contactsystem/mock_contactsystem.go
