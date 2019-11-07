@@ -5,19 +5,17 @@ import (
 	"database/sql"
 
 	"github.com/bungysheep/contact-management/pkg/common/message"
-	"github.com/bungysheep/contact-management/pkg/models/v1/audit"
-	"github.com/bungysheep/contact-management/pkg/models/v1/contact"
-	contactcommunicationmethodrepository "github.com/bungysheep/contact-management/pkg/repository/v1/contactcommunicationmethod"
+	contactmodel "github.com/bungysheep/contact-management/pkg/models/v1/contact"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
 
 // IContactRepository - Contact repository interface
 type IContactRepository interface {
-	DoRead(context.Context, string, int64) (*contact.Contact, error)
-	DoReadAll(context.Context, string) ([]*contact.Contact, error)
-	DoInsert(context.Context, *contact.Contact) error
-	DoUpdate(context.Context, *contact.Contact) error
+	DoRead(context.Context, string, int64) (*contactmodel.Contact, error)
+	DoReadAll(context.Context, string) ([]*contactmodel.Contact, error)
+	DoInsert(context.Context, *contactmodel.Contact) error
+	DoUpdate(context.Context, *contactmodel.Contact) error
 	DoDelete(context.Context, string, int64) error
 	AnyReference(context.Context, string) (bool, error)
 }
@@ -31,8 +29,8 @@ func NewContactRepository(db *sql.DB) IContactRepository {
 	return &contactRepository{db: db}
 }
 
-func (cm *contactRepository) DoRead(ctx context.Context, contactSystemCode string, contactID int64) (*contact.Contact, error) {
-	result := &contact.Contact{Audit: &audit.Audit{}}
+func (cm *contactRepository) DoRead(ctx context.Context, contactSystemCode string, contactID int64) (*contactmodel.Contact, error) {
+	result := contactmodel.NewContact()
 
 	conn, err := cm.db.Conn(ctx)
 	if err != nil {
@@ -73,8 +71,8 @@ func (cm *contactRepository) DoRead(ctx context.Context, contactSystemCode strin
 	return result, nil
 }
 
-func (cm *contactRepository) DoReadAll(ctx context.Context, contactSystemCode string) ([]*contact.Contact, error) {
-	result := make([]*contact.Contact, 0)
+func (cm *contactRepository) DoReadAll(ctx context.Context, contactSystemCode string) ([]*contactmodel.Contact, error) {
+	result := make([]*contactmodel.Contact, 0)
 
 	conn, err := cm.db.Conn(ctx)
 	if err != nil {
@@ -104,7 +102,7 @@ func (cm *contactRepository) DoReadAll(ctx context.Context, contactSystemCode st
 			break
 		}
 
-		contact := &contact.Contact{Audit: &audit.Audit{}}
+		contact := contactmodel.NewContact()
 		if err := rows.Scan(
 			&contact.ContactSystemCode,
 			&contact.ContactID,
@@ -123,7 +121,7 @@ func (cm *contactRepository) DoReadAll(ctx context.Context, contactSystemCode st
 	return result, nil
 }
 
-func (cm *contactRepository) DoInsert(ctx context.Context, data *contact.Contact) error {
+func (cm *contactRepository) DoInsert(ctx context.Context, data *contactmodel.Contact) error {
 	conn, err := cm.db.Conn(ctx)
 	if err != nil {
 		return status.Errorf(codes.Unknown, message.FailedConnectToDatabase(err))
@@ -148,7 +146,7 @@ func (cm *contactRepository) DoInsert(ctx context.Context, data *contact.Contact
 	return nil
 }
 
-func (cm *contactRepository) DoUpdate(ctx context.Context, data *contact.Contact) error {
+func (cm *contactRepository) DoUpdate(ctx context.Context, data *contactmodel.Contact) error {
 	conn, err := cm.db.Conn(ctx)
 	if err != nil {
 		return status.Errorf(codes.Unknown, message.FailedConnectToDatabase(err))
@@ -193,12 +191,6 @@ func (cm *contactRepository) DoDelete(ctx context.Context, contactSystemCode str
 	rows, _ := result.RowsAffected()
 	if rows == 0 {
 		return status.Errorf(codes.NotFound, message.DoesNotExist("Contact"))
-	}
-
-	// Delete all related Contact Communication Methods
-	cmf := contactcommunicationmethodrepository.NewContactCommunicationMethodRepository(cm.db)
-	if err := cmf.DoDeleteAll(ctx, contactSystemCode, contactID); err != nil {
-		return err
 	}
 
 	return nil

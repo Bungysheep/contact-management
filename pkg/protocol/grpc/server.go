@@ -12,7 +12,6 @@ import (
 	contactapi "github.com/bungysheep/contact-management/pkg/api/v1/contact"
 	contactcommunicationmethodapi "github.com/bungysheep/contact-management/pkg/api/v1/contactcommunicationmethod"
 	contactsystemapi "github.com/bungysheep/contact-management/pkg/api/v1/contactsystem"
-	contactrepository "github.com/bungysheep/contact-management/pkg/repository/v1/contact"
 	communicationmethodservice "github.com/bungysheep/contact-management/pkg/service/v1/communicationmethod"
 	communicationmethodfieldservice "github.com/bungysheep/contact-management/pkg/service/v1/communicationmethodfield"
 	communicationmethodlabelservice "github.com/bungysheep/contact-management/pkg/service/v1/communicationmethodlabel"
@@ -22,6 +21,7 @@ import (
 	communicationmethodserviceserver "github.com/bungysheep/contact-management/pkg/serviceserver/v1/communicationmethod"
 	communicationmethodfieldserviceserver "github.com/bungysheep/contact-management/pkg/serviceserver/v1/communicationmethodfield"
 	communicationmethodlabelserviceserver "github.com/bungysheep/contact-management/pkg/serviceserver/v1/communicationmethodlabel"
+	contactserviceserver "github.com/bungysheep/contact-management/pkg/serviceserver/v1/contact"
 	contactcommunicationmethodserviceserver "github.com/bungysheep/contact-management/pkg/serviceserver/v1/contactcommunicationmethod"
 	contactsystemserviceserver "github.com/bungysheep/contact-management/pkg/serviceserver/v1/contactsystem"
 	"google.golang.org/grpc"
@@ -62,7 +62,7 @@ func (s *Server) RunServer(ctx context.Context, db *sql.DB) error {
 	communicationmethodapi.RegisterCommunicationMethodServiceServer(server, communicationmethodserviceserver.NewCommunicationMethodServiceServer(communicationmethodservice.NewCommunicationMethodService(db)))
 	communicationmethodfieldapi.RegisterCommunicationMethodFieldServiceServer(server, communicationmethodfieldserviceserver.NewCommunicationMethodFieldServiceServer(communicationmethodfieldservice.NewCommunicationMethodFieldService(db)))
 	communicationmethodlabelapi.RegisterCommunicationMethodLabelServiceServer(server, communicationmethodlabelserviceserver.NewCommunicationMethodLabelServiceServer(communicationmethodlabelservice.NewCommunicationMethodLabelService(db)))
-	contactapi.RegisterContactServiceServer(server, contactservice.NewContactService(contactrepository.NewContactRepository(db)))
+	contactapi.RegisterContactServiceServer(server, contactserviceserver.NewContactServiceServer(contactservice.NewContactService(db)))
 	contactcommunicationmethodapi.RegisterContactCommunicationMethodServiceServer(server, contactcommunicationmethodserviceserver.NewContactCommunicationMethodServiceServer(contactcommunicationmethodservice.NewContactCommunicationMethodService(db)))
 	contactsystemapi.RegisterContactSystemServiceServer(server, contactsystemserviceserver.NewContactSystemServiceServer(contactsystemservice.NewContactSystemService(db)))
 
