@@ -5,18 +5,17 @@ import (
 	"database/sql"
 
 	"github.com/bungysheep/contact-management/pkg/common/message"
-	"github.com/bungysheep/contact-management/pkg/models/v1/audit"
-	"github.com/bungysheep/contact-management/pkg/models/v1/contactcommunicationmethod"
+	contactcommunicationmethodmodel "github.com/bungysheep/contact-management/pkg/models/v1/contactcommunicationmethod"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
 
 // IContactCommunicationMethodRepository - Contact Communication Method repository interface
 type IContactCommunicationMethodRepository interface {
-	DoRead(context.Context, string, int64, int64) (*contactcommunicationmethod.ContactCommunicationMethod, error)
-	DoReadAll(context.Context, string, int64) ([]*contactcommunicationmethod.ContactCommunicationMethod, error)
-	DoInsert(context.Context, *contactcommunicationmethod.ContactCommunicationMethod) error
-	DoUpdate(context.Context, *contactcommunicationmethod.ContactCommunicationMethod) error
+	DoRead(context.Context, string, int64, int64) (*contactcommunicationmethodmodel.ContactCommunicationMethod, error)
+	DoReadAll(context.Context, string, int64) ([]*contactcommunicationmethodmodel.ContactCommunicationMethod, error)
+	DoInsert(context.Context, *contactcommunicationmethodmodel.ContactCommunicationMethod) error
+	DoUpdate(context.Context, *contactcommunicationmethodmodel.ContactCommunicationMethod) error
 	DoDelete(context.Context, string, int64, int64) error
 	DoDeleteAll(context.Context, string, int64) error
 }
@@ -30,8 +29,8 @@ func NewContactCommunicationMethodRepository(db *sql.DB) IContactCommunicationMe
 	return &contactCommunicationMethodRepository{db: db}
 }
 
-func (cm *contactCommunicationMethodRepository) DoRead(ctx context.Context, contactSystemCode string, contactID int64, contactCommunicationMethodID int64) (*contactcommunicationmethod.ContactCommunicationMethod, error) {
-	result := &contactcommunicationmethod.ContactCommunicationMethod{Audit: &audit.Audit{}}
+func (cm *contactCommunicationMethodRepository) DoRead(ctx context.Context, contactSystemCode string, contactID int64, contactCommunicationMethodID int64) (*contactcommunicationmethodmodel.ContactCommunicationMethod, error) {
+	result := contactcommunicationmethodmodel.NewContactCommunicationMethod()
 
 	conn, err := cm.db.Conn(ctx)
 	if err != nil {
@@ -74,8 +73,8 @@ func (cm *contactCommunicationMethodRepository) DoRead(ctx context.Context, cont
 	return result, nil
 }
 
-func (cm *contactCommunicationMethodRepository) DoReadAll(ctx context.Context, contactSystemCode string, contactID int64) ([]*contactcommunicationmethod.ContactCommunicationMethod, error) {
-	result := make([]*contactcommunicationmethod.ContactCommunicationMethod, 0)
+func (cm *contactCommunicationMethodRepository) DoReadAll(ctx context.Context, contactSystemCode string, contactID int64) ([]*contactcommunicationmethodmodel.ContactCommunicationMethod, error) {
+	result := make([]*contactcommunicationmethodmodel.ContactCommunicationMethod, 0)
 
 	conn, err := cm.db.Conn(ctx)
 	if err != nil {
@@ -105,7 +104,7 @@ func (cm *contactCommunicationMethodRepository) DoReadAll(ctx context.Context, c
 			break
 		}
 
-		contactCommunicationMethod := &contactcommunicationmethod.ContactCommunicationMethod{Audit: &audit.Audit{}}
+		contactCommunicationMethod := contactcommunicationmethodmodel.NewContactCommunicationMethod()
 		if err := rows.Scan(
 			&contactCommunicationMethod.ContactSystemCode,
 			&contactCommunicationMethod.ContactID,
@@ -126,7 +125,7 @@ func (cm *contactCommunicationMethodRepository) DoReadAll(ctx context.Context, c
 	return result, nil
 }
 
-func (cm *contactCommunicationMethodRepository) DoInsert(ctx context.Context, data *contactcommunicationmethod.ContactCommunicationMethod) error {
+func (cm *contactCommunicationMethodRepository) DoInsert(ctx context.Context, data *contactcommunicationmethodmodel.ContactCommunicationMethod) error {
 	conn, err := cm.db.Conn(ctx)
 	if err != nil {
 		return status.Errorf(codes.Unknown, message.FailedConnectToDatabase(err))
@@ -151,7 +150,7 @@ func (cm *contactCommunicationMethodRepository) DoInsert(ctx context.Context, da
 	return nil
 }
 
-func (cm *contactCommunicationMethodRepository) DoUpdate(ctx context.Context, data *contactcommunicationmethod.ContactCommunicationMethod) error {
+func (cm *contactCommunicationMethodRepository) DoUpdate(ctx context.Context, data *contactcommunicationmethodmodel.ContactCommunicationMethod) error {
 	conn, err := cm.db.Conn(ctx)
 	if err != nil {
 		return status.Errorf(codes.Unknown, message.FailedConnectToDatabase(err))
