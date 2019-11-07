@@ -5,20 +5,17 @@ import (
 	"database/sql"
 
 	"github.com/bungysheep/contact-management/pkg/common/message"
-	"github.com/bungysheep/contact-management/pkg/models/v1/audit"
-	"github.com/bungysheep/contact-management/pkg/models/v1/communicationmethod"
-	communicationmethodfieldrepository "github.com/bungysheep/contact-management/pkg/repository/v1/communicationmethodfield"
-	communicationmethodlabelrepository "github.com/bungysheep/contact-management/pkg/repository/v1/communicationmethodlabel"
+	communicationmethodmodel "github.com/bungysheep/contact-management/pkg/models/v1/communicationmethod"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
 
 // ICommunicationMethodRepository - Communication Method repository interface
 type ICommunicationMethodRepository interface {
-	DoRead(context.Context, string, string) (*communicationmethod.CommunicationMethod, error)
-	DoReadAll(context.Context, string) ([]*communicationmethod.CommunicationMethod, error)
-	DoInsert(context.Context, *communicationmethod.CommunicationMethod) error
-	DoUpdate(context.Context, *communicationmethod.CommunicationMethod) error
+	DoRead(context.Context, string, string) (*communicationmethodmodel.CommunicationMethod, error)
+	DoReadAll(context.Context, string) ([]*communicationmethodmodel.CommunicationMethod, error)
+	DoInsert(context.Context, *communicationmethodmodel.CommunicationMethod) error
+	DoUpdate(context.Context, *communicationmethodmodel.CommunicationMethod) error
 	DoDelete(context.Context, string, string) error
 	AnyReference(context.Context, string) (bool, error)
 }
@@ -32,8 +29,8 @@ func NewCommunicationMethodRepository(db *sql.DB) ICommunicationMethodRepository
 	return &communicationMethodRepository{db: db}
 }
 
-func (cm *communicationMethodRepository) DoRead(ctx context.Context, contactSystemCode string, communicationMethodCode string) (*communicationmethod.CommunicationMethod, error) {
-	result := &communicationmethod.CommunicationMethod{Audit: &audit.Audit{}}
+func (cm *communicationMethodRepository) DoRead(ctx context.Context, contactSystemCode string, communicationMethodCode string) (*communicationmethodmodel.CommunicationMethod, error) {
+	result := communicationmethodmodel.NewCommunicationMethod()
 
 	conn, err := cm.db.Conn(ctx)
 	if err != nil {
@@ -75,8 +72,8 @@ func (cm *communicationMethodRepository) DoRead(ctx context.Context, contactSyst
 	return result, nil
 }
 
-func (cm *communicationMethodRepository) DoReadAll(ctx context.Context, contactSystemCode string) ([]*communicationmethod.CommunicationMethod, error) {
-	result := make([]*communicationmethod.CommunicationMethod, 0)
+func (cm *communicationMethodRepository) DoReadAll(ctx context.Context, contactSystemCode string) ([]*communicationmethodmodel.CommunicationMethod, error) {
+	result := make([]*communicationmethodmodel.CommunicationMethod, 0)
 
 	conn, err := cm.db.Conn(ctx)
 	if err != nil {
@@ -106,7 +103,7 @@ func (cm *communicationMethodRepository) DoReadAll(ctx context.Context, contactS
 			break
 		}
 
-		communicationMethod := &communicationmethod.CommunicationMethod{Audit: &audit.Audit{}}
+		communicationMethod := communicationmethodmodel.NewCommunicationMethod()
 		if err := rows.Scan(
 			&communicationMethod.ContactSystemCode,
 			&communicationMethod.CommunicationMethodCode,
@@ -126,7 +123,7 @@ func (cm *communicationMethodRepository) DoReadAll(ctx context.Context, contactS
 	return result, nil
 }
 
-func (cm *communicationMethodRepository) DoInsert(ctx context.Context, data *communicationmethod.CommunicationMethod) error {
+func (cm *communicationMethodRepository) DoInsert(ctx context.Context, data *communicationmethodmodel.CommunicationMethod) error {
 	conn, err := cm.db.Conn(ctx)
 	if err != nil {
 		return status.Errorf(codes.Unknown, message.FailedConnectToDatabase(err))
@@ -151,7 +148,7 @@ func (cm *communicationMethodRepository) DoInsert(ctx context.Context, data *com
 	return nil
 }
 
-func (cm *communicationMethodRepository) DoUpdate(ctx context.Context, data *communicationmethod.CommunicationMethod) error {
+func (cm *communicationMethodRepository) DoUpdate(ctx context.Context, data *communicationmethodmodel.CommunicationMethod) error {
 	conn, err := cm.db.Conn(ctx)
 	if err != nil {
 		return status.Errorf(codes.Unknown, message.FailedConnectToDatabase(err))
@@ -196,18 +193,6 @@ func (cm *communicationMethodRepository) DoDelete(ctx context.Context, contactSy
 	rows, _ := result.RowsAffected()
 	if rows == 0 {
 		return status.Errorf(codes.NotFound, message.DoesNotExist("Communication Method"))
-	}
-
-	// Delete all related Communication Method Fields
-	cmf := communicationmethodfieldrepository.NewCommunicationMethodFieldRepository(cm.db)
-	if err := cmf.DoDeleteAll(ctx, contactSystemCode, communicationMethodCode); err != nil {
-		return err
-	}
-
-	// Delete all related Communication Method Labels
-	cml := communicationmethodlabelrepository.NewCommunicationMethodLabelRepository(cm.db)
-	if err := cml.DoDeleteAll(ctx, contactSystemCode, communicationMethodCode); err != nil {
-		return err
 	}
 
 	return nil
