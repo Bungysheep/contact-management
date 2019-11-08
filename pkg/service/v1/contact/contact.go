@@ -7,6 +7,7 @@ import (
 	contactmodel "github.com/bungysheep/contact-management/pkg/models/v1/contact"
 	contactrepository "github.com/bungysheep/contact-management/pkg/repository/v1/contact"
 	contactcommunicationmethodrepository "github.com/bungysheep/contact-management/pkg/repository/v1/contactcommunicationmethod"
+	contactsystemrepository "github.com/bungysheep/contact-management/pkg/repository/v1/contactsystem"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
@@ -22,6 +23,7 @@ type IContactService interface {
 type contactService struct {
 	contactRepo           contactrepository.IContactRepository
 	contactCommMethodRepo contactcommunicationmethodrepository.IContactCommunicationMethodRepository
+	contactSystemRepo     contactsystemrepository.IContactSystemRepository
 }
 
 // NewContactService - Contact service implementation
@@ -29,6 +31,7 @@ func NewContactService(db *sql.DB) IContactService {
 	return &contactService{
 		contactRepo:           contactrepository.NewContactRepository(db),
 		contactCommMethodRepo: contactcommunicationmethodrepository.NewContactCommunicationMethodRepository(db),
+		contactSystemRepo:     contactsystemrepository.NewContactSystemRepository(db),
 	}
 }
 
@@ -41,6 +44,10 @@ func (cnt *contactService) DoReadAll(ctx context.Context, contactSystemCode stri
 }
 
 func (cnt *contactService) DoSave(ctx context.Context, data *contactmodel.Contact) error {
+	if err := cnt.DoValidate(ctx, data); err != nil {
+		return err
+	}
+
 	if err := cnt.contactRepo.DoUpdate(ctx, data); err != nil {
 		s, ok := status.FromError(err)
 		if ok {
@@ -59,4 +66,12 @@ func (cnt *contactService) DoDelete(ctx context.Context, contactSystemCode strin
 	}
 
 	return cnt.contactRepo.DoDelete(ctx, contactSystemCode, contactID)
+}
+
+func (cnt *contactService) DoValidate(ctx context.Context, data *contactmodel.Contact) error {
+	if _, err := cnt.contactSystemRepo.DoRead(ctx, data.GetContactSystemCode()); err != nil {
+		return err
+	}
+
+	return nil
 }

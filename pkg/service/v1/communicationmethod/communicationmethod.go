@@ -8,6 +8,7 @@ import (
 	communicationmethodrepository "github.com/bungysheep/contact-management/pkg/repository/v1/communicationmethod"
 	communicationmethodfieldrepository "github.com/bungysheep/contact-management/pkg/repository/v1/communicationmethodfield"
 	communicationmethodlabelrepository "github.com/bungysheep/contact-management/pkg/repository/v1/communicationmethodlabel"
+	contactsystemrepository "github.com/bungysheep/contact-management/pkg/repository/v1/contactsystem"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
@@ -24,6 +25,7 @@ type communicationMethodService struct {
 	communicationMethodRepo      communicationmethodrepository.ICommunicationMethodRepository
 	communicationMethodFieldRepo communicationmethodfieldrepository.ICommunicationMethodFieldRepository
 	communicationMethodLabelRepo communicationmethodlabelrepository.ICommunicationMethodLabelRepository
+	contactSystemRepo            contactsystemrepository.IContactSystemRepository
 }
 
 // NewCommunicationMethodService - Communication Method service implementation
@@ -32,6 +34,7 @@ func NewCommunicationMethodService(db *sql.DB) ICommunicationMethodService {
 		communicationMethodRepo:      communicationmethodrepository.NewCommunicationMethodRepository(db),
 		communicationMethodFieldRepo: communicationmethodfieldrepository.NewCommunicationMethodFieldRepository(db),
 		communicationMethodLabelRepo: communicationmethodlabelrepository.NewCommunicationMethodLabelRepository(db),
+		contactSystemRepo:            contactsystemrepository.NewContactSystemRepository(db),
 	}
 }
 
@@ -44,6 +47,10 @@ func (cm *communicationMethodService) DoReadAll(ctx context.Context, contactSyst
 }
 
 func (cm *communicationMethodService) DoSave(ctx context.Context, data *communicationmethodmodel.CommunicationMethod) error {
+	if err := cm.DoValidate(ctx, data); err != nil {
+		return err
+	}
+
 	if err := cm.communicationMethodRepo.DoUpdate(ctx, data); err != nil {
 		s, ok := status.FromError(err)
 		if ok {
@@ -66,4 +73,12 @@ func (cm *communicationMethodService) DoDelete(ctx context.Context, contactSyste
 	}
 
 	return cm.communicationMethodRepo.DoDelete(ctx, contactSystemCode, communicationMethodCode)
+}
+
+func (cm *communicationMethodService) DoValidate(ctx context.Context, data *communicationmethodmodel.CommunicationMethod) error {
+	if _, err := cm.contactSystemRepo.DoRead(ctx, data.GetContactSystemCode()); err != nil {
+		return err
+	}
+
+	return nil
 }
