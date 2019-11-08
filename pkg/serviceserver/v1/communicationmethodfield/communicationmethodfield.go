@@ -14,7 +14,7 @@ type communicationMethodFieldServiceServer struct {
 	svc communicationmethodfieldservice.ICommunicationMethodFieldService
 }
 
-// NewCommunicationMethodFieldServiceServer - Communication Method Field service implementation
+// NewCommunicationMethodFieldServiceServer - Communication Method Field service server implementation
 func NewCommunicationMethodFieldServiceServer(svc communicationmethodfieldservice.ICommunicationMethodFieldService) communicationmethodfieldapi.CommunicationMethodFieldServiceServer {
 	return &communicationMethodFieldServiceServer{svc: svc}
 }

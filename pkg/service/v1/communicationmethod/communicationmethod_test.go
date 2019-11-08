@@ -167,9 +167,30 @@ func doReadAll(ctx context.Context, input *communicationmethodmodel.Communicatio
 
 func doSave(ctx context.Context, input *communicationmethodmodel.CommunicationMethod) func(t *testing.T) {
 	return func(t *testing.T) {
+		t.Run("DoSave invalid Contact System", doSaveInvalidContactSystem(ctx, input))
+
 		t.Run("DoSave new Communication Method", doSaveNew(ctx, input))
 
 		t.Run("DoSave existing Communication Method", doSaveExisting(ctx, input))
+	}
+}
+
+func doSaveInvalidContactSystem(ctx context.Context, input *communicationmethodmodel.CommunicationMethod) func(t *testing.T) {
+	return func(t *testing.T) {
+		rows := sqlmock.NewRows([]string{"contact_system_code", "description", "details", "status", "created_at", "modified_at", "vers"})
+
+		expQuery := mock.ExpectPrepare("SELECT contact_system_code, description, details, status, created_at, modified_at, vers FROM contact_system").ExpectQuery()
+		expQuery.WithArgs(input.GetContactSystemCode()).WillReturnRows(rows)
+
+		err := svc.DoSave(ctx, input)
+		if err != nil {
+			s, ok := status.FromError(err)
+			if ok {
+				if s.Code() != codes.NotFound {
+					t.Fatalf("Expect a NotFound error, but got %s", s.Code())
+				}
+			}
+		}
 	}
 }
 
@@ -182,6 +203,12 @@ func doSaveNew(ctx context.Context, input *communicationmethodmodel.Communicatio
 			ModifiedAt: tmNow,
 			Vers:       1,
 		}
+
+		rows := sqlmock.NewRows([]string{"contact_system_code", "description", "details", "status", "created_at", "modified_at", "vers"}).
+			AddRow(input.GetContactSystemCode(), "", "", "", tmNow, tmNow, 1)
+
+		expQuery := mock.ExpectPrepare("SELECT contact_system_code, description, details, status, created_at, modified_at, vers FROM contact_system").ExpectQuery()
+		expQuery.WithArgs(input.GetContactSystemCode()).WillReturnRows(rows)
 
 		expUpdQuery := mock.ExpectPrepare("UPDATE communication_method").ExpectExec()
 		expUpdQuery.WithArgs(input.GetContactSystemCode(), input.GetCommunicationMethodCode(), input.GetDescription(), input.GetDetails(), input.GetStatus(), input.GetFormatField(), tmNow).WillReturnResult(sqlmock.NewResult(0, 0))
@@ -205,6 +232,12 @@ func doSaveExisting(ctx context.Context, input *communicationmethodmodel.Communi
 			ModifiedAt: tmNow,
 			Vers:       2,
 		}
+
+		rows := sqlmock.NewRows([]string{"contact_system_code", "description", "details", "status", "created_at", "modified_at", "vers"}).
+			AddRow(input.GetContactSystemCode(), "", "", "", tmNow, tmNow, 1)
+
+		expQuery := mock.ExpectPrepare("SELECT contact_system_code, description, details, status, created_at, modified_at, vers FROM contact_system").ExpectQuery()
+		expQuery.WithArgs(input.GetContactSystemCode()).WillReturnRows(rows)
 
 		expUpdQuery := mock.ExpectPrepare("UPDATE communication_method").ExpectExec()
 		expUpdQuery.WithArgs(input.GetContactSystemCode(), input.GetCommunicationMethodCode(), input.GetDescription(), input.GetDetails(), input.GetStatus(), input.GetFormatField(), tmNow).WillReturnResult(sqlmock.NewResult(0, 1))
