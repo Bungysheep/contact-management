@@ -38,7 +38,12 @@ func (cm *contactRepository) DoRead(ctx context.Context, contactSystemCode strin
 	}
 	defer conn.Close()
 
-	stmt, err := conn.PrepareContext(ctx, "SELECT contact_system_code, contact_id, first_name, last_name, status, created_at, modified_at, vers FROM contact WHERE contact_system_code=$1 AND contact_id=$2")
+	stmt, err := conn.PrepareContext(ctx,
+		`SELECT contact_system_code, contact_id, first_name, last_name, status, 
+			created_at, modified_at, vers 
+		FROM contact 
+		WHERE contact_system_code=$1 
+			AND contact_id=$2`)
 	if err != nil {
 		return nil, status.Errorf(codes.Unknown, message.FailedPrepareRead("Contact", err))
 	}
@@ -80,7 +85,11 @@ func (cm *contactRepository) DoReadAll(ctx context.Context, contactSystemCode st
 	}
 	defer conn.Close()
 
-	stmt, err := conn.PrepareContext(ctx, "SELECT contact_system_code, contact_id, first_name, last_name, status, created_at, modified_at, vers FROM contact WHERE contact_system_code=$1")
+	stmt, err := conn.PrepareContext(ctx,
+		`SELECT contact_system_code, contact_id, first_name, last_name, status, 
+			created_at, modified_at, vers 
+		FROM contact 
+		WHERE contact_system_code=$1`)
 	if err != nil {
 		return result, status.Errorf(codes.Unknown, message.FailedPrepareRead("Contact", err))
 	}
@@ -128,7 +137,12 @@ func (cm *contactRepository) DoInsert(ctx context.Context, data *contactmodel.Co
 	}
 	defer conn.Close()
 
-	stmt, err := conn.PrepareContext(ctx, "INSERT INTO contact (contact_system_code, first_name, last_name, status, created_at, modified_at, vers) VALUES ($1, $2, $3, $4, $5, $6, 1)")
+	stmt, err := conn.PrepareContext(ctx,
+		`INSERT INTO contact 
+			(contact_system_code, first_name, last_name, status, 
+			created_at, modified_at, vers) 
+		VALUES ($1, $2, $3, $4, 
+			$5, $6, 1)`)
 	if err != nil {
 		return status.Errorf(codes.Unknown, message.FailedPrepareInsert("Contact", err))
 	}
@@ -153,7 +167,11 @@ func (cm *contactRepository) DoUpdate(ctx context.Context, data *contactmodel.Co
 	}
 	defer conn.Close()
 
-	stmt, err := conn.PrepareContext(ctx, "UPDATE contact SET first_name=$3, last_name=$4, status=$5, modified_at=$6, vers=vers+1 WHERE contact_system_code=$1 AND contact_id=$2")
+	stmt, err := conn.PrepareContext(ctx,
+		`UPDATE contact SET first_name=$3, last_name=$4, status=$5, 
+			modified_at=$6, vers=vers+1 
+		WHERE contact_system_code=$1 
+			AND contact_id=$2`)
 	if err != nil {
 		return status.Errorf(codes.Unknown, message.FailedPrepareUpdate("Contact", err))
 	}
@@ -178,7 +196,10 @@ func (cm *contactRepository) DoDelete(ctx context.Context, contactSystemCode str
 	}
 	defer conn.Close()
 
-	stmt, err := conn.PrepareContext(ctx, "DELETE FROM contact WHERE contact_system_code=$1 AND contact_id=$2")
+	stmt, err := conn.PrepareContext(ctx,
+		`DELETE FROM contact 
+		WHERE contact_system_code=$1 
+			AND contact_id=$2`)
 	if err != nil {
 		return status.Errorf(codes.Unknown, message.FailedPrepareDelete("Contact", err))
 	}
@@ -203,7 +224,10 @@ func (cm *contactRepository) AnyReference(ctx context.Context, contactSystemCode
 	}
 	defer conn.Close()
 
-	stmt, err := conn.PrepareContext(ctx, "SELECT 1 FROM contact WHERE contact_system_code=$1")
+	stmt, err := conn.PrepareContext(ctx,
+		`SELECT 1 
+		FROM contact 
+		WHERE contact_system_code=$1`)
 	if err != nil {
 		return false, status.Errorf(codes.Unknown, message.FailedPrepareRead("Contact", err))
 	}

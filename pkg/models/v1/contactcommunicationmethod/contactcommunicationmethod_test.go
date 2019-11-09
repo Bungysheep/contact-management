@@ -11,7 +11,7 @@ func TestCreateContactCommunicationMethod(t *testing.T) {
 	contactCommMethod := NewContactCommunicationMethod()
 
 	if contactCommMethod == nil {
-		t.Errorf("Expect contact communication method is not nil")
+		t.Fatalf("Expect contact communication method is not nil")
 	}
 
 	timeNow := time.Now()

@@ -8,7 +8,7 @@ func TestCreateContactCommunicationMethodField(t *testing.T) {
 	contactCommMethodField := NewContactCommunicationMethodField()
 
 	if contactCommMethodField == nil {
-		t.Errorf("Expect contact communication method field is not nil")
+		t.Fatalf("Expect contact communication method field is not nil")
 	}
 
 	contactCommMethodField.ContactSystemCode = "CNTSYS001"

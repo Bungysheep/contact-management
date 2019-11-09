@@ -88,11 +88,11 @@ func doRead(ctx context.Context, input *communicationmethodfieldmodel.Communicat
 
 		resp, err := svcServer.DoRead(ctx, &communicationmethodfieldapi.DoReadCommunicationMethodFieldRequest{ContactSystemCode: input.GetContactSystemCode(), CommunicationMethodCode: input.GetCommunicationMethodCode(), FieldCode: input.GetFieldCode()})
 		if err != nil {
-			t.Errorf("Expect error is nil, but got %v", err)
+			t.Fatalf("Expect error is nil, but got %v", err)
 		}
 
 		if resp.GetCommunicationMethodField() == nil {
-			t.Errorf("Expect communication method field is not nil")
+			t.Fatalf("Expect communication method field is not nil")
 		}
 
 		if resp.GetCommunicationMethodField().GetContactSystemCode() != input.GetContactSystemCode() {
@@ -130,11 +130,11 @@ func doReadAll(ctx context.Context, input *communicationmethodfieldmodel.Communi
 
 		resp, err := svcServer.DoReadAll(ctx, &communicationmethodfieldapi.DoReadAllCommunicationMethodFieldRequest{ContactSystemCode: input.GetContactSystemCode(), CommunicationMethodCode: input.GetCommunicationMethodCode()})
 		if err != nil {
-			t.Errorf("Expect error is nil, but got %v", err)
+			t.Fatalf("Expect error is nil, but got %v", err)
 		}
 
 		if resp.GetCommunicationMethodField() == nil {
-			t.Errorf("Expect communication method field is not nil")
+			t.Fatalf("Expect communication method field is not nil")
 		}
 
 		if len(resp.GetCommunicationMethodField()) < 3 {
@@ -186,7 +186,7 @@ func doSave(ctx context.Context, input *communicationmethodfieldmodel.Communicat
 
 		resp, err := svcServer.DoSave(ctx, &communicationmethodfieldapi.DoSaveCommunicationMethodFieldRequest{CommunicationMethodField: communicationMethodField})
 		if err != nil {
-			t.Errorf("Expect error is nil, but got %v", err)
+			t.Fatalf("Expect error is nil, but got %v", err)
 		}
 
 		if !resp.GetResult() {
@@ -208,7 +208,7 @@ func doDelete(ctx context.Context, input *communicationmethodfieldmodel.Communic
 
 		resp, err := svcServer.DoDelete(ctx, &communicationmethodfieldapi.DoDeleteCommunicationMethodFieldRequest{ContactSystemCode: input.GetContactSystemCode(), CommunicationMethodCode: input.GetCommunicationMethodCode(), FieldCode: input.GetFieldCode()})
 		if err != nil {
-			t.Errorf("Expect error is nil, but got %v", err)
+			t.Fatalf("Expect error is nil, but got %v", err)
 		}
 
 		if !resp.GetResult() {

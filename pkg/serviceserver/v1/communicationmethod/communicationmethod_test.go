@@ -91,11 +91,11 @@ func doRead(ctx context.Context, input *communicationmethodmodel.CommunicationMe
 
 		resp, err := svcServer.DoRead(ctx, &communicationmethodapi.DoReadCommunicationMethodRequest{ContactSystemCode: input.GetContactSystemCode(), CommunicationMethodCode: input.GetCommunicationMethodCode()})
 		if err != nil {
-			t.Errorf("Expect error is nil, but got %v", err)
+			t.Fatalf("Expect error is nil, but got %v", err)
 		}
 
 		if resp.GetCommunicationMethod() == nil {
-			t.Errorf("Expect communication method is not nil")
+			t.Fatalf("Expect communication method is not nil")
 		}
 
 		if resp.GetCommunicationMethod().GetContactSystemCode() != input.GetContactSystemCode() {
@@ -137,11 +137,11 @@ func doReadAll(ctx context.Context, input *communicationmethodmodel.Communicatio
 
 		resp, err := svcServer.DoReadAll(ctx, &communicationmethodapi.DoReadAllCommunicationMethodRequest{ContactSystemCode: input.GetContactSystemCode()})
 		if err != nil {
-			t.Errorf("Expect error is nil, but got %v", err)
+			t.Fatalf("Expect error is nil, but got %v", err)
 		}
 
 		if resp.GetCommunicationMethod() == nil {
-			t.Errorf("Expect communication method is not nil")
+			t.Fatalf("Expect communication method is not nil")
 		}
 
 		if len(resp.GetCommunicationMethod()) < 3 {
@@ -198,7 +198,7 @@ func doSave(ctx context.Context, input *communicationmethodmodel.CommunicationMe
 
 		resp, err := svcServer.DoSave(ctx, &communicationmethodapi.DoSaveCommunicationMethodRequest{CommunicationMethod: communicationMethod})
 		if err != nil {
-			t.Errorf("Expect error is nil, but got %v", err)
+			t.Fatalf("Expect error is nil, but got %v", err)
 		}
 
 		if !resp.GetResult() {
@@ -220,7 +220,7 @@ func doDelete(ctx context.Context, input *communicationmethodmodel.Communication
 
 		resp, err := svcServer.DoDelete(ctx, &communicationmethodapi.DoDeleteCommunicationMethodRequest{ContactSystemCode: input.GetContactSystemCode(), CommunicationMethodCode: input.GetCommunicationMethodCode()})
 		if err != nil {
-			t.Errorf("Expect error is nil, but got %v", err)
+			t.Fatalf("Expect error is nil, but got %v", err)
 		}
 
 		if !resp.GetResult() {

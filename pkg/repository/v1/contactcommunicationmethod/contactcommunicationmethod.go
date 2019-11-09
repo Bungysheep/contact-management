@@ -38,7 +38,17 @@ func (cm *contactCommunicationMethodRepository) DoRead(ctx context.Context, cont
 	}
 	defer conn.Close()
 
-	stmt, err := conn.PrepareContext(ctx, "SELECT contact_system_code, contact_id, contact_communication_method_id, communication_method_code, communication_method_label_code, format_value, is_default, created_at, modified_at, vers FROM contact_communication_method WHERE contact_system_code=$1 and contact_id=$2 and contact_communication_method_id=$3")
+	stmt, err := conn.PrepareContext(ctx,
+		`SELECT ccm.contact_system_code, ccm.contact_id, ccm.contact_communication_method_id, 
+			ccm.communication_method_code, ccm.communication_method_label_code, cml.caption, ccm.format_value, ccm.is_default, 
+			ccm.created_at, ccm.modified_at, ccm.vers 
+		FROM contact_communication_method ccm
+		INNER JOIN communication_method_label cml ON ccm.contact_system_code=cml.contact_system_code
+			AND ccm.communication_method_code=cml.communication_method_code
+			AND ccm.communication_method_label_code=cml.communication_method_label_code
+		WHERE ccm.contact_system_code=$1 
+			AND ccm.contact_id=$2 
+			AND ccm.contact_communication_method_id=$3`)
 	if err != nil {
 		return nil, status.Errorf(codes.Unknown, message.FailedPrepareRead("Contact Communication Method", err))
 	}
@@ -62,6 +72,7 @@ func (cm *contactCommunicationMethodRepository) DoRead(ctx context.Context, cont
 		&result.ContactCommunicationMethodID,
 		&result.CommunicationMethodCode,
 		&result.CommunicationMethodLabelCode,
+		&result.CommunicationMethodLabelCaption,
 		&result.FormatValue,
 		&result.IsDefault,
 		&result.GetAudit().CreatedAt,
@@ -82,7 +93,16 @@ func (cm *contactCommunicationMethodRepository) DoReadAll(ctx context.Context, c
 	}
 	defer conn.Close()
 
-	stmt, err := conn.PrepareContext(ctx, "SELECT contact_system_code, contact_id, contact_communication_method_id, communication_method_code, communication_method_label_code, format_value, is_default, created_at, modified_at, vers FROM contact_communication_method WHERE contact_system_code=$1 AND contact_id=$2")
+	stmt, err := conn.PrepareContext(ctx,
+		`SELECT ccm.contact_system_code, ccm.contact_id, ccm.contact_communication_method_id, 
+			ccm.communication_method_code, ccm.communication_method_label_code, cml.caption, ccm.format_value, ccm.is_default, 
+			ccm.created_at, ccm.modified_at, ccm.vers 
+		FROM contact_communication_method ccm
+		INNER JOIN communication_method_label cml ON ccm.contact_system_code=cml.contact_system_code
+			AND ccm.communication_method_code=cml.communication_method_code
+			AND ccm.communication_method_label_code=cml.communication_method_label_code
+		WHERE ccm.contact_system_code=$1 
+			AND ccm.contact_id=$2`)
 	if err != nil {
 		return result, status.Errorf(codes.Unknown, message.FailedPrepareRead("Contact Communication Method", err))
 	}
@@ -111,6 +131,7 @@ func (cm *contactCommunicationMethodRepository) DoReadAll(ctx context.Context, c
 			&contactCommunicationMethod.ContactCommunicationMethodID,
 			&contactCommunicationMethod.CommunicationMethodCode,
 			&contactCommunicationMethod.CommunicationMethodLabelCode,
+			&contactCommunicationMethod.CommunicationMethodLabelCaption,
 			&contactCommunicationMethod.FormatValue,
 			&contactCommunicationMethod.IsDefault,
 			&contactCommunicationMethod.GetAudit().CreatedAt,
@@ -132,7 +153,12 @@ func (cm *contactCommunicationMethodRepository) DoInsert(ctx context.Context, da
 	}
 	defer conn.Close()
 
-	stmt, err := conn.PrepareContext(ctx, "INSERT INTO contact_communication_method (contact_system_code, contact_id, communication_method_code, communication_method_label_code, format_value, is_default, created_at, modified_at, vers) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, 1)")
+	stmt, err := conn.PrepareContext(ctx,
+		`INSERT INTO contact_communication_method 
+			(contact_system_code, contact_id, communication_method_code, communication_method_label_code, format_value, is_default, 
+			created_at, modified_at, vers) 
+		VALUES ($1, $2, $3, $4, $5, $6, 
+			$7, $8, 1)`)
 	if err != nil {
 		return status.Errorf(codes.Unknown, message.FailedPrepareInsert("Contact Communication Method", err))
 	}
@@ -157,7 +183,13 @@ func (cm *contactCommunicationMethodRepository) DoUpdate(ctx context.Context, da
 	}
 	defer conn.Close()
 
-	stmt, err := conn.PrepareContext(ctx, "UPDATE contact_communication_method SET communication_method_code=$4, communication_method_label_code=$5, format_value=$6, is_default=$7, modified_at=$8, vers=vers+1 WHERE contact_system_code=$1 AND contact_id=$2 AND contact_communication_method_id=$3")
+	stmt, err := conn.PrepareContext(ctx,
+		`UPDATE contact_communication_method 
+		SET communication_method_code=$4, communication_method_label_code=$5, format_value=$6, is_default=$7, 
+			modified_at=$8, vers=vers+1 
+		WHERE contact_system_code=$1 
+			AND contact_id=$2 
+			AND contact_communication_method_id=$3`)
 	if err != nil {
 		return status.Errorf(codes.Unknown, message.FailedPrepareUpdate("Contact Communication Method", err))
 	}
@@ -189,7 +221,11 @@ func (cm *contactCommunicationMethodRepository) DoDelete(ctx context.Context, co
 	}
 	defer conn.Close()
 
-	stmt, err := conn.PrepareContext(ctx, "DELETE FROM contact_communication_method WHERE contact_system_code=$1 AND contact_id=$2 AND contact_communication_method_id=$3")
+	stmt, err := conn.PrepareContext(ctx,
+		`DELETE FROM contact_communication_method 
+		WHERE contact_system_code=$1 
+			AND contact_id=$2 
+			AND contact_communication_method_id=$3`)
 	if err != nil {
 		return status.Errorf(codes.Unknown, message.FailedPrepareDelete("Contact Communication Method", err))
 	}
@@ -214,7 +250,10 @@ func (cm *contactCommunicationMethodRepository) DoDeleteAll(ctx context.Context,
 	}
 	defer conn.Close()
 
-	stmt, err := conn.PrepareContext(ctx, "DELETE FROM contact_communication_method WHERE contact_system_code=$1 AND contact_id=$2")
+	stmt, err := conn.PrepareContext(ctx,
+		`DELETE FROM contact_communication_method 
+		WHERE contact_system_code=$1 
+			AND contact_id=$2`)
 	if err != nil {
 		return status.Errorf(codes.Unknown, message.FailedPrepareDelete("All Contact Communication Methods", err))
 	}

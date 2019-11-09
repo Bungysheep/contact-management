@@ -126,7 +126,10 @@ func doDeleteAll(ctx context.Context) func(t *testing.T) {
 
 func doReadFailCommunicationMethodField(ctx context.Context, input *communicationmethodfieldmodel.CommunicationMethodField) func(t *testing.T) {
 	return func(t *testing.T) {
-		expQuery := mock.ExpectPrepare("SELECT contact_system_code, communication_method_code, field_code, caption, sequence, created_at, modified_at, vers FROM communication_method_field").ExpectQuery()
+		expQuery := mock.ExpectPrepare(
+			`SELECT contact_system_code, communication_method_code, field_code, caption, sequence, 
+				created_at, modified_at, vers 
+			FROM communication_method_field`).ExpectQuery()
 		expQuery.WithArgs(input.GetContactSystemCode(), input.GetCommunicationMethodCode(), input.GetFieldCode()).WillReturnError(fmt.Errorf("DoRead communication method field failed"))
 
 		res, err := repo.DoRead(ctx, input.GetContactSystemCode(), input.GetCommunicationMethodCode(), input.GetFieldCode())
@@ -151,7 +154,10 @@ func doReadUnexistingCommunicationMethodField(ctx context.Context, input *commun
 	return func(t *testing.T) {
 		rows := sqlmock.NewRows([]string{"contact_system_code", "communication_method_code", "field_code", "caption", "sequence", "created_at", "modified_at", "vers"})
 
-		expQuery := mock.ExpectPrepare("SELECT contact_system_code, communication_method_code, field_code, caption, sequence, created_at, modified_at, vers FROM communication_method_field").ExpectQuery()
+		expQuery := mock.ExpectPrepare(
+			`SELECT contact_system_code, communication_method_code, field_code, caption, sequence, 
+				created_at, modified_at, vers 
+			FROM communication_method_field`).ExpectQuery()
 		expQuery.WithArgs(input.GetContactSystemCode(), input.GetCommunicationMethodCode(), input.GetFieldCode()).WillReturnRows(rows)
 
 		res, err := repo.DoRead(ctx, input.GetContactSystemCode(), input.GetCommunicationMethodCode(), input.GetFieldCode())
@@ -180,7 +186,10 @@ func doReadRowErrorCommunicationMethodField(ctx context.Context, input *communic
 			AddRow(input.GetContactSystemCode(), input.GetCommunicationMethodCode(), input.GetFieldCode(), input.GetCaption(), input.GetSequence(), tmNow, tmNow, 1).
 			RowError(0, fmt.Errorf("DoRead row error"))
 
-		expQuery := mock.ExpectPrepare("SELECT contact_system_code, communication_method_code, field_code, caption, sequence, created_at, modified_at, vers FROM communication_method_field").ExpectQuery()
+		expQuery := mock.ExpectPrepare(
+			`SELECT contact_system_code, communication_method_code, field_code, caption, sequence, 
+				created_at, modified_at, vers 
+			FROM communication_method_field`).ExpectQuery()
 		expQuery.WithArgs(input.GetContactSystemCode(), input.GetCommunicationMethodCode(), input.GetFieldCode()).WillReturnRows(rows)
 
 		res, err := repo.DoRead(ctx, input.GetContactSystemCode(), input.GetCommunicationMethodCode(), input.GetFieldCode())
@@ -208,16 +217,19 @@ func doReadExistingCommunicationMethodField(ctx context.Context, input *communic
 		rows := sqlmock.NewRows([]string{"contact_system_code", "communication_method_code", "field_code", "caption", "sequence", "created_at", "modified_at", "vers"}).
 			AddRow(input.GetContactSystemCode(), input.GetCommunicationMethodCode(), input.GetFieldCode(), input.GetCaption(), input.GetSequence(), tmNow, tmNow, 1)
 
-		expQuery := mock.ExpectPrepare("SELECT contact_system_code, communication_method_code, field_code, caption, sequence, created_at, modified_at, vers FROM communication_method_field").ExpectQuery()
+		expQuery := mock.ExpectPrepare(
+			`SELECT contact_system_code, communication_method_code, field_code, caption, sequence, 
+				created_at, modified_at, vers 
+			FROM communication_method_field`).ExpectQuery()
 		expQuery.WithArgs(input.GetContactSystemCode(), input.GetCommunicationMethodCode(), input.GetFieldCode()).WillReturnRows(rows)
 
 		res, err := repo.DoRead(ctx, input.GetContactSystemCode(), input.GetCommunicationMethodCode(), input.GetFieldCode())
 		if err != nil {
-			t.Errorf("Failed to read communication method field: %v", err)
+			t.Fatalf("Failed to read communication method field: %v", err)
 		}
 
 		if res == nil {
-			t.Errorf("Expect communication method field is not nil")
+			t.Fatalf("Expect communication method field is not nil")
 		}
 
 		if res.GetContactSystemCode() != input.GetContactSystemCode() {
@@ -244,7 +256,10 @@ func doReadExistingCommunicationMethodField(ctx context.Context, input *communic
 
 func doReadAllFailCommunicationMethodFields(ctx context.Context, input *communicationmethodfieldmodel.CommunicationMethodField) func(t *testing.T) {
 	return func(t *testing.T) {
-		expQuery := mock.ExpectPrepare("SELECT contact_system_code, communication_method_code, field_code, caption, sequence, created_at, modified_at, vers FROM communication_method_field").ExpectQuery()
+		expQuery := mock.ExpectPrepare(
+			`SELECT contact_system_code, communication_method_code, field_code, caption, sequence, 
+				created_at, modified_at, vers 
+			FROM communication_method_field`).ExpectQuery()
 		expQuery.WithArgs(input.GetContactSystemCode(), input.GetCommunicationMethodCode()).WillReturnError(fmt.Errorf("DoReadAll communication method field failed"))
 
 		res, err := repo.DoReadAll(ctx, input.GetContactSystemCode(), input.GetCommunicationMethodCode())
@@ -259,6 +274,10 @@ func doReadAllFailCommunicationMethodFields(ctx context.Context, input *communic
 			t.Errorf("Expect error is not nil")
 		}
 
+		if res == nil {
+			t.Fatalf("Expect communication method fields is not nil")
+		}
+
 		if len(res) != 0 {
 			t.Errorf("Expect response is nil")
 		}
@@ -269,7 +288,10 @@ func doReadAllUnexistingCommunicationMethodFields(ctx context.Context, input *co
 	return func(t *testing.T) {
 		rows := sqlmock.NewRows([]string{"contact_system_code", "communication_method_code", "field_code", "caption", "sequence", "created_at", "modified_at", "vers"})
 
-		expQuery := mock.ExpectPrepare("SELECT contact_system_code, communication_method_code, field_code, caption, sequence, created_at, modified_at, vers FROM communication_method_field").ExpectQuery()
+		expQuery := mock.ExpectPrepare(
+			`SELECT contact_system_code, communication_method_code, field_code, caption, sequence, 
+				created_at, modified_at, vers 
+			FROM communication_method_field`).ExpectQuery()
 		expQuery.WithArgs(input.GetContactSystemCode(), input.GetCommunicationMethodCode()).WillReturnRows(rows)
 
 		res, err := repo.DoReadAll(ctx, input.GetContactSystemCode(), input.GetCommunicationMethodCode())
@@ -285,7 +307,7 @@ func doReadAllUnexistingCommunicationMethodFields(ctx context.Context, input *co
 		}
 
 		if res == nil {
-			t.Errorf("Expect communication method fields is not nil")
+			t.Fatalf("Expect communication method fields is not nil")
 		}
 
 		if len(res) != 0 {
@@ -304,7 +326,10 @@ func doReadAllRowErrorCommunicationMethodFields(ctx context.Context, input *comm
 			AddRow(data[1].GetContactSystemCode(), data[1].GetCommunicationMethodCode(), data[1].GetFieldCode(), data[1].GetCaption(), data[1].GetSequence(), tmNow, tmNow, 1).
 			AddRow(data[2].GetContactSystemCode(), data[2].GetCommunicationMethodCode(), data[2].GetFieldCode(), data[2].GetCaption(), data[2].GetSequence(), tmNow, tmNow, 1)
 
-		expQuery := mock.ExpectPrepare("SELECT contact_system_code, communication_method_code, field_code, caption, sequence, created_at, modified_at, vers FROM communication_method_field").ExpectQuery()
+		expQuery := mock.ExpectPrepare(
+			`SELECT contact_system_code, communication_method_code, field_code, caption, sequence, 
+				created_at, modified_at, vers 
+			FROM communication_method_field`).ExpectQuery()
 		expQuery.WithArgs(input.GetContactSystemCode(), input.GetCommunicationMethodCode()).WillReturnRows(rows)
 
 		res, err := repo.DoReadAll(ctx, input.GetContactSystemCode(), input.GetCommunicationMethodCode())
@@ -317,6 +342,10 @@ func doReadAllRowErrorCommunicationMethodFields(ctx context.Context, input *comm
 			}
 		} else {
 			t.Errorf("Expect error is not nil")
+		}
+
+		if res == nil {
+			t.Fatalf("Expect communication method fields is not nil")
 		}
 
 		if len(res) != 0 {
@@ -334,16 +363,19 @@ func doReadAllExistingCommunicationMethodFields(ctx context.Context, input *comm
 			AddRow(data[1].GetContactSystemCode(), data[1].GetCommunicationMethodCode(), data[1].GetFieldCode(), data[1].GetCaption(), data[1].GetSequence(), tmNow, tmNow, 1).
 			AddRow(data[2].GetContactSystemCode(), data[2].GetCommunicationMethodCode(), data[2].GetFieldCode(), data[2].GetCaption(), data[2].GetSequence(), tmNow, tmNow, 1)
 
-		expQuery := mock.ExpectPrepare("SELECT contact_system_code, communication_method_code, field_code, caption, sequence, created_at, modified_at, vers FROM communication_method_field").ExpectQuery()
+		expQuery := mock.ExpectPrepare(
+			`SELECT contact_system_code, communication_method_code, field_code, caption, sequence, 
+				created_at, modified_at, vers 
+			FROM communication_method_field`).ExpectQuery()
 		expQuery.WithArgs(input.GetContactSystemCode(), input.GetCommunicationMethodCode()).WillReturnRows(rows)
 
 		res, err := repo.DoReadAll(ctx, input.GetContactSystemCode(), input.GetCommunicationMethodCode())
 		if err != nil {
-			t.Errorf("Failed to read all communication method fields: %v", err)
+			t.Fatalf("Failed to read all communication method fields: %v", err)
 		}
 
 		if res == nil {
-			t.Errorf("Expect communication method fields is not nil")
+			t.Fatalf("Expect communication method fields is not nil")
 		}
 
 		if len(res) < 3 {
@@ -414,7 +446,7 @@ func doSaveNewCommunicationMethodField(ctx context.Context, input *communication
 
 		err := repo.DoInsert(ctx, input)
 		if err != nil {
-			t.Errorf("Failed to save communication method field: %v", err)
+			t.Fatalf("Failed to save communication method field: %v", err)
 		}
 	}
 }
@@ -461,7 +493,7 @@ func doSaveExistingCommunicationMethodField(ctx context.Context, input *communic
 
 		err := repo.DoUpdate(ctx, input)
 		if err != nil {
-			t.Errorf("Failed to save communication method field: %v", err)
+			t.Fatalf("Failed to save communication method field: %v", err)
 		}
 	}
 }
@@ -511,7 +543,7 @@ func doDeleteExistingCommunicationMethodField(ctx context.Context, input *commun
 
 		err := repo.DoDelete(ctx, input.GetContactSystemCode(), input.GetCommunicationMethodCode(), input.GetFieldCode())
 		if err != nil {
-			t.Errorf("Failed to delete communication method field: %v", err)
+			t.Fatalf("Failed to delete communication method field: %v", err)
 		}
 	}
 }
@@ -559,7 +591,7 @@ func doDeleteAllExistingCommunicationMethodField(ctx context.Context, input *com
 
 		err := repo.DoDeleteAll(ctx, input.GetContactSystemCode(), input.GetCommunicationMethodCode())
 		if err != nil {
-			t.Errorf("Failed to delete all communication method fields: %v", err)
+			t.Fatalf("Failed to delete all communication method fields: %v", err)
 		}
 	}
 }
