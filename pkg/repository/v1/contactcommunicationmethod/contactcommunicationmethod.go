@@ -208,13 +208,6 @@ func (cm *contactCommunicationMethodRepository) DoUpdate(ctx context.Context, da
 }
 
 func (cm *contactCommunicationMethodRepository) DoDelete(ctx context.Context, contactSystemCode string, contactID int64, contactCommunicationMethodID int64) error {
-	isDefault, err := cm.isDefault(ctx, contactSystemCode, contactID, contactCommunicationMethodID)
-	if err != nil {
-		return err
-	} else if isDefault {
-		return status.Errorf(codes.Unknown, message.UnableDeleteDefault("Contact Communication Method"))
-	}
-
 	conn, err := cm.db.Conn(ctx)
 	if err != nil {
 		return status.Errorf(codes.Unknown, message.FailedConnectToDatabase(err))
@@ -264,13 +257,4 @@ func (cm *contactCommunicationMethodRepository) DoDeleteAll(ctx context.Context,
 	}
 
 	return nil
-}
-
-func (cm *contactCommunicationMethodRepository) isDefault(ctx context.Context, contactSystemCode string, contactID int64, contactCommunicationMethodID int64) (bool, error) {
-	result, err := cm.DoRead(ctx, contactSystemCode, contactID, contactCommunicationMethodID)
-	if err != nil {
-		return false, err
-	}
-
-	return result.GetIsDefault(), nil
 }
