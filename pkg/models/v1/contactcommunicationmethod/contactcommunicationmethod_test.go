@@ -29,7 +29,6 @@ func TestCreateContactCommunicationMethod(t *testing.T) {
 	contactCommMethodField.ContactSystemCode = "CNTSYS001"
 	contactCommMethodField.ContactID = 1
 	contactCommMethodField.ContactCommunicationMethodID = 1
-	contactCommMethodField.CommunicationMethodCode = "EMAIL"
 	contactCommMethodField.FieldCode = "EMAIL_ADDRESS"
 	contactCommMethodField.FieldValue = "test@gmail.com"
 	contactCommMethod.ContactCommunicationMethodField = append(contactCommMethod.ContactCommunicationMethodField, contactCommMethodField)
