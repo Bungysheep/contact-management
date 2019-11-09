@@ -13,8 +13,8 @@ import (
 // IContactCommunicationMethodFieldRepository - Contact Communication Method Field repository interface
 type IContactCommunicationMethodFieldRepository interface {
 	DoRead(context.Context, string, int64, int64) ([]*contactcommunicationmethodfieldmodel.ContactCommunicationMethodField, error)
-	DoInsert(context.Context, []*contactcommunicationmethodfieldmodel.ContactCommunicationMethodField) error
-	DoUpdate(context.Context, []*contactcommunicationmethodfieldmodel.ContactCommunicationMethodField) error
+	DoInsert(context.Context, *contactcommunicationmethodfieldmodel.ContactCommunicationMethodField) error
+	DoUpdate(context.Context, *contactcommunicationmethodfieldmodel.ContactCommunicationMethodField) error
 	DoDelete(context.Context, string, int64, int64) error
 }
 
@@ -79,64 +79,60 @@ func (cm *contactCommunicationMethodFieldRepository) DoRead(ctx context.Context,
 	return result, nil
 }
 
-func (cm *contactCommunicationMethodFieldRepository) DoInsert(ctx context.Context, data []*contactcommunicationmethodfieldmodel.ContactCommunicationMethodField) error {
+func (cm *contactCommunicationMethodFieldRepository) DoInsert(ctx context.Context, data *contactcommunicationmethodfieldmodel.ContactCommunicationMethodField) error {
 	conn, err := cm.db.Conn(ctx)
 	if err != nil {
 		return status.Errorf(codes.Unknown, message.FailedConnectToDatabase(err))
 	}
 	defer conn.Close()
 
-	for _, item := range data {
-		stmt, err := conn.PrepareContext(ctx,
-			`INSERT INTO contact_communication_method_field 
-				(contact_system_code, contact_id, contact_communication_method_id, field_code, field_value) 
-			VALUES ($1, $2, $3, $4, $5)`)
-		if err != nil {
-			return status.Errorf(codes.Unknown, message.FailedPrepareInsert("Contact Communication Method Field", err))
-		}
+	stmt, err := conn.PrepareContext(ctx,
+		`INSERT INTO contact_communication_method_field 
+			(contact_system_code, contact_id, contact_communication_method_id, field_code, field_value) 
+		VALUES ($1, $2, $3, $4, $5)`)
+	if err != nil {
+		return status.Errorf(codes.Unknown, message.FailedPrepareInsert("Contact Communication Method Field", err))
+	}
 
-		result, err := stmt.ExecContext(ctx, item.GetContactSystemCode(), item.GetContactID(), item.GetContactCommunicationMethodID(), item.GetFieldCode(), item.GetFieldValue())
-		if err != nil {
-			return status.Errorf(codes.Unknown, message.FailedInsert("Contact Communication Method Field", err))
-		}
+	result, err := stmt.ExecContext(ctx, data.GetContactSystemCode(), data.GetContactID(), data.GetContactCommunicationMethodID(), data.GetFieldCode(), data.GetFieldValue())
+	if err != nil {
+		return status.Errorf(codes.Unknown, message.FailedInsert("Contact Communication Method Field", err))
+	}
 
-		rows, _ := result.RowsAffected()
-		if rows == 0 {
-			return status.Errorf(codes.Unknown, message.NoRowInserted())
-		}
+	rows, _ := result.RowsAffected()
+	if rows == 0 {
+		return status.Errorf(codes.Unknown, message.NoRowInserted())
 	}
 
 	return nil
 }
 
-func (cm *contactCommunicationMethodFieldRepository) DoUpdate(ctx context.Context, data []*contactcommunicationmethodfieldmodel.ContactCommunicationMethodField) error {
+func (cm *contactCommunicationMethodFieldRepository) DoUpdate(ctx context.Context, data *contactcommunicationmethodfieldmodel.ContactCommunicationMethodField) error {
 	conn, err := cm.db.Conn(ctx)
 	if err != nil {
 		return status.Errorf(codes.Unknown, message.FailedConnectToDatabase(err))
 	}
 	defer conn.Close()
 
-	for _, item := range data {
-		stmt, err := conn.PrepareContext(ctx,
-			`UPDATE contact_communication_method_field 
-			SET field_value=$5
-			WHERE contact_system_code=$1 
-				AND contact_id=$2 
-				AND contact_communication_method_id=$3
-				AND field_code=$4`)
-		if err != nil {
-			return status.Errorf(codes.Unknown, message.FailedPrepareUpdate("Contact Communication Method Field", err))
-		}
+	stmt, err := conn.PrepareContext(ctx,
+		`UPDATE contact_communication_method_field 
+		SET field_value=$5
+		WHERE contact_system_code=$1 
+			AND contact_id=$2 
+			AND contact_communication_method_id=$3
+			AND field_code=$4`)
+	if err != nil {
+		return status.Errorf(codes.Unknown, message.FailedPrepareUpdate("Contact Communication Method Field", err))
+	}
 
-		result, err := stmt.ExecContext(ctx, item.GetContactSystemCode(), item.GetContactID(), item.GetContactCommunicationMethodID(), item.GetFieldCode(), item.GetFieldValue())
-		if err != nil {
-			return status.Errorf(codes.Unknown, message.FailedUpdate("Contact Communication Method", err))
-		}
+	result, err := stmt.ExecContext(ctx, data.GetContactSystemCode(), data.GetContactID(), data.GetContactCommunicationMethodID(), data.GetFieldCode(), data.GetFieldValue())
+	if err != nil {
+		return status.Errorf(codes.Unknown, message.FailedUpdate("Contact Communication Method", err))
+	}
 
-		rows, _ := result.RowsAffected()
-		if rows == 0 {
-			return status.Errorf(codes.NotFound, message.DoesNotExist("Contact Communication Method"))
-		}
+	rows, _ := result.RowsAffected()
+	if rows == 0 {
+		return status.Errorf(codes.NotFound, message.DoesNotExist("Contact Communication Method Field"))
 	}
 
 	return nil

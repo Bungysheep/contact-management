@@ -50,7 +50,7 @@ func (mr *MockIContactCommunicationMethodFieldRepositoryMockRecorder) DoRead(arg
 }
 
 // DoInsert mocks base method
-func (m *MockIContactCommunicationMethodFieldRepository) DoInsert(arg0 context.Context, arg1 []*contactcommunicationmethodfield.ContactCommunicationMethodField) error {
+func (m *MockIContactCommunicationMethodFieldRepository) DoInsert(arg0 context.Context, arg1 *contactcommunicationmethodfield.ContactCommunicationMethodField) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "DoInsert", arg0, arg1)
 	ret0, _ := ret[0].(error)
@@ -64,7 +64,7 @@ func (mr *MockIContactCommunicationMethodFieldRepositoryMockRecorder) DoInsert(a
 }
 
 // DoUpdate mocks base method
-func (m *MockIContactCommunicationMethodFieldRepository) DoUpdate(arg0 context.Context, arg1 []*contactcommunicationmethodfield.ContactCommunicationMethodField) error {
+func (m *MockIContactCommunicationMethodFieldRepository) DoUpdate(arg0 context.Context, arg1 *contactcommunicationmethodfield.ContactCommunicationMethodField) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "DoUpdate", arg0, arg1)
 	ret0, _ := ret[0].(error)
