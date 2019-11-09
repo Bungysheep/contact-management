@@ -11,9 +11,7 @@ message ContactCommunicationMethodField {
 
     int64 contact_communication_method_id = 3;
 
-    string communication_method_code = 4;
+    string field_code = 4;
 
-    string field_code = 5;
-
-    string field_value = 6;
+    string field_value = 5;
 }

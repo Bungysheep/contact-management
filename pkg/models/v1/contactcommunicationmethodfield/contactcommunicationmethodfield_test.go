@@ -14,7 +14,6 @@ func TestCreateContactCommunicationMethodField(t *testing.T) {
 	contactCommMethodField.ContactSystemCode = "CNTSYS001"
 	contactCommMethodField.ContactID = 1
 	contactCommMethodField.ContactCommunicationMethodID = 1
-	contactCommMethodField.CommunicationMethodCode = "EMAIL"
 	contactCommMethodField.FieldCode = "EMAIL_ADDRESS"
 	contactCommMethodField.FieldValue = "test@gmail.com"
 
@@ -28,10 +27,6 @@ func TestCreateContactCommunicationMethodField(t *testing.T) {
 
 	if contactCommMethodField.GetContactCommunicationMethodID() != 1 {
 		t.Errorf("Expect contact communication method id %v, but got %v", 1, contactCommMethodField.GetContactCommunicationMethodID())
-	}
-
-	if contactCommMethodField.GetCommunicationMethodCode() != "EMAIL" {
-		t.Errorf("Expect communication method code %v, but got %v", "EMAIL", contactCommMethodField.GetCommunicationMethodCode())
 	}
 
 	if contactCommMethodField.GetFieldCode() != "EMAIL_ADDRESS" {

@@ -5,7 +5,6 @@ type ContactCommunicationMethodField struct {
 	ContactSystemCode            string
 	ContactID                    int64
 	ContactCommunicationMethodID int64
-	CommunicationMethodCode      string
 	FieldCode                    string
 	FieldValue                   string
 }
@@ -28,11 +27,6 @@ func (ccmf *ContactCommunicationMethodField) GetContactID() int64 {
 // GetContactCommunicationMethodID returns Contact Communication Method ID
 func (ccmf *ContactCommunicationMethodField) GetContactCommunicationMethodID() int64 {
 	return ccmf.ContactCommunicationMethodID
-}
-
-// GetCommunicationMethodCode returns Communication Method Code
-func (ccmf *ContactCommunicationMethodField) GetCommunicationMethodCode() string {
-	return ccmf.CommunicationMethodCode
 }
 
 // GetFieldCode returns Field Code
