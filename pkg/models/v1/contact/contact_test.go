@@ -9,7 +9,7 @@ func TestCreateContact(t *testing.T) {
 	contact := NewContact()
 
 	if contact == nil {
-		t.Errorf("Expect contact is not nil")
+		t.Fatalf("Expect contact is not nil")
 	}
 
 	timeNow := time.Now()

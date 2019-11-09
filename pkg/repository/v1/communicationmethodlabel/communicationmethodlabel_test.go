@@ -121,7 +121,9 @@ func doDeleteAll(ctx context.Context) func(t *testing.T) {
 
 func doReadFailCommunicationMethodLabel(ctx context.Context, input *communicationmethodlabelmodel.CommunicationMethodLabel) func(t *testing.T) {
 	return func(t *testing.T) {
-		expQuery := mock.ExpectPrepare("SELECT contact_system_code, communication_method_code, communication_method_label_code, caption FROM communication_method_label").ExpectQuery()
+		expQuery := mock.ExpectPrepare(
+			`SELECT contact_system_code, communication_method_code, communication_method_label_code, caption 
+			FROM communication_method_label`).ExpectQuery()
 		expQuery.WithArgs(input.GetContactSystemCode(), input.GetCommunicationMethodCode(), input.GetCommunicationMethodLabelCode()).WillReturnError(fmt.Errorf("DoRead communication method label failed"))
 
 		res, err := repo.DoRead(ctx, input.GetContactSystemCode(), input.GetCommunicationMethodCode(), input.GetCommunicationMethodLabelCode())
@@ -146,7 +148,9 @@ func doReadUnexistingCommunicationMethodLabel(ctx context.Context, input *commun
 	return func(t *testing.T) {
 		rows := sqlmock.NewRows([]string{"contact_system_code", "communication_method_code", "communication_method_label_code", "caption"})
 
-		expQuery := mock.ExpectPrepare("SELECT contact_system_code, communication_method_code, communication_method_label_code, caption FROM communication_method_label").ExpectQuery()
+		expQuery := mock.ExpectPrepare(
+			`SELECT contact_system_code, communication_method_code, communication_method_label_code, caption 
+			FROM communication_method_label`).ExpectQuery()
 		expQuery.WithArgs(input.GetContactSystemCode(), input.GetCommunicationMethodCode(), input.GetCommunicationMethodLabelCode()).WillReturnRows(rows)
 
 		res, err := repo.DoRead(ctx, input.GetContactSystemCode(), input.GetCommunicationMethodCode(), input.GetCommunicationMethodLabelCode())
@@ -173,7 +177,9 @@ func doReadRowErrorCommunicationMethodLabel(ctx context.Context, input *communic
 			AddRow(input.GetContactSystemCode(), input.GetCommunicationMethodCode(), input.GetCommunicationMethodLabelCode(), input.GetCaption()).
 			RowError(0, fmt.Errorf("DoRead row error"))
 
-		expQuery := mock.ExpectPrepare("SELECT contact_system_code, communication_method_code, communication_method_label_code, caption FROM communication_method_label").ExpectQuery()
+		expQuery := mock.ExpectPrepare(
+			`SELECT contact_system_code, communication_method_code, communication_method_label_code, caption 
+			FROM communication_method_label`).ExpectQuery()
 		expQuery.WithArgs(input.GetContactSystemCode(), input.GetCommunicationMethodCode(), input.GetCommunicationMethodLabelCode()).WillReturnRows(rows)
 
 		res, err := repo.DoRead(ctx, input.GetContactSystemCode(), input.GetCommunicationMethodCode(), input.GetCommunicationMethodLabelCode())
@@ -199,16 +205,18 @@ func doReadExistingCommunicationMethodLabel(ctx context.Context, input *communic
 		rows := sqlmock.NewRows([]string{"contact_system_code", "communication_method_code", "communication_method_label_code", "caption"}).
 			AddRow(input.GetContactSystemCode(), input.GetCommunicationMethodCode(), input.GetCommunicationMethodLabelCode(), input.GetCaption())
 
-		expQuery := mock.ExpectPrepare("SELECT contact_system_code, communication_method_code, communication_method_label_code, caption FROM communication_method_label").ExpectQuery()
+		expQuery := mock.ExpectPrepare(
+			`SELECT contact_system_code, communication_method_code, communication_method_label_code, caption 
+			FROM communication_method_label`).ExpectQuery()
 		expQuery.WithArgs(input.GetContactSystemCode(), input.GetCommunicationMethodCode(), input.GetCommunicationMethodLabelCode()).WillReturnRows(rows)
 
 		res, err := repo.DoRead(ctx, input.GetContactSystemCode(), input.GetCommunicationMethodCode(), input.GetCommunicationMethodLabelCode())
 		if err != nil {
-			t.Errorf("Failed to read communication method label: %v", err)
+			t.Fatalf("Failed to read communication method label: %v", err)
 		}
 
 		if res == nil {
-			t.Errorf("Expect communication method label is not nil")
+			t.Fatalf("Expect communication method label is not nil")
 		}
 
 		if res.GetContactSystemCode() != input.GetContactSystemCode() {
@@ -231,7 +239,9 @@ func doReadExistingCommunicationMethodLabel(ctx context.Context, input *communic
 
 func doReadAllFailCommunicationMethodLabels(ctx context.Context, input *communicationmethodlabelmodel.CommunicationMethodLabel) func(t *testing.T) {
 	return func(t *testing.T) {
-		expQuery := mock.ExpectPrepare("SELECT contact_system_code, communication_method_code, communication_method_label_code, caption FROM communication_method_label").ExpectQuery()
+		expQuery := mock.ExpectPrepare(
+			`SELECT contact_system_code, communication_method_code, communication_method_label_code, caption 
+			FROM communication_method_label`).ExpectQuery()
 		expQuery.WithArgs(input.GetContactSystemCode(), input.GetCommunicationMethodCode()).WillReturnError(fmt.Errorf("DoReadAll communication method label failed"))
 
 		res, err := repo.DoReadAll(ctx, input.GetContactSystemCode(), input.GetCommunicationMethodCode())
@@ -246,6 +256,10 @@ func doReadAllFailCommunicationMethodLabels(ctx context.Context, input *communic
 			t.Errorf("Expect error is not nil")
 		}
 
+		if res == nil {
+			t.Fatalf("Expect communication method labels is not nil")
+		}
+
 		if len(res) != 0 {
 			t.Errorf("Expect response is nil")
 		}
@@ -256,7 +270,9 @@ func doReadAllUnexistingCommunicationMethodLabels(ctx context.Context, input *co
 	return func(t *testing.T) {
 		rows := sqlmock.NewRows([]string{"contact_system_code", "communication_method_code", "communication_method_label_code", "caption"})
 
-		expQuery := mock.ExpectPrepare("SELECT contact_system_code, communication_method_code, communication_method_label_code, caption FROM communication_method_label").ExpectQuery()
+		expQuery := mock.ExpectPrepare(
+			`SELECT contact_system_code, communication_method_code, communication_method_label_code, caption 
+			FROM communication_method_label`).ExpectQuery()
 		expQuery.WithArgs(input.GetContactSystemCode(), input.GetCommunicationMethodCode()).WillReturnRows(rows)
 
 		res, err := repo.DoReadAll(ctx, input.GetContactSystemCode(), input.GetCommunicationMethodCode())
@@ -272,7 +288,7 @@ func doReadAllUnexistingCommunicationMethodLabels(ctx context.Context, input *co
 		}
 
 		if res == nil {
-			t.Errorf("Expect communication method labels is not nil")
+			t.Fatalf("Expect communication method labels is not nil")
 		}
 
 		if len(res) != 0 {
@@ -289,7 +305,9 @@ func doReadAllRowErrorCommunicationMethodLabels(ctx context.Context, input *comm
 			AddRow(data[1].GetContactSystemCode(), data[1].GetCommunicationMethodCode(), data[1].GetCommunicationMethodLabelCode(), data[1].GetCaption()).
 			AddRow(data[2].GetContactSystemCode(), data[2].GetCommunicationMethodCode(), data[2].GetCommunicationMethodLabelCode(), data[2].GetCaption())
 
-		expQuery := mock.ExpectPrepare("SELECT contact_system_code, communication_method_code, communication_method_label_code, caption FROM communication_method_label").ExpectQuery()
+		expQuery := mock.ExpectPrepare(
+			`SELECT contact_system_code, communication_method_code, communication_method_label_code, caption 
+			FROM communication_method_label`).ExpectQuery()
 		expQuery.WithArgs(input.GetContactSystemCode(), input.GetCommunicationMethodCode()).WillReturnRows(rows)
 
 		res, err := repo.DoReadAll(ctx, input.GetContactSystemCode(), input.GetCommunicationMethodCode())
@@ -302,6 +320,10 @@ func doReadAllRowErrorCommunicationMethodLabels(ctx context.Context, input *comm
 			}
 		} else {
 			t.Errorf("Expect error is not nil")
+		}
+
+		if res == nil {
+			t.Fatalf("Expect communication method labels is not nil")
 		}
 
 		if len(res) != 0 {
@@ -317,16 +339,18 @@ func doReadAllExistingCommunicationMethodLabels(ctx context.Context, input *comm
 			AddRow(data[1].GetContactSystemCode(), data[1].GetCommunicationMethodCode(), data[1].GetCommunicationMethodLabelCode(), data[1].GetCaption()).
 			AddRow(data[2].GetContactSystemCode(), data[2].GetCommunicationMethodCode(), data[2].GetCommunicationMethodLabelCode(), data[2].GetCaption())
 
-		expQuery := mock.ExpectPrepare("SELECT contact_system_code, communication_method_code, communication_method_label_code, caption FROM communication_method_label").ExpectQuery()
+		expQuery := mock.ExpectPrepare(
+			`SELECT contact_system_code, communication_method_code, communication_method_label_code, caption 
+			FROM communication_method_label`).ExpectQuery()
 		expQuery.WithArgs(input.GetContactSystemCode(), input.GetCommunicationMethodCode()).WillReturnRows(rows)
 
 		res, err := repo.DoReadAll(ctx, input.GetContactSystemCode(), input.GetCommunicationMethodCode())
 		if err != nil {
-			t.Errorf("Failed to read all communication method labels: %v", err)
+			t.Fatalf("Failed to read all communication method labels: %v", err)
 		}
 
 		if res == nil {
-			t.Errorf("Expect communication method labels is not nil")
+			t.Fatalf("Expect communication method labels is not nil")
 		}
 
 		if len(res) < 3 {
@@ -377,7 +401,7 @@ func doSaveNewCommunicationMethodLabel(ctx context.Context, input *communication
 
 		err := repo.DoInsert(ctx, input)
 		if err != nil {
-			t.Errorf("Failed to save communication method label: %v", err)
+			t.Fatalf("Failed to save communication method label: %v", err)
 		}
 	}
 }
@@ -408,7 +432,7 @@ func doSaveExistingCommunicationMethodLabel(ctx context.Context, input *communic
 
 		err := repo.DoUpdate(ctx, input)
 		if err != nil {
-			t.Errorf("Failed to save communication method label: %v", err)
+			t.Fatalf("Failed to save communication method label: %v", err)
 		}
 	}
 }
@@ -458,7 +482,7 @@ func doDeleteExistingCommunicationMethodLabel(ctx context.Context, input *commun
 
 		err := repo.DoDelete(ctx, input.GetContactSystemCode(), input.GetCommunicationMethodCode(), input.GetCommunicationMethodLabelCode())
 		if err != nil {
-			t.Errorf("Failed to delete communication method label: %v", err)
+			t.Fatalf("Failed to delete communication method label: %v", err)
 		}
 	}
 }
@@ -506,7 +530,7 @@ func doDeleteAllExistingCommunicationMethodLabel(ctx context.Context, input *com
 
 		err := repo.DoDeleteAll(ctx, input.GetContactSystemCode(), input.GetCommunicationMethodCode())
 		if err != nil {
-			t.Errorf("Failed to delete all communication method labels: %v", err)
+			t.Fatalf("Failed to delete all communication method labels: %v", err)
 		}
 	}
 }

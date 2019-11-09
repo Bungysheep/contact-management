@@ -70,16 +70,19 @@ func doRead(ctx context.Context, input *contactsystemmodel.ContactSystem) func(t
 		rows := sqlmock.NewRows([]string{"contact_system_code", "description", "details", "status", "created_at", "modified_at", "vers"}).
 			AddRow(input.GetContactSystemCode(), input.GetDescription(), input.GetDetails(), input.GetStatus(), tmNow, tmNow, 1)
 
-		expQuery := mock.ExpectPrepare("SELECT contact_system_code, description, details, status, created_at, modified_at, vers FROM contact_system").ExpectQuery()
+		expQuery := mock.ExpectPrepare(
+			`SELECT contact_system_code, description, details, status, 
+				created_at, modified_at, vers 
+			FROM contact_system`).ExpectQuery()
 		expQuery.WithArgs(input.GetContactSystemCode()).WillReturnRows(rows)
 
 		resp, err := svc.DoRead(ctx, input.GetContactSystemCode())
 		if err != nil {
-			t.Errorf("Expect error is nil, but got %v", err)
+			t.Fatalf("Expect error is nil, but got %v", err)
 		}
 
 		if resp == nil {
-			t.Errorf("Expect contact system is not nil")
+			t.Fatalf("Expect contact system is not nil")
 		}
 
 		if resp.GetContactSystemCode() != input.GetContactSystemCode() {
@@ -109,16 +112,19 @@ func doReadAll(ctx context.Context, input *contactsystemmodel.ContactSystem) fun
 			AddRow(data[1].GetContactSystemCode(), data[1].GetDescription(), data[1].GetDetails(), data[1].GetStatus(), tmNow, tmNow, 1).
 			AddRow(data[2].GetContactSystemCode(), data[2].GetDescription(), data[2].GetDetails(), data[2].GetStatus(), tmNow, tmNow, 1)
 
-		expQuery := mock.ExpectPrepare("SELECT contact_system_code, description, details, status, created_at, modified_at, vers FROM contact_system").ExpectQuery()
+		expQuery := mock.ExpectPrepare(
+			`SELECT contact_system_code, description, details, status, 
+				created_at, modified_at, vers 
+			FROM contact_system`).ExpectQuery()
 		expQuery.WillReturnRows(rows)
 
 		resp, err := svc.DoReadAll(ctx)
 		if err != nil {
-			t.Errorf("Expect error is nil, but got %v", err)
+			t.Fatalf("Expect error is nil, but got %v", err)
 		}
 
 		if resp == nil {
-			t.Errorf("Expect contact system is not nil")
+			t.Fatalf("Expect contact system is not nil")
 		}
 
 		if len(resp) < 3 {
@@ -169,7 +175,7 @@ func doSaveNew(ctx context.Context, input *contactsystemmodel.ContactSystem) fun
 
 		err := svc.DoSave(ctx, input)
 		if err != nil {
-			t.Errorf("Expect error is nil, but got %v", err)
+			t.Fatalf("Expect error is nil, but got %v", err)
 		}
 	}
 }
@@ -189,7 +195,7 @@ func doSaveExisting(ctx context.Context, input *contactsystemmodel.ContactSystem
 
 		err := svc.DoSave(ctx, input)
 		if err != nil {
-			t.Errorf("Expect error is nil, but got %v", err)
+			t.Fatalf("Expect error is nil, but got %v", err)
 		}
 	}
 }
@@ -212,7 +218,9 @@ func doDeleteAnyCommunicationMethodReference(ctx context.Context, input *contact
 	return func(t *testing.T) {
 		rows := sqlmock.NewRows([]string{"exists"}).AddRow("1")
 
-		expQuery := mock.ExpectPrepare("SELECT 1 FROM communication_method").ExpectQuery()
+		expQuery := mock.ExpectPrepare(
+			`SELECT 1 
+			FROM communication_method`).ExpectQuery()
 		expQuery.WithArgs(input.GetContactSystemCode()).WillReturnRows(rows)
 
 		err := svc.DoDelete(ctx, input.GetContactSystemCode())
@@ -233,7 +241,9 @@ func doDeleteFailAnyCommunicationMethodReference(ctx context.Context, input *con
 	return func(t *testing.T) {
 		rows := sqlmock.NewRows([]string{"exists"}).AddRow("1").RowError(0, fmt.Errorf("AnyReference communication method row error"))
 
-		expQuery := mock.ExpectPrepare("SELECT 1 FROM communication_method").ExpectQuery()
+		expQuery := mock.ExpectPrepare(
+			`SELECT 1 
+			FROM communication_method`).ExpectQuery()
 		expQuery.WithArgs(input.GetContactSystemCode()).WillReturnRows(rows)
 
 		err := svc.DoDelete(ctx, input.GetContactSystemCode())
@@ -254,7 +264,9 @@ func doDeleteFailAnyContactReference(ctx context.Context, input *contactsystemmo
 	return func(t *testing.T) {
 		rows := sqlmock.NewRows([]string{"exists"}).AddRow("1").RowError(0, fmt.Errorf("AnyReference contact row error"))
 
-		expCommMethodQuery := mock.ExpectPrepare("SELECT 1 FROM communication_method").ExpectQuery()
+		expCommMethodQuery := mock.ExpectPrepare(
+			`SELECT 1 
+			FROM communication_method`).ExpectQuery()
 		expCommMethodQuery.WithArgs(input.GetContactSystemCode()).WillReturnRows(sqlmock.NewRows([]string{"exists"}))
 
 		expContactQuery := mock.ExpectPrepare("SELECT 1 FROM contact").ExpectQuery()
@@ -278,10 +290,14 @@ func doDeleteAnyContactReference(ctx context.Context, input *contactsystemmodel.
 	return func(t *testing.T) {
 		rows := sqlmock.NewRows([]string{"exists"}).AddRow("1")
 
-		expCommMethodQuery := mock.ExpectPrepare("SELECT 1 FROM communication_method").ExpectQuery()
+		expCommMethodQuery := mock.ExpectPrepare(
+			`SELECT 1 
+			FROM communication_method`).ExpectQuery()
 		expCommMethodQuery.WithArgs(input.GetContactSystemCode()).WillReturnRows(sqlmock.NewRows([]string{"exists"}))
 
-		expContactQuery := mock.ExpectPrepare("SELECT 1 FROM contact").ExpectQuery()
+		expContactQuery := mock.ExpectPrepare(
+			`SELECT 1 
+			FROM contact`).ExpectQuery()
 		expContactQuery.WithArgs(input.GetContactSystemCode()).WillReturnRows(rows)
 
 		err := svc.DoDelete(ctx, input.GetContactSystemCode())
@@ -300,10 +316,14 @@ func doDeleteAnyContactReference(ctx context.Context, input *contactsystemmodel.
 
 func doDeleteExisting(ctx context.Context, input *contactsystemmodel.ContactSystem) func(t *testing.T) {
 	return func(t *testing.T) {
-		expCommMethodQuery := mock.ExpectPrepare("SELECT 1 FROM communication_method").ExpectQuery()
+		expCommMethodQuery := mock.ExpectPrepare(
+			`SELECT 1 
+			FROM communication_method`).ExpectQuery()
 		expCommMethodQuery.WithArgs(input.GetContactSystemCode()).WillReturnRows(sqlmock.NewRows([]string{"exists"}))
 
-		expContactQuery := mock.ExpectPrepare("SELECT 1 FROM contact").ExpectQuery()
+		expContactQuery := mock.ExpectPrepare(
+			`SELECT 1 
+			FROM contact`).ExpectQuery()
 		expContactQuery.WithArgs(input.GetContactSystemCode()).WillReturnRows(sqlmock.NewRows([]string{"exists"}))
 
 		expQuery := mock.ExpectPrepare("DELETE FROM contact_system").ExpectExec()
@@ -311,7 +331,7 @@ func doDeleteExisting(ctx context.Context, input *contactsystemmodel.ContactSyst
 
 		err := svc.DoDelete(ctx, input.GetContactSystemCode())
 		if err != nil {
-			t.Errorf("Expect error is nil, but got %v", err)
+			t.Fatalf("Expect error is nil, but got %v", err)
 		}
 	}
 }

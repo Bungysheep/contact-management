@@ -9,7 +9,7 @@ func TestCreateAudit(t *testing.T) {
 	audit := NewAudit()
 
 	if audit == nil {
-		t.Errorf("Expect audit is not nil")
+		t.Fatalf("Expect audit is not nil")
 	}
 
 	timeNow := time.Now()

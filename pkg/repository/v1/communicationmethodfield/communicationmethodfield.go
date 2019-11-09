@@ -38,7 +38,13 @@ func (cmf *communicationMethodFieldRepository) DoRead(ctx context.Context, conta
 	}
 	defer conn.Close()
 
-	stmt, err := conn.PrepareContext(ctx, "SELECT contact_system_code, communication_method_code, field_code, caption, sequence, created_at, modified_at, vers FROM communication_method_field WHERE contact_system_code=$1 AND communication_method_code=$2 AND field_code=$3")
+	stmt, err := conn.PrepareContext(ctx,
+		`SELECT contact_system_code, communication_method_code, field_code, caption, sequence, 
+			created_at, modified_at, vers 
+		FROM communication_method_field 
+		WHERE contact_system_code=$1 
+			AND communication_method_code=$2 
+			AND field_code=$3`)
 	if err != nil {
 		return nil, status.Errorf(codes.Unknown, message.FailedPrepareRead("Communication Method Field", err))
 	}
@@ -80,7 +86,12 @@ func (cmf *communicationMethodFieldRepository) DoReadAll(ctx context.Context, co
 	}
 	defer conn.Close()
 
-	stmt, err := conn.PrepareContext(ctx, "SELECT contact_system_code, communication_method_code, field_code, caption, sequence, created_at, modified_at, vers FROM communication_method_field WHERE contact_system_code=$1 AND communication_method_code=$2")
+	stmt, err := conn.PrepareContext(ctx,
+		`SELECT contact_system_code, communication_method_code, field_code, caption, sequence, 
+			created_at, modified_at, vers 
+		FROM communication_method_field 
+		WHERE contact_system_code=$1 
+			AND communication_method_code=$2`)
 	if err != nil {
 		return result, status.Errorf(codes.Unknown, message.FailedPrepareRead("Communication Method Field", err))
 	}
@@ -128,7 +139,12 @@ func (cmf *communicationMethodFieldRepository) DoInsert(ctx context.Context, dat
 	}
 	defer conn.Close()
 
-	stmt, err := conn.PrepareContext(ctx, "INSERT INTO communication_method_field (contact_system_code, communication_method_code, field_code, caption, sequence, created_at, modified_at, vers) VALUES ($1, $2, $3, $4, $5, $6, $7, 1)")
+	stmt, err := conn.PrepareContext(ctx,
+		`INSERT INTO communication_method_field 
+			(contact_system_code, communication_method_code, field_code, caption, sequence, 
+			created_at, modified_at, vers) 
+		VALUES ($1, $2, $3, $4, $5, 
+			$6, $7, 1)`)
 	if err != nil {
 		return status.Errorf(codes.Unknown, message.FailedPrepareInsert("Communication Method Field", err))
 	}
@@ -153,7 +169,13 @@ func (cmf *communicationMethodFieldRepository) DoUpdate(ctx context.Context, dat
 	}
 	defer conn.Close()
 
-	stmt, err := conn.PrepareContext(ctx, "UPDATE communication_method_field SET caption=$4, sequence=$5, modified_at=$6, vers=vers+1 WHERE contact_system_code=$1 AND communication_method_code=$2 AND field_code=$3")
+	stmt, err := conn.PrepareContext(ctx,
+		`UPDATE communication_method_field 
+		SET caption=$4, sequence=$5, 
+			modified_at=$6, vers=vers+1 
+		WHERE contact_system_code=$1 
+			AND communication_method_code=$2 
+			AND field_code=$3`)
 	if err != nil {
 		return status.Errorf(codes.Unknown, message.FailedPrepareUpdate("Communication Method Field", err))
 	}
@@ -178,7 +200,11 @@ func (cmf *communicationMethodFieldRepository) DoDelete(ctx context.Context, con
 	}
 	defer conn.Close()
 
-	stmt, err := conn.PrepareContext(ctx, "DELETE FROM communication_method_field WHERE contact_system_code=$1 AND communication_method_code=$2 AND field_code=$3")
+	stmt, err := conn.PrepareContext(ctx,
+		`DELETE FROM communication_method_field 
+		WHERE contact_system_code=$1 
+			AND communication_method_code=$2 
+			AND field_code=$3`)
 	if err != nil {
 		return status.Errorf(codes.Unknown, message.FailedPrepareDelete("Communication Method Field", err))
 	}
@@ -203,7 +229,10 @@ func (cmf *communicationMethodFieldRepository) DoDeleteAll(ctx context.Context, 
 	}
 	defer conn.Close()
 
-	stmt, err := conn.PrepareContext(ctx, "DELETE FROM communication_method_field WHERE contact_system_code=$1 AND communication_method_code=$2")
+	stmt, err := conn.PrepareContext(ctx,
+		`DELETE FROM communication_method_field 
+		WHERE contact_system_code=$1 
+			AND communication_method_code=$2`)
 	if err != nil {
 		return status.Errorf(codes.Unknown, message.FailedPrepareDelete("All Communication Method Fields", err))
 	}

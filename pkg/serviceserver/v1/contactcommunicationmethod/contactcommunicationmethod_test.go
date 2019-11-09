@@ -101,11 +101,11 @@ func doRead(ctx context.Context, input *contactcommunicationmethodmodel.ContactC
 
 		resp, err := svcServer.DoRead(ctx, &contactcommunicationmethodapi.DoReadContactCommunicationMethodRequest{ContactSystemCode: input.GetContactSystemCode(), ContactId: input.GetContactID(), ContactCommunicationMethodId: input.GetContactCommunicationMethodID()})
 		if err != nil {
-			t.Errorf("Expect error is nil, but got %v", err)
+			t.Fatalf("Expect error is nil, but got %v", err)
 		}
 
 		if resp.GetContactCommunicationMethod() == nil {
-			t.Errorf("Expect contact communication method is not nil")
+			t.Fatalf("Expect contact communication method is not nil")
 		}
 
 		if resp.GetContactCommunicationMethod().GetContactSystemCode() != input.GetContactSystemCode() {
@@ -159,11 +159,11 @@ func doReadAll(ctx context.Context, input *contactcommunicationmethodmodel.Conta
 
 		resp, err := svcServer.DoReadAll(ctx, &contactcommunicationmethodapi.DoReadAllContactCommunicationMethodRequest{ContactSystemCode: input.GetContactSystemCode(), ContactId: input.GetContactID()})
 		if err != nil {
-			t.Errorf("Expect error is nil, but got %v", err)
+			t.Fatalf("Expect error is nil, but got %v", err)
 		}
 
 		if resp.GetContactCommunicationMethod() == nil {
-			t.Errorf("Expect contact communication method is not nil")
+			t.Fatalf("Expect contact communication method is not nil")
 		}
 
 		if len(resp.GetContactCommunicationMethod()) < 3 {
@@ -230,7 +230,7 @@ func doSave(ctx context.Context, input *contactcommunicationmethodmodel.ContactC
 
 		resp, err := svcServer.DoSave(ctx, &contactcommunicationmethodapi.DoSaveContactCommunicationMethodRequest{ContactCommunicationMethod: contactCommMethod})
 		if err != nil {
-			t.Errorf("Expect error is nil, but got %v", err)
+			t.Fatalf("Expect error is nil, but got %v", err)
 		}
 
 		if !resp.GetResult() {
@@ -252,7 +252,7 @@ func doDelete(ctx context.Context, input *contactcommunicationmethodmodel.Contac
 
 		resp, err := svcServer.DoDelete(ctx, &contactcommunicationmethodapi.DoDeleteContactCommunicationMethodRequest{ContactSystemCode: input.GetContactSystemCode(), ContactId: input.GetContactID(), ContactCommunicationMethodId: input.GetContactCommunicationMethodID()})
 		if err != nil {
-			t.Errorf("Expect error is nil, but got %v", err)
+			t.Fatalf("Expect error is nil, but got %v", err)
 		}
 
 		if !resp.GetResult() {

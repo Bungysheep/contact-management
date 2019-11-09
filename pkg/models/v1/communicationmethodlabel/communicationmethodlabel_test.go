@@ -6,7 +6,7 @@ func TestCreateCommunicationMethodLabel(t *testing.T) {
 	commMethodLabel := NewCommunicationMethodLabel()
 
 	if commMethodLabel == nil {
-		t.Errorf("Expect communication method label is not nil")
+		t.Fatalf("Expect communication method label is not nil")
 	}
 
 	commMethodLabel.ContactSystemCode = "CNTSYS001"

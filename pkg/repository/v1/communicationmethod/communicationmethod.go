@@ -38,7 +38,12 @@ func (cm *communicationMethodRepository) DoRead(ctx context.Context, contactSyst
 	}
 	defer conn.Close()
 
-	stmt, err := conn.PrepareContext(ctx, "SELECT contact_system_code, communication_method_code, description, details, status, format_field, created_at, modified_at, vers FROM communication_method WHERE contact_system_code=$1 AND communication_method_code=$2")
+	stmt, err := conn.PrepareContext(ctx,
+		`SELECT contact_system_code, communication_method_code, description, details, status, format_field, 
+			created_at, modified_at, vers 
+		FROM communication_method 
+		WHERE contact_system_code=$1 
+			AND communication_method_code=$2`)
 	if err != nil {
 		return nil, status.Errorf(codes.Unknown, message.FailedPrepareRead("Communication Method", err))
 	}
@@ -81,7 +86,11 @@ func (cm *communicationMethodRepository) DoReadAll(ctx context.Context, contactS
 	}
 	defer conn.Close()
 
-	stmt, err := conn.PrepareContext(ctx, "SELECT contact_system_code, communication_method_code, description, details, status, format_field, created_at, modified_at, vers FROM communication_method WHERE contact_system_code=$1")
+	stmt, err := conn.PrepareContext(ctx,
+		`SELECT contact_system_code, communication_method_code, description, details, status, format_field, 
+			created_at, modified_at, vers 
+		FROM communication_method 
+		WHERE contact_system_code=$1`)
 	if err != nil {
 		return result, status.Errorf(codes.Unknown, message.FailedPrepareRead("Communication Method", err))
 	}
@@ -130,7 +139,12 @@ func (cm *communicationMethodRepository) DoInsert(ctx context.Context, data *com
 	}
 	defer conn.Close()
 
-	stmt, err := conn.PrepareContext(ctx, "INSERT INTO communication_method (contact_system_code, communication_method_code, description, details, status, format_field, created_at, modified_at, vers) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, 1)")
+	stmt, err := conn.PrepareContext(ctx,
+		`INSERT INTO communication_method 
+			(contact_system_code, communication_method_code, description, details, status, format_field, 
+			created_at, modified_at, vers) 
+		VALUES ($1, $2, $3, $4, $5, $6, 
+			$7, $8, 1)`)
 	if err != nil {
 		return status.Errorf(codes.Unknown, message.FailedPrepareInsert("Communication Method", err))
 	}
@@ -155,7 +169,12 @@ func (cm *communicationMethodRepository) DoUpdate(ctx context.Context, data *com
 	}
 	defer conn.Close()
 
-	stmt, err := conn.PrepareContext(ctx, "UPDATE communication_method SET description=$3, details=$4, status=$5, format_field=$6, modified_at=$7, vers=vers+1 WHERE contact_system_code=$1 AND communication_method_code=$2")
+	stmt, err := conn.PrepareContext(ctx,
+		`UPDATE communication_method 
+		SET description=$3, details=$4, status=$5, format_field=$6, 
+			modified_at=$7, vers=vers+1 
+		WHERE contact_system_code=$1 
+			AND communication_method_code=$2`)
 	if err != nil {
 		return status.Errorf(codes.Unknown, message.FailedPrepareUpdate("Communication Method", err))
 	}
@@ -180,7 +199,10 @@ func (cm *communicationMethodRepository) DoDelete(ctx context.Context, contactSy
 	}
 	defer conn.Close()
 
-	stmt, err := conn.PrepareContext(ctx, "DELETE FROM communication_method WHERE contact_system_code=$1 AND communication_method_code=$2")
+	stmt, err := conn.PrepareContext(ctx,
+		`DELETE FROM communication_method 
+		WHERE contact_system_code=$1 
+			AND communication_method_code=$2`)
 	if err != nil {
 		return status.Errorf(codes.Unknown, message.FailedPrepareDelete("Communication Method", err))
 	}
@@ -205,7 +227,10 @@ func (cm *communicationMethodRepository) AnyReference(ctx context.Context, conta
 	}
 	defer conn.Close()
 
-	stmt, err := conn.PrepareContext(ctx, "SELECT 1 FROM communication_method WHERE contact_system_code=$1")
+	stmt, err := conn.PrepareContext(ctx,
+		`SELECT 1 
+		FROM communication_method 
+		WHERE contact_system_code=$1`)
 	if err != nil {
 		return false, status.Errorf(codes.Unknown, message.FailedPrepareRead("Communication Method", err))
 	}

@@ -9,7 +9,7 @@ func TestCreateCommunicationMethod(t *testing.T) {
 	commMethod := NewCommunicationMethod()
 
 	if commMethod == nil {
-		t.Errorf("Expect communication method is not nil")
+		t.Fatalf("Expect communication method is not nil")
 	}
 
 	timeNow := time.Now()

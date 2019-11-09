@@ -111,7 +111,10 @@ func doDelete(ctx context.Context) func(t *testing.T) {
 
 func doReadFailContactSystem(ctx context.Context, input *contactsystemmodel.ContactSystem) func(t *testing.T) {
 	return func(t *testing.T) {
-		expQuery := mock.ExpectPrepare("SELECT contact_system_code, description, details, status, created_at, modified_at, vers FROM contact_system").ExpectQuery()
+		expQuery := mock.ExpectPrepare(
+			`SELECT contact_system_code, description, details, status, 
+				created_at, modified_at, vers 
+			FROM contact_system`).ExpectQuery()
 		expQuery.WithArgs(input.GetContactSystemCode()).WillReturnError(fmt.Errorf("DoRead contact system failed"))
 
 		res, err := repo.DoRead(ctx, input.GetContactSystemCode())
@@ -136,7 +139,10 @@ func doReadUnexistingContactSystem(ctx context.Context, input *contactsystemmode
 	return func(t *testing.T) {
 		rows := sqlmock.NewRows([]string{"contact_system_code", "description", "details", "status", "created_at", "modified_at", "vers"})
 
-		expQuery := mock.ExpectPrepare("SELECT contact_system_code, description, details, status, created_at, modified_at, vers FROM contact_system").ExpectQuery()
+		expQuery := mock.ExpectPrepare(
+			`SELECT contact_system_code, description, details, status, 
+				created_at, modified_at, vers 
+			FROM contact_system`).ExpectQuery()
 		expQuery.WithArgs(input.GetContactSystemCode()).WillReturnRows(rows)
 
 		res, err := repo.DoRead(ctx, input.GetContactSystemCode())
@@ -165,7 +171,10 @@ func doReadRowErrorContactSystem(ctx context.Context, input *contactsystemmodel.
 			AddRow(input.GetContactSystemCode(), input.GetDescription(), input.GetDetails(), input.GetStatus(), tmNow, tmNow, 1).
 			RowError(0, fmt.Errorf("DoRead row error"))
 
-		expQuery := mock.ExpectPrepare("SELECT contact_system_code, description, details, status, created_at, modified_at, vers FROM contact_system").ExpectQuery()
+		expQuery := mock.ExpectPrepare(
+			`SELECT contact_system_code, description, details, status, 
+				created_at, modified_at, vers 
+			FROM contact_system`).ExpectQuery()
 		expQuery.WithArgs(input.GetContactSystemCode()).WillReturnRows(rows)
 
 		res, err := repo.DoRead(ctx, input.GetContactSystemCode())
@@ -193,16 +202,19 @@ func doReadExistingContactSystem(ctx context.Context, input *contactsystemmodel.
 		rows := sqlmock.NewRows([]string{"contact_system_code", "description", "details", "status", "created_at", "modified_at", "vers"}).
 			AddRow(input.GetContactSystemCode(), input.GetDescription(), input.GetDetails(), input.GetStatus(), tmNow, tmNow, 1)
 
-		expQuery := mock.ExpectPrepare("SELECT contact_system_code, description, details, status, created_at, modified_at, vers FROM contact_system").ExpectQuery()
+		expQuery := mock.ExpectPrepare(
+			`SELECT contact_system_code, description, details, status, 
+				created_at, modified_at, vers 
+			FROM contact_system`).ExpectQuery()
 		expQuery.WithArgs(input.GetContactSystemCode()).WillReturnRows(rows)
 
 		res, err := repo.DoRead(ctx, input.GetContactSystemCode())
 		if err != nil {
-			t.Errorf("Failed to read contact system: %v", err)
+			t.Fatalf("Failed to read contact system: %v", err)
 		}
 
 		if res == nil {
-			t.Errorf("Expect contact system is not nil")
+			t.Fatalf("Expect contact system is not nil")
 		}
 
 		if res.GetContactSystemCode() != input.GetContactSystemCode() {
@@ -225,7 +237,10 @@ func doReadExistingContactSystem(ctx context.Context, input *contactsystemmodel.
 
 func doReadAllFailContactSystems(ctx context.Context, input *contactsystemmodel.ContactSystem) func(t *testing.T) {
 	return func(t *testing.T) {
-		expQuery := mock.ExpectPrepare("SELECT contact_system_code, description, details, status, created_at, modified_at, vers FROM contact_system").ExpectQuery()
+		expQuery := mock.ExpectPrepare(
+			`SELECT contact_system_code, description, details, status, 
+				created_at, modified_at, vers 
+			FROM contact_system`).ExpectQuery()
 		expQuery.WillReturnError(fmt.Errorf("DoReadAll contact system failed"))
 
 		res, err := repo.DoReadAll(ctx)
@@ -240,6 +255,10 @@ func doReadAllFailContactSystems(ctx context.Context, input *contactsystemmodel.
 			t.Errorf("Expect error is not nil")
 		}
 
+		if res == nil {
+			t.Fatalf("Expect contact systems is not nil")
+		}
+
 		if len(res) != 0 {
 			t.Errorf("Expect response is nil")
 		}
@@ -250,7 +269,10 @@ func doReadAllUnexistingContactSystems(ctx context.Context, input *contactsystem
 	return func(t *testing.T) {
 		rows := sqlmock.NewRows([]string{"contact_system_code", "description", "details", "status", "created_at", "modified_at", "vers"})
 
-		expQuery := mock.ExpectPrepare("SELECT contact_system_code, description, details, status, created_at, modified_at, vers FROM contact_system").ExpectQuery()
+		expQuery := mock.ExpectPrepare(
+			`SELECT contact_system_code, description, details, status, 
+				created_at, modified_at, vers 
+			FROM contact_system`).ExpectQuery()
 		expQuery.WillReturnRows(rows)
 
 		res, err := repo.DoReadAll(ctx)
@@ -266,7 +288,7 @@ func doReadAllUnexistingContactSystems(ctx context.Context, input *contactsystem
 		}
 
 		if res == nil {
-			t.Errorf("Expect contact systems is not nil")
+			t.Fatalf("Expect contact systems is not nil")
 		}
 
 		if len(res) != 0 {
@@ -285,7 +307,10 @@ func doReadAllRowErrorContactSystems(ctx context.Context, input *contactsystemmo
 			AddRow(data[1].GetContactSystemCode(), data[1].GetDescription(), data[1].GetDetails(), data[1].GetStatus(), tmNow, tmNow, 1).
 			AddRow(data[2].GetContactSystemCode(), data[2].GetDescription(), data[2].GetDetails(), data[2].GetStatus(), tmNow, tmNow, 1)
 
-		expQuery := mock.ExpectPrepare("SELECT contact_system_code, description, details, status, created_at, modified_at, vers FROM contact_system").ExpectQuery()
+		expQuery := mock.ExpectPrepare(
+			`SELECT contact_system_code, description, details, status, 
+				created_at, modified_at, vers 
+			FROM contact_system`).ExpectQuery()
 		expQuery.WillReturnRows(rows)
 
 		res, err := repo.DoReadAll(ctx)
@@ -298,6 +323,10 @@ func doReadAllRowErrorContactSystems(ctx context.Context, input *contactsystemmo
 			}
 		} else {
 			t.Errorf("Expect error is not nil")
+		}
+
+		if res == nil {
+			t.Fatalf("Expect contact systems is not nil")
 		}
 
 		if len(res) != 0 {
@@ -315,16 +344,19 @@ func doReadAllExistingContactSystems(ctx context.Context, input *contactsystemmo
 			AddRow(data[1].GetContactSystemCode(), data[1].GetDescription(), data[1].GetDetails(), data[1].GetStatus(), tmNow, tmNow, 1).
 			AddRow(data[2].GetContactSystemCode(), data[2].GetDescription(), data[2].GetDetails(), data[2].GetStatus(), tmNow, tmNow, 1)
 
-		expQuery := mock.ExpectPrepare("SELECT contact_system_code, description, details, status, created_at, modified_at, vers FROM contact_system").ExpectQuery()
+		expQuery := mock.ExpectPrepare(
+			`SELECT contact_system_code, description, details, status, 
+				created_at, modified_at, vers 
+			FROM contact_system`).ExpectQuery()
 		expQuery.WillReturnRows(rows)
 
 		res, err := repo.DoReadAll(ctx)
 		if err != nil {
-			t.Errorf("Failed to read all contact systems: %v", err)
+			t.Fatalf("Failed to read all contact systems: %v", err)
 		}
 
 		if res == nil {
-			t.Errorf("Expect contact systems is not nil")
+			t.Fatalf("Expect contact systems is not nil")
 		}
 
 		if len(res) < 3 {
@@ -391,7 +423,7 @@ func doSaveNewContactSystem(ctx context.Context, input *contactsystemmodel.Conta
 
 		err := repo.DoInsert(ctx, input)
 		if err != nil {
-			t.Errorf("Failed to save contact system: %v", err)
+			t.Fatalf("Failed to save contact system: %v", err)
 		}
 	}
 }
@@ -438,7 +470,7 @@ func doSaveExistingContactSystem(ctx context.Context, input *contactsystemmodel.
 
 		err := repo.DoUpdate(ctx, input)
 		if err != nil {
-			t.Errorf("Failed to save contact system: %v", err)
+			t.Fatalf("Failed to save contact system: %v", err)
 		}
 	}
 }
@@ -488,7 +520,7 @@ func doDeleteExistingContactSystem(ctx context.Context, input *contactsystemmode
 
 		err := repo.DoDelete(ctx, input.GetContactSystemCode())
 		if err != nil {
-			t.Errorf("Failed to delete contact system: %v", err)
+			t.Fatalf("Failed to delete contact system: %v", err)
 		}
 	}
 }

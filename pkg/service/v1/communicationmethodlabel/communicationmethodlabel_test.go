@@ -66,16 +66,18 @@ func doRead(ctx context.Context, input *communicationmethodlabelmodel.Communicat
 		rows := sqlmock.NewRows([]string{"contact_system_code", "communication_method_code", "communication_method_label_code", "caption"}).
 			AddRow(input.GetContactSystemCode(), input.GetCommunicationMethodCode(), input.GetCommunicationMethodLabelCode(), input.GetCaption())
 
-		expQuery := mock.ExpectPrepare("SELECT contact_system_code, communication_method_code, communication_method_label_code, caption FROM communication_method_label").ExpectQuery()
+		expQuery := mock.ExpectPrepare(
+			`SELECT contact_system_code, communication_method_code, communication_method_label_code, caption 
+			FROM communication_method_label`).ExpectQuery()
 		expQuery.WithArgs(input.GetContactSystemCode(), input.GetCommunicationMethodCode(), input.GetCommunicationMethodLabelCode()).WillReturnRows(rows)
 
 		resp, err := svc.DoRead(ctx, input.GetContactSystemCode(), input.GetCommunicationMethodCode(), input.GetCommunicationMethodLabelCode())
 		if err != nil {
-			t.Errorf("Expect error is nil, but got %v", err)
+			t.Fatalf("Expect error is nil, but got %v", err)
 		}
 
 		if resp == nil {
-			t.Errorf("Expect communication method is not nil")
+			t.Fatalf("Expect communication method is not nil")
 		}
 
 		if resp.GetContactSystemCode() != input.GetContactSystemCode() {
@@ -103,16 +105,18 @@ func doReadAll(ctx context.Context, input *communicationmethodlabelmodel.Communi
 			AddRow(data[1].GetContactSystemCode(), data[1].GetCommunicationMethodCode(), data[1].GetCommunicationMethodLabelCode(), data[1].GetCaption()).
 			AddRow(data[2].GetContactSystemCode(), data[2].GetCommunicationMethodCode(), data[2].GetCommunicationMethodLabelCode(), data[2].GetCaption())
 
-		expQuery := mock.ExpectPrepare("SELECT contact_system_code, communication_method_code, communication_method_label_code, caption FROM communication_method_label").ExpectQuery()
+		expQuery := mock.ExpectPrepare(
+			`SELECT contact_system_code, communication_method_code, communication_method_label_code, caption 
+			FROM communication_method_label`).ExpectQuery()
 		expQuery.WithArgs(input.GetContactSystemCode(), input.GetCommunicationMethodCode()).WillReturnRows(rows)
 
 		resp, err := svc.DoReadAll(ctx, input.GetContactSystemCode(), input.GetCommunicationMethodCode())
 		if err != nil {
-			t.Errorf("Expect error is nil, but got %v", err)
+			t.Fatalf("Expect error is nil, but got %v", err)
 		}
 
 		if resp == nil {
-			t.Errorf("Expect communication method is not nil")
+			t.Fatalf("Expect communication method is not nil")
 		}
 
 		if len(resp) < 3 {
@@ -151,7 +155,10 @@ func doSaveInvalidCommunicationMethod(ctx context.Context, input *communicationm
 	return func(t *testing.T) {
 		rows := sqlmock.NewRows([]string{"contact_system_code", "communication_method_code", "description", "details", "status", "format_field", "created_at", "modified_at", "vers"})
 
-		expQuery := mock.ExpectPrepare("SELECT contact_system_code, communication_method_code, description, details, status, format_field, created_at, modified_at, vers FROM communication_method").ExpectQuery()
+		expQuery := mock.ExpectPrepare(
+			`SELECT contact_system_code, communication_method_code, description, details, status, format_field, 
+				created_at, modified_at, vers 
+			FROM communication_method`).ExpectQuery()
 		expQuery.WithArgs(input.GetContactSystemCode(), input.GetCommunicationMethodCode()).WillReturnRows(rows)
 
 		err := svc.DoSave(ctx, input)
@@ -173,7 +180,10 @@ func doSaveNew(ctx context.Context, input *communicationmethodlabelmodel.Communi
 		rows := sqlmock.NewRows([]string{"contact_system_code", "communication_method_code", "description", "details", "status", "format_field", "created_at", "modified_at", "vers"}).
 			AddRow(input.GetContactSystemCode(), input.GetCommunicationMethodCode(), "", "", "", "", tmNow, tmNow, 1)
 
-		expQuery := mock.ExpectPrepare("SELECT contact_system_code, communication_method_code, description, details, status, format_field, created_at, modified_at, vers FROM communication_method").ExpectQuery()
+		expQuery := mock.ExpectPrepare(
+			`SELECT contact_system_code, communication_method_code, description, details, status, format_field, 
+				created_at, modified_at, vers 
+			FROM communication_method`).ExpectQuery()
 		expQuery.WithArgs(input.GetContactSystemCode(), input.GetCommunicationMethodCode()).WillReturnRows(rows)
 
 		expUpdQuery := mock.ExpectPrepare("UPDATE communication_method_label").ExpectExec()
@@ -184,7 +194,7 @@ func doSaveNew(ctx context.Context, input *communicationmethodlabelmodel.Communi
 
 		err := svc.DoSave(ctx, input)
 		if err != nil {
-			t.Errorf("Expect error is nil, but got %v", err)
+			t.Fatalf("Expect error is nil, but got %v", err)
 		}
 	}
 }
@@ -196,7 +206,10 @@ func doSaveExisting(ctx context.Context, input *communicationmethodlabelmodel.Co
 		rows := sqlmock.NewRows([]string{"contact_system_code", "communication_method_code", "description", "details", "status", "format_field", "created_at", "modified_at", "vers"}).
 			AddRow(input.GetContactSystemCode(), input.GetCommunicationMethodCode(), "", "", "", "", tmNow, tmNow, 1)
 
-		expQuery := mock.ExpectPrepare("SELECT contact_system_code, communication_method_code, description, details, status, format_field, created_at, modified_at, vers FROM communication_method").ExpectQuery()
+		expQuery := mock.ExpectPrepare(
+			`SELECT contact_system_code, communication_method_code, description, details, status, format_field, 
+				created_at, modified_at, vers 
+			FROM communication_method`).ExpectQuery()
 		expQuery.WithArgs(input.GetContactSystemCode(), input.GetCommunicationMethodCode()).WillReturnRows(rows)
 
 		expUpdQuery := mock.ExpectPrepare("UPDATE communication_method_label").ExpectExec()
@@ -204,7 +217,7 @@ func doSaveExisting(ctx context.Context, input *communicationmethodlabelmodel.Co
 
 		err := svc.DoSave(ctx, input)
 		if err != nil {
-			t.Errorf("Expect error is nil, but got %v", err)
+			t.Fatalf("Expect error is nil, but got %v", err)
 		}
 	}
 }
@@ -216,7 +229,7 @@ func doDelete(ctx context.Context, input *communicationmethodlabelmodel.Communic
 
 		err := svc.DoDelete(ctx, input.GetContactSystemCode(), input.GetCommunicationMethodCode(), input.GetCommunicationMethodLabelCode())
 		if err != nil {
-			t.Errorf("Expect error is nil, but got %v", err)
+			t.Fatalf("Expect error is nil, but got %v", err)
 		}
 	}
 }

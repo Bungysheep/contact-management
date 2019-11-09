@@ -88,11 +88,11 @@ func doRead(ctx context.Context, input *contactmodel.Contact) func(t *testing.T)
 
 		resp, err := svcServer.DoRead(ctx, &contactapi.DoReadContactRequest{ContactSystemCode: input.GetContactSystemCode(), ContactId: input.GetContactID()})
 		if err != nil {
-			t.Errorf("Expect error is nil, but got %v", err)
+			t.Fatalf("Expect error is nil, but got %v", err)
 		}
 
 		if resp.GetContact() == nil {
-			t.Errorf("Expect contact is not nil")
+			t.Fatalf("Expect contact is not nil")
 		}
 
 		if resp.GetContact().GetContactSystemCode() != input.GetContactSystemCode() {
@@ -130,11 +130,11 @@ func doReadAll(ctx context.Context, input *contactmodel.Contact) func(t *testing
 
 		resp, err := svcServer.DoReadAll(ctx, &contactapi.DoReadAllContactRequest{ContactSystemCode: input.GetContactSystemCode()})
 		if err != nil {
-			t.Errorf("Expect error is nil, but got %v", err)
+			t.Fatalf("Expect error is nil, but got %v", err)
 		}
 
 		if resp.GetContact() == nil {
-			t.Errorf("Expect contact is not nil")
+			t.Fatalf("Expect contact is not nil")
 		}
 
 		if len(resp.GetContact()) < 3 {
@@ -186,7 +186,7 @@ func doSave(ctx context.Context, input *contactmodel.Contact) func(t *testing.T)
 
 		resp, err := svcServer.DoSave(ctx, &contactapi.DoSaveContactRequest{Contact: contact})
 		if err != nil {
-			t.Errorf("Expect error is nil, but got %v", err)
+			t.Fatalf("Expect error is nil, but got %v", err)
 		}
 
 		if !resp.GetResult() {
@@ -208,7 +208,7 @@ func doDelete(ctx context.Context, input *contactmodel.Contact) func(t *testing.
 
 		resp, err := svcServer.DoDelete(ctx, &contactapi.DoDeleteContactRequest{ContactSystemCode: input.GetContactSystemCode(), ContactId: input.GetContactID()})
 		if err != nil {
-			t.Errorf("Expect error is nil, but got %v", err)
+			t.Fatalf("Expect error is nil, but got %v", err)
 		}
 
 		if !resp.GetResult() {

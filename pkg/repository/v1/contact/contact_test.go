@@ -128,7 +128,10 @@ func anyReference(ctx context.Context) func(t *testing.T) {
 
 func doReadFailContact(ctx context.Context, input *contactmodel.Contact) func(t *testing.T) {
 	return func(t *testing.T) {
-		expQuery := mock.ExpectPrepare("SELECT contact_system_code, contact_id, first_name, last_name, status, created_at, modified_at, vers FROM contact").ExpectQuery()
+		expQuery := mock.ExpectPrepare(
+			`SELECT contact_system_code, contact_id, first_name, last_name, status, 
+				created_at, modified_at, vers 
+			FROM contact`).ExpectQuery()
 		expQuery.WithArgs(input.GetContactSystemCode(), input.GetContactID()).WillReturnError(fmt.Errorf("DoRead contact failed"))
 
 		res, err := repo.DoRead(ctx, input.GetContactSystemCode(), input.GetContactID())
@@ -153,7 +156,10 @@ func doReadUnexistingContact(ctx context.Context, input *contactmodel.Contact) f
 	return func(t *testing.T) {
 		rows := sqlmock.NewRows([]string{"contact_system_code", "contact_id", "first_name", "last_name", "status", "created_at", "modified_at", "vers"})
 
-		expQuery := mock.ExpectPrepare("SELECT contact_system_code, contact_id, first_name, last_name, status, created_at, modified_at, vers FROM contact").ExpectQuery()
+		expQuery := mock.ExpectPrepare(
+			`SELECT contact_system_code, contact_id, first_name, last_name, status, 
+				created_at, modified_at, vers 
+			FROM contact`).ExpectQuery()
 		expQuery.WithArgs(input.GetContactSystemCode(), input.GetContactID()).WillReturnRows(rows)
 
 		res, err := repo.DoRead(ctx, input.GetContactSystemCode(), input.GetContactID())
@@ -182,7 +188,10 @@ func doReadRowErrorContact(ctx context.Context, input *contactmodel.Contact) fun
 			AddRow(input.GetContactSystemCode(), input.GetContactID(), input.GetFirstName(), input.GetLastName(), input.GetStatus(), tmNow, tmNow, 1).
 			RowError(0, fmt.Errorf("DoRead row error"))
 
-		expQuery := mock.ExpectPrepare("SELECT contact_system_code, contact_id, first_name, last_name, status, created_at, modified_at, vers FROM contact").ExpectQuery()
+		expQuery := mock.ExpectPrepare(
+			`SELECT contact_system_code, contact_id, first_name, last_name, status, 
+				created_at, modified_at, vers 
+			FROM contact`).ExpectQuery()
 		expQuery.WithArgs(input.GetContactSystemCode(), input.GetContactID()).WillReturnRows(rows)
 
 		res, err := repo.DoRead(ctx, input.GetContactSystemCode(), input.GetContactID())
@@ -210,16 +219,19 @@ func doReadExistingContact(ctx context.Context, input *contactmodel.Contact) fun
 		rows := sqlmock.NewRows([]string{"contact_system_code", "contact_id", "first_name", "last_name", "status", "created_at", "modified_at", "vers"}).
 			AddRow(input.GetContactSystemCode(), input.GetContactID(), input.GetFirstName(), input.GetLastName(), input.GetStatus(), tmNow, tmNow, 1)
 
-		expQuery := mock.ExpectPrepare("SELECT contact_system_code, contact_id, first_name, last_name, status, created_at, modified_at, vers FROM contact").ExpectQuery()
+		expQuery := mock.ExpectPrepare(
+			`SELECT contact_system_code, contact_id, first_name, last_name, status, 
+				created_at, modified_at, vers 
+			FROM contact`).ExpectQuery()
 		expQuery.WithArgs(input.GetContactSystemCode(), input.GetContactID()).WillReturnRows(rows)
 
 		res, err := repo.DoRead(ctx, input.GetContactSystemCode(), input.GetContactID())
 		if err != nil {
-			t.Errorf("Failed to read contact: %v", err)
+			t.Fatalf("Failed to read contact: %v", err)
 		}
 
 		if res == nil {
-			t.Errorf("Expect contact is not nil")
+			t.Fatalf("Expect contact is not nil")
 		}
 
 		if res.GetContactSystemCode() != input.GetContactSystemCode() {
@@ -246,7 +258,10 @@ func doReadExistingContact(ctx context.Context, input *contactmodel.Contact) fun
 
 func doReadAllFailContacts(ctx context.Context, input *contactmodel.Contact) func(t *testing.T) {
 	return func(t *testing.T) {
-		expQuery := mock.ExpectPrepare("SELECT contact_system_code, contact_id, first_name, last_name, status, created_at, modified_at, vers FROM contact").ExpectQuery()
+		expQuery := mock.ExpectPrepare(
+			`SELECT contact_system_code, contact_id, first_name, last_name, status, 
+				created_at, modified_at, vers 
+			FROM contact`).ExpectQuery()
 		expQuery.WithArgs(input.GetContactSystemCode()).WillReturnError(fmt.Errorf("DoReadAll contact failed"))
 
 		res, err := repo.DoReadAll(ctx, input.GetContactSystemCode())
@@ -261,6 +276,10 @@ func doReadAllFailContacts(ctx context.Context, input *contactmodel.Contact) fun
 			t.Errorf("Expect error is not nil")
 		}
 
+		if res == nil {
+			t.Fatalf("Expect communication methods is not nil")
+		}
+
 		if len(res) != 0 {
 			t.Errorf("Expect response is nil")
 		}
@@ -271,7 +290,10 @@ func doReadAllUnexistingContacts(ctx context.Context, input *contactmodel.Contac
 	return func(t *testing.T) {
 		rows := sqlmock.NewRows([]string{"contact_system_code", "contact_id", "first_name", "last_name", "status", "created_at", "modified_at", "vers"})
 
-		expQuery := mock.ExpectPrepare("SELECT contact_system_code, contact_id, first_name, last_name, status, created_at, modified_at, vers FROM contact").ExpectQuery()
+		expQuery := mock.ExpectPrepare(
+			`SELECT contact_system_code, contact_id, first_name, last_name, status, 
+				created_at, modified_at, vers 
+			FROM contact`).ExpectQuery()
 		expQuery.WithArgs(input.GetContactSystemCode()).WillReturnRows(rows)
 
 		res, err := repo.DoReadAll(ctx, input.GetContactSystemCode())
@@ -287,7 +309,7 @@ func doReadAllUnexistingContacts(ctx context.Context, input *contactmodel.Contac
 		}
 
 		if res == nil {
-			t.Errorf("Expect communication methods is not nil")
+			t.Fatalf("Expect communication methods is not nil")
 		}
 
 		if len(res) != 0 {
@@ -306,7 +328,10 @@ func doReadAllRowErrorContacts(ctx context.Context, input *contactmodel.Contact)
 			AddRow(data[1].GetContactSystemCode(), data[1].GetContactID(), data[1].GetFirstName(), data[1].GetLastName(), data[1].GetStatus(), tmNow, tmNow, 1).
 			AddRow(data[2].GetContactSystemCode(), data[2].GetContactID(), data[2].GetFirstName(), data[2].GetLastName(), data[2].GetStatus(), tmNow, tmNow, 1)
 
-		expQuery := mock.ExpectPrepare("SELECT contact_system_code, contact_id, first_name, last_name, status, created_at, modified_at, vers FROM contact").ExpectQuery()
+		expQuery := mock.ExpectPrepare(
+			`SELECT contact_system_code, contact_id, first_name, last_name, status, 
+				created_at, modified_at, vers 
+			FROM contact`).ExpectQuery()
 		expQuery.WithArgs(input.GetContactSystemCode()).WillReturnRows(rows)
 
 		res, err := repo.DoReadAll(ctx, input.GetContactSystemCode())
@@ -319,6 +344,10 @@ func doReadAllRowErrorContacts(ctx context.Context, input *contactmodel.Contact)
 			}
 		} else {
 			t.Errorf("Expect error is not nil")
+		}
+
+		if res == nil {
+			t.Fatalf("Expect communication methods is not nil")
 		}
 
 		if len(res) != 0 {
@@ -336,16 +365,19 @@ func doReadAllExistingContacts(ctx context.Context, input *contactmodel.Contact)
 			AddRow(data[1].GetContactSystemCode(), data[1].GetContactID(), data[1].GetFirstName(), data[1].GetLastName(), data[1].GetStatus(), tmNow, tmNow, 1).
 			AddRow(data[2].GetContactSystemCode(), data[2].GetContactID(), data[2].GetFirstName(), data[2].GetLastName(), data[2].GetStatus(), tmNow, tmNow, 1)
 
-		expQuery := mock.ExpectPrepare("SELECT contact_system_code, contact_id, first_name, last_name, status, created_at, modified_at, vers FROM contact").ExpectQuery()
+		expQuery := mock.ExpectPrepare(
+			`SELECT contact_system_code, contact_id, first_name, last_name, status, 
+				created_at, modified_at, vers 
+			FROM contact`).ExpectQuery()
 		expQuery.WithArgs(input.GetContactSystemCode()).WillReturnRows(rows)
 
 		res, err := repo.DoReadAll(ctx, input.GetContactSystemCode())
 		if err != nil {
-			t.Errorf("Failed to read all communication methods: %v", err)
+			t.Fatalf("Failed to read all communication methods: %v", err)
 		}
 
 		if res == nil {
-			t.Errorf("Expect communication methods is not nil")
+			t.Fatalf("Expect communication methods is not nil")
 		}
 
 		if len(res) < 3 {
@@ -416,7 +448,7 @@ func doSaveNewContact(ctx context.Context, input *contactmodel.Contact) func(t *
 
 		err := repo.DoInsert(ctx, input)
 		if err != nil {
-			t.Errorf("Failed to save contact: %v", err)
+			t.Fatalf("Failed to save contact: %v", err)
 		}
 	}
 }
@@ -463,7 +495,7 @@ func doSaveExistingContact(ctx context.Context, input *contactmodel.Contact) fun
 
 		err := repo.DoUpdate(ctx, input)
 		if err != nil {
-			t.Errorf("Failed to save contact: %v", err)
+			t.Fatalf("Failed to save contact: %v", err)
 		}
 	}
 }
@@ -513,7 +545,7 @@ func doDeleteExistingContact(ctx context.Context, input *contactmodel.Contact) f
 
 		err := repo.DoDelete(ctx, input.GetContactSystemCode(), input.GetContactID())
 		if err != nil {
-			t.Errorf("Failed to delete contact: %v", err)
+			t.Fatalf("Failed to delete contact: %v", err)
 		}
 	}
 }
@@ -550,7 +582,7 @@ func anyReferenceUnexistingContact(ctx context.Context, input *contactmodel.Cont
 
 		res, err := repo.AnyReference(ctx, input.GetContactSystemCode())
 		if err != nil {
-			t.Errorf("Expect error is nil")
+			t.Fatalf("Expect error is nil")
 		}
 
 		if res {
@@ -595,7 +627,7 @@ func anyReferenceExistingContact(ctx context.Context, input *contactmodel.Contac
 
 		res, err := repo.AnyReference(ctx, input.GetContactSystemCode())
 		if err != nil {
-			t.Errorf("Expect error is nil")
+			t.Fatalf("Expect error is nil")
 		}
 
 		if !res {

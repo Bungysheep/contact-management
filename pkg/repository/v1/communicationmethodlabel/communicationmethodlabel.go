@@ -38,7 +38,12 @@ func (cm *communicationMethodLabelRepository) DoRead(ctx context.Context, contac
 	}
 	defer conn.Close()
 
-	stmt, err := conn.PrepareContext(ctx, "SELECT contact_system_code, communication_method_code, communication_method_label_code, caption FROM communication_method_label WHERE contact_system_code=$1 AND communication_method_code=$2 AND communication_method_label_code=$3")
+	stmt, err := conn.PrepareContext(ctx,
+		`SELECT contact_system_code, communication_method_code, communication_method_label_code, caption 
+		FROM communication_method_label 
+		WHERE contact_system_code=$1 
+			AND communication_method_code=$2 
+			AND communication_method_label_code=$3`)
 	if err != nil {
 		return nil, status.Errorf(codes.Unknown, message.FailedPrepareRead("Communication Method Label", err))
 	}
@@ -76,7 +81,11 @@ func (cm *communicationMethodLabelRepository) DoReadAll(ctx context.Context, con
 	}
 	defer conn.Close()
 
-	stmt, err := conn.PrepareContext(ctx, "SELECT contact_system_code, communication_method_code, communication_method_label_code, caption FROM communication_method_label WHERE contact_system_code=$1 AND communication_method_code=$2")
+	stmt, err := conn.PrepareContext(ctx,
+		`SELECT contact_system_code, communication_method_code, communication_method_label_code, caption 
+		FROM communication_method_label 
+		WHERE contact_system_code=$1 
+			AND communication_method_code=$2`)
 	if err != nil {
 		return result, status.Errorf(codes.Unknown, message.FailedPrepareRead("Communication Method Label", err))
 	}
@@ -120,7 +129,10 @@ func (cm *communicationMethodLabelRepository) DoInsert(ctx context.Context, data
 	}
 	defer conn.Close()
 
-	stmt, err := conn.PrepareContext(ctx, "INSERT INTO communication_method_label (contact_system_code, communication_method_code, communication_method_label_code, caption) VALUES ($1, $2, $3, $4)")
+	stmt, err := conn.PrepareContext(ctx,
+		`INSERT INTO communication_method_label 
+			(contact_system_code, communication_method_code, communication_method_label_code, caption) 
+		VALUES ($1, $2, $3, $4)`)
 	if err != nil {
 		return status.Errorf(codes.Unknown, message.FailedPrepareInsert("Communication Method Label", err))
 	}
@@ -145,7 +157,12 @@ func (cm *communicationMethodLabelRepository) DoUpdate(ctx context.Context, data
 	}
 	defer conn.Close()
 
-	stmt, err := conn.PrepareContext(ctx, "UPDATE communication_method_label SET caption=$4 WHERE contact_system_code=$1 AND communication_method_code=$2 AND communication_method_label_code=$3")
+	stmt, err := conn.PrepareContext(ctx,
+		`UPDATE communication_method_label 
+		SET caption=$4 
+		WHERE contact_system_code=$1 
+			AND communication_method_code=$2 
+			AND communication_method_label_code=$3`)
 	if err != nil {
 		return status.Errorf(codes.Unknown, message.FailedPrepareUpdate("Communication Method Label", err))
 	}
@@ -170,7 +187,11 @@ func (cm *communicationMethodLabelRepository) DoDelete(ctx context.Context, cont
 	}
 	defer conn.Close()
 
-	stmt, err := conn.PrepareContext(ctx, "DELETE FROM communication_method_label WHERE contact_system_code=$1 AND communication_method_code=$2 AND communication_method_label_code=$3")
+	stmt, err := conn.PrepareContext(ctx,
+		`DELETE FROM communication_method_label 
+		WHERE contact_system_code=$1 
+			AND communication_method_code=$2 
+			AND communication_method_label_code=$3`)
 	if err != nil {
 		return status.Errorf(codes.Unknown, message.FailedPrepareDelete("Communication Method Label", err))
 	}
@@ -195,7 +216,10 @@ func (cm *communicationMethodLabelRepository) DoDeleteAll(ctx context.Context, c
 	}
 	defer conn.Close()
 
-	stmt, err := conn.PrepareContext(ctx, "DELETE FROM communication_method_label WHERE contact_system_code=$1 AND communication_method_code=$2")
+	stmt, err := conn.PrepareContext(ctx,
+		`DELETE FROM communication_method_label 
+		WHERE contact_system_code=$1 
+			AND communication_method_code=$2`)
 	if err != nil {
 		return status.Errorf(codes.Unknown, message.FailedPrepareDelete("All Communication Method Labels", err))
 	}

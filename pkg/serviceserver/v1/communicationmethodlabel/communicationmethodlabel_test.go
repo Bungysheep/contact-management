@@ -64,11 +64,11 @@ func doRead(ctx context.Context, input *communicationmethodlabelmodel.Communicat
 
 		resp, err := svc.DoRead(ctx, &communicationmethodlabelapi.DoReadCommunicationMethodLabelRequest{ContactSystemCode: input.GetContactSystemCode(), CommunicationMethodCode: input.GetCommunicationMethodCode(), CommunicationMethodLabelCode: input.GetCommunicationMethodLabelCode()})
 		if err != nil {
-			t.Errorf("Expect error is nil, but got %v", err)
+			t.Fatalf("Expect error is nil, but got %v", err)
 		}
 
 		if resp.GetCommunicationMethodLabel() == nil {
-			t.Errorf("Expect communication method is not nil")
+			t.Fatalf("Expect communication method is not nil")
 		}
 
 		if resp.GetCommunicationMethodLabel().GetContactSystemCode() != input.GetContactSystemCode() {
@@ -102,11 +102,11 @@ func doReadAll(ctx context.Context, input *communicationmethodlabelmodel.Communi
 
 		resp, err := svc.DoReadAll(ctx, &communicationmethodlabelapi.DoReadAllCommunicationMethodLabelRequest{ContactSystemCode: input.GetContactSystemCode(), CommunicationMethodCode: input.GetCommunicationMethodCode()})
 		if err != nil {
-			t.Errorf("Expect error is nil, but got %v", err)
+			t.Fatalf("Expect error is nil, but got %v", err)
 		}
 
 		if resp.GetCommunicationMethodLabel() == nil {
-			t.Errorf("Expect communication method is not nil")
+			t.Fatalf("Expect communication method is not nil")
 		}
 
 		if len(resp.GetCommunicationMethodLabel()) < 3 {
@@ -150,7 +150,7 @@ func doSave(ctx context.Context, input *communicationmethodlabelmodel.Communicat
 
 		resp, err := svc.DoSave(ctx, &communicationmethodlabelapi.DoSaveCommunicationMethodLabelRequest{CommunicationMethodLabel: communicationMethodLabel})
 		if err != nil {
-			t.Errorf("Expect error is nil, but got %v", err)
+			t.Fatalf("Expect error is nil, but got %v", err)
 		}
 
 		if !resp.GetResult() {
@@ -172,7 +172,7 @@ func doDelete(ctx context.Context, input *communicationmethodlabelmodel.Communic
 
 		resp, err := svc.DoDelete(ctx, &communicationmethodlabelapi.DoDeleteCommunicationMethodLabelRequest{ContactSystemCode: input.GetContactSystemCode(), CommunicationMethodCode: input.GetCommunicationMethodCode(), CommunicationMethodLabelCode: input.GetCommunicationMethodLabelCode()})
 		if err != nil {
-			t.Errorf("Expect error is nil, but got %v", err)
+			t.Fatalf("Expect error is nil, but got %v", err)
 		}
 
 		if !resp.GetResult() {
