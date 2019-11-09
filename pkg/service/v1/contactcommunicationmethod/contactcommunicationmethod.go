@@ -10,6 +10,7 @@ import (
 	communicationmethodlabelrepository "github.com/bungysheep/contact-management/pkg/repository/v1/communicationmethodlabel"
 	contactrepository "github.com/bungysheep/contact-management/pkg/repository/v1/contact"
 	contactcommunicationmethodrepository "github.com/bungysheep/contact-management/pkg/repository/v1/contactcommunicationmethod"
+	contactcommunicationmethodfieldrepository "github.com/bungysheep/contact-management/pkg/repository/v1/contactcommunicationmethodfield"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
@@ -23,28 +24,56 @@ type IContactCommunicationMethodService interface {
 }
 
 type contactcommunicationmethodService struct {
-	communicationMethodRepo        communicationmethodrepository.ICommunicationMethodRepository
-	communicationMethodLabelRepo   communicationmethodlabelrepository.ICommunicationMethodLabelRepository
-	contactRepo                    contactrepository.IContactRepository
-	contactCommunicationMethodRepo contactcommunicationmethodrepository.IContactCommunicationMethodRepository
+	communicationMethodRepo             communicationmethodrepository.ICommunicationMethodRepository
+	communicationMethodLabelRepo        communicationmethodlabelrepository.ICommunicationMethodLabelRepository
+	contactRepo                         contactrepository.IContactRepository
+	contactCommunicationMethodRepo      contactcommunicationmethodrepository.IContactCommunicationMethodRepository
+	contactCommunicationMethodFieldRepo contactcommunicationmethodfieldrepository.IContactCommunicationMethodFieldRepository
 }
 
 // NewContactCommunicationMethodService - Contact Communication Method service implementation
 func NewContactCommunicationMethodService(db *sql.DB) IContactCommunicationMethodService {
 	return &contactcommunicationmethodService{
-		communicationMethodRepo:        communicationmethodrepository.NewCommunicationMethodRepository(db),
-		communicationMethodLabelRepo:   communicationmethodlabelrepository.NewCommunicationMethodLabelRepository(db),
-		contactRepo:                    contactrepository.NewContactRepository(db),
-		contactCommunicationMethodRepo: contactcommunicationmethodrepository.NewContactCommunicationMethodRepository(db),
+		communicationMethodRepo:             communicationmethodrepository.NewCommunicationMethodRepository(db),
+		communicationMethodLabelRepo:        communicationmethodlabelrepository.NewCommunicationMethodLabelRepository(db),
+		contactRepo:                         contactrepository.NewContactRepository(db),
+		contactCommunicationMethodRepo:      contactcommunicationmethodrepository.NewContactCommunicationMethodRepository(db),
+		contactCommunicationMethodFieldRepo: contactcommunicationmethodfieldrepository.NewContactCommunicationMethodFieldRepository(db),
 	}
 }
 
 func (cmm *contactcommunicationmethodService) DoRead(ctx context.Context, contactSystemCode string, contactID int64, contactCommunicationMethodID int64) (*contactcommunicationmethodmodel.ContactCommunicationMethod, error) {
-	return cmm.contactCommunicationMethodRepo.DoRead(ctx, contactSystemCode, contactID, contactCommunicationMethodID)
+	result, err := cmm.contactCommunicationMethodRepo.DoRead(ctx, contactSystemCode, contactID, contactCommunicationMethodID)
+	if err != nil {
+		return nil, err
+	}
+
+	fieldResult, err := cmm.contactCommunicationMethodFieldRepo.DoRead(ctx, contactSystemCode, contactID, contactCommunicationMethodID)
+	if err != nil {
+		return result, err
+	}
+
+	result.ContactCommunicationMethodField = fieldResult
+
+	return result, nil
 }
 
 func (cmm *contactcommunicationmethodService) DoReadAll(ctx context.Context, contactSystemCode string, contactID int64) ([]*contactcommunicationmethodmodel.ContactCommunicationMethod, error) {
-	return cmm.contactCommunicationMethodRepo.DoReadAll(ctx, contactSystemCode, contactID)
+	result, err := cmm.contactCommunicationMethodRepo.DoReadAll(ctx, contactSystemCode, contactID)
+	if err != nil {
+		return result, err
+	}
+
+	for _, item := range result {
+		fieldResult, err := cmm.contactCommunicationMethodFieldRepo.DoRead(ctx, contactSystemCode, contactID, item.GetContactCommunicationMethodID())
+		if err != nil {
+			return result, err
+		}
+
+		item.ContactCommunicationMethodField = fieldResult
+	}
+
+	return result, nil
 }
 
 func (cmm *contactcommunicationmethodService) DoSave(ctx context.Context, data *contactcommunicationmethodmodel.ContactCommunicationMethod) error {
@@ -52,11 +81,11 @@ func (cmm *contactcommunicationmethodService) DoSave(ctx context.Context, data *
 		return err
 	}
 
-	if err := cmm.contactCommunicationMethodRepo.DoUpdate(ctx, data); err != nil {
+	if err := cmm.DoUpdateContactCommunicationMethod(ctx, data); err != nil {
 		s, ok := status.FromError(err)
 		if ok {
 			if s.Code() == codes.NotFound {
-				return cmm.contactCommunicationMethodRepo.DoInsert(ctx, data)
+				return cmm.DoInsertContactCommunicationMethod(ctx, data)
 			}
 		}
 	}
@@ -64,12 +93,49 @@ func (cmm *contactcommunicationmethodService) DoSave(ctx context.Context, data *
 	return nil
 }
 
+func (cmm *contactcommunicationmethodService) DoUpdateContactCommunicationMethod(ctx context.Context, data *contactcommunicationmethodmodel.ContactCommunicationMethod) error {
+	if err := cmm.contactCommunicationMethodRepo.DoUpdate(ctx, data); err != nil {
+		return err
+	}
+
+	for _, item := range data.GetContactCommunicationMethodField() {
+		if err := cmm.contactCommunicationMethodFieldRepo.DoUpdate(ctx, item); err != nil {
+			s, ok := status.FromError(err)
+			if ok {
+				if s.Code() == codes.NotFound {
+					return cmm.contactCommunicationMethodFieldRepo.DoInsert(ctx, item)
+				}
+			}
+		}
+	}
+
+	return nil
+}
+
+func (cmm *contactcommunicationmethodService) DoInsertContactCommunicationMethod(ctx context.Context, data *contactcommunicationmethodmodel.ContactCommunicationMethod) error {
+	if err := cmm.contactCommunicationMethodRepo.DoInsert(ctx, data); err != nil {
+		return err
+	}
+
+	for _, item := range data.GetContactCommunicationMethodField() {
+		if err := cmm.contactCommunicationMethodFieldRepo.DoInsert(ctx, item); err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
 func (cmm *contactcommunicationmethodService) DoDelete(ctx context.Context, contactSystemCode string, contactID int64, contactCommunicationMethodID int64) error {
-	data, err := cmm.DoRead(ctx, contactSystemCode, contactID, contactCommunicationMethodID)
+	data, err := cmm.contactCommunicationMethodRepo.DoRead(ctx, contactSystemCode, contactID, contactCommunicationMethodID)
 	if err != nil {
 		return err
 	} else if data.GetIsDefault() {
 		return status.Errorf(codes.Unknown, message.UnableDeleteDefault("Contact Communication Method"))
+	}
+
+	if err := cmm.contactCommunicationMethodFieldRepo.DoDelete(ctx, contactSystemCode, contactID, contactCommunicationMethodID); err != nil {
+		return err
 	}
 
 	return cmm.contactCommunicationMethodRepo.DoDelete(ctx, contactSystemCode, contactID, contactCommunicationMethodID)

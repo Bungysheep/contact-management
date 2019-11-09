@@ -76,13 +76,13 @@ func doRead(ctx context.Context) func(t *testing.T) {
 
 func doSave(ctx context.Context) func(t *testing.T) {
 	return func(t *testing.T) {
-		t.Run("DoSave new fail", doSaveNewFailContactCommunicationMethodField(ctx, data))
+		t.Run("DoSave new fail", doSaveNewFailContactCommunicationMethodField(ctx, data[0]))
 
-		t.Run("DoSave new", doSaveNewContactCommunicationMethodField(ctx, data))
+		t.Run("DoSave new", doSaveNewContactCommunicationMethodField(ctx, data[0]))
 
-		t.Run("DoSave existing fail", doSaveExistingFailContactCommunicationMethodField(ctx, data))
+		t.Run("DoSave existing fail", doSaveExistingFailContactCommunicationMethodField(ctx, data[0]))
 
-		t.Run("DoSave existing", doSaveExistingContactCommunicationMethodField(ctx, data))
+		t.Run("DoSave existing", doSaveExistingContactCommunicationMethodField(ctx, data[0]))
 	}
 }
 
@@ -238,10 +238,10 @@ func doReadExistingContactCommunicationMethodFields(ctx context.Context, input *
 	}
 }
 
-func doSaveNewFailContactCommunicationMethodField(ctx context.Context, input []*contactcommunicationmethodfieldmodel.ContactCommunicationMethodField) func(t *testing.T) {
+func doSaveNewFailContactCommunicationMethodField(ctx context.Context, input *contactcommunicationmethodfieldmodel.ContactCommunicationMethodField) func(t *testing.T) {
 	return func(t *testing.T) {
 		expInsQuery := mock.ExpectPrepare("INSERT INTO contact_communication_method_field").ExpectExec()
-		expInsQuery.WithArgs(input[0].GetContactSystemCode(), input[0].GetContactID(), input[0].GetContactCommunicationMethodID(), input[0].GetFieldCode(), input[0].GetFieldValue()).WillReturnError(fmt.Errorf("DoInsert contact communication method field failed"))
+		expInsQuery.WithArgs(input.GetContactSystemCode(), input.GetContactID(), input.GetContactCommunicationMethodID(), input.GetFieldCode(), input.GetFieldValue()).WillReturnError(fmt.Errorf("DoInsert contact communication method field failed"))
 
 		err := repo.DoInsert(ctx, input)
 		if err != nil {
@@ -257,12 +257,10 @@ func doSaveNewFailContactCommunicationMethodField(ctx context.Context, input []*
 	}
 }
 
-func doSaveNewContactCommunicationMethodField(ctx context.Context, input []*contactcommunicationmethodfieldmodel.ContactCommunicationMethodField) func(t *testing.T) {
+func doSaveNewContactCommunicationMethodField(ctx context.Context, input *contactcommunicationmethodfieldmodel.ContactCommunicationMethodField) func(t *testing.T) {
 	return func(t *testing.T) {
-		for _, data := range input {
-			expInsQuery := mock.ExpectPrepare("INSERT INTO contact_communication_method_field").ExpectExec()
-			expInsQuery.WithArgs(data.GetContactSystemCode(), data.GetContactID(), data.GetContactCommunicationMethodID(), data.GetFieldCode(), data.GetFieldValue()).WillReturnResult(sqlmock.NewResult(0, 1))
-		}
+		expInsQuery := mock.ExpectPrepare("INSERT INTO contact_communication_method_field").ExpectExec()
+		expInsQuery.WithArgs(input.GetContactSystemCode(), input.GetContactID(), input.GetContactCommunicationMethodID(), input.GetFieldCode(), input.GetFieldValue()).WillReturnResult(sqlmock.NewResult(0, 1))
 
 		err := repo.DoInsert(ctx, input)
 		if err != nil {
@@ -271,10 +269,10 @@ func doSaveNewContactCommunicationMethodField(ctx context.Context, input []*cont
 	}
 }
 
-func doSaveExistingFailContactCommunicationMethodField(ctx context.Context, input []*contactcommunicationmethodfieldmodel.ContactCommunicationMethodField) func(t *testing.T) {
+func doSaveExistingFailContactCommunicationMethodField(ctx context.Context, input *contactcommunicationmethodfieldmodel.ContactCommunicationMethodField) func(t *testing.T) {
 	return func(t *testing.T) {
 		expUpdQuery := mock.ExpectPrepare("UPDATE contact_communication_method_field").ExpectExec()
-		expUpdQuery.WithArgs(input[0].GetContactSystemCode(), input[0].GetContactID(), input[0].GetContactCommunicationMethodID(), input[0].GetFieldCode(), input[0].GetFieldValue()).WillReturnError(fmt.Errorf("DoUpdate contact communication method field failed"))
+		expUpdQuery.WithArgs(input.GetContactSystemCode(), input.GetContactID(), input.GetContactCommunicationMethodID(), input.GetFieldCode(), input.GetFieldValue()).WillReturnError(fmt.Errorf("DoUpdate contact communication method field failed"))
 
 		err := repo.DoUpdate(ctx, input)
 		if err != nil {
@@ -290,12 +288,10 @@ func doSaveExistingFailContactCommunicationMethodField(ctx context.Context, inpu
 	}
 }
 
-func doSaveExistingContactCommunicationMethodField(ctx context.Context, input []*contactcommunicationmethodfieldmodel.ContactCommunicationMethodField) func(t *testing.T) {
+func doSaveExistingContactCommunicationMethodField(ctx context.Context, input *contactcommunicationmethodfieldmodel.ContactCommunicationMethodField) func(t *testing.T) {
 	return func(t *testing.T) {
-		for _, data := range input {
-			expUpdQuery := mock.ExpectPrepare("UPDATE contact_communication_method_field").ExpectExec()
-			expUpdQuery.WithArgs(data.GetContactSystemCode(), data.GetContactID(), data.GetContactCommunicationMethodID(), data.GetFieldCode(), data.GetFieldValue()).WillReturnResult(sqlmock.NewResult(0, 1))
-		}
+		expUpdQuery := mock.ExpectPrepare("UPDATE contact_communication_method_field").ExpectExec()
+		expUpdQuery.WithArgs(input.GetContactSystemCode(), input.GetContactID(), input.GetContactCommunicationMethodID(), input.GetFieldCode(), input.GetFieldValue()).WillReturnResult(sqlmock.NewResult(0, 1))
 
 		err := repo.DoUpdate(ctx, input)
 		if err != nil {
