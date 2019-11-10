@@ -1,15 +1,19 @@
 package communicationmethod
 
-import "github.com/bungysheep/contact-management/pkg/models/v1/audit"
+import (
+	"github.com/bungysheep/contact-management/pkg/models/v1/audit"
+	"github.com/bungysheep/contact-management/pkg/models/v1/modelbase"
+)
 
 // CommunicationMethod model
 type CommunicationMethod struct {
-	ContactSystemCode       string
-	CommunicationMethodCode string
-	Description             string
-	Details                 string
-	Status                  string
-	FormatField             string
+	modelbase.ModelBase
+	ContactSystemCode       string `mandatory:"true" max_length:"16" format:"UPPERCASE"`
+	CommunicationMethodCode string `mandatory:"true" max_length:"16" format:"UPPERCASE"`
+	Description             string `mandatory:"true" max_length:"32"`
+	Details                 string `mandatory:"false" max_length:"255"`
+	Status                  string `mandatory:"true" max_length:"1" valid_value:"A,I" format:"UPPERCASE"`
+	FormatField             string `mandatory:"true" max_length:"1024"`
 	Audit                   *audit.Audit
 }
 
@@ -53,4 +57,9 @@ func (cmf *CommunicationMethod) GetFormatField() string {
 // GetAudit returns Audit
 func (cmf *CommunicationMethod) GetAudit() *audit.Audit {
 	return cmf.Audit
+}
+
+// DoValidate validates fields
+func (cmf *CommunicationMethod) DoValidate() bool {
+	return cmf.DoValidateBase(*cmf)
 }

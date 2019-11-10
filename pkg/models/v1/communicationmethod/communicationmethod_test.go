@@ -60,3 +60,27 @@ func TestCreateCommunicationMethod(t *testing.T) {
 		t.Errorf("Expect vers %v, but got %v", 1, commMethod.GetAudit().GetVers())
 	}
 }
+
+func TestValidate(t *testing.T) {
+	commMethod := NewCommunicationMethod()
+
+	if commMethod == nil {
+		t.Fatalf("Expect communication method is not nil")
+	}
+
+	timeNow := time.Now()
+
+	commMethod.ContactSystemCode = "CNTSYS001"
+	commMethod.CommunicationMethodCode = "EMAIL"
+	commMethod.Description = "Email"
+	commMethod.Details = "Email"
+	commMethod.Status = "A"
+	commMethod.FormatField = "[EMAIL_ADDRESS]"
+	commMethod.Audit.CreatedAt = timeNow
+	commMethod.Audit.ModifiedAt = timeNow
+	commMethod.Audit.Vers = 1
+
+	if !commMethod.DoValidate() {
+		t.Fatalf("Expect TRUE")
+	}
+}
