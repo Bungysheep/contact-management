@@ -80,6 +80,6 @@ func (ccm *ContactCommunicationMethod) GetAudit() *audit.Audit {
 }
 
 // DoValidate validates fields
-func (ccm *ContactCommunicationMethod) DoValidate() bool {
+func (ccm *ContactCommunicationMethod) DoValidate() error {
 	return ccm.DoValidateBase(*ccm)
 }

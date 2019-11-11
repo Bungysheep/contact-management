@@ -74,7 +74,7 @@ func TestValidate(t *testing.T) {
 	commMethodField.Audit.ModifiedAt = timeNow
 	commMethodField.Audit.Vers = 1
 
-	if !commMethodField.DoValidate() {
-		t.Fatalf("Expect TRUE")
+	if err := commMethodField.DoValidate(); err != nil {
+		t.Fatalf("Expect error is nil, but got %v", err)
 	}
 }

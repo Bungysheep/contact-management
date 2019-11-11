@@ -67,7 +67,7 @@ func TestValidate(t *testing.T) {
 	contactSystem.Audit.ModifiedAt = timeNow
 	contactSystem.Audit.Vers = 1
 
-	if !contactSystem.DoValidate() {
-		t.Fatalf("Expect TRUE")
+	if err := contactSystem.DoValidate(); err != nil {
+		t.Fatalf("Expect error is nil, but got %v", err)
 	}
 }

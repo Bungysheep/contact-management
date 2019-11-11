@@ -43,6 +43,6 @@ func (ccmf *ContactCommunicationMethodField) GetFieldValue() string {
 }
 
 // DoValidate validates fields
-func (ccmf *ContactCommunicationMethodField) DoValidate() bool {
+func (ccmf *ContactCommunicationMethodField) DoValidate() error {
 	return ccmf.DoValidateBase(*ccmf)
 }

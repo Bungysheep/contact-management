@@ -43,7 +43,7 @@ func TestValidate(t *testing.T) {
 	commMethodLabel.CommunicationMethodLabelCode = "HOME"
 	commMethodLabel.Caption = "Home"
 
-	if !commMethodLabel.DoValidate() {
-		t.Fatalf("Expect TRUE")
+	if err := commMethodLabel.DoValidate(); err != nil {
+		t.Fatalf("Expect error is nil, but got %v", err)
 	}
 }

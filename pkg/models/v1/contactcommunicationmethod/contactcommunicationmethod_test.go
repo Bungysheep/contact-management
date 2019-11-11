@@ -122,7 +122,7 @@ func TestValidate(t *testing.T) {
 	contactCommMethod.Audit.ModifiedAt = timeNow
 	contactCommMethod.Audit.Vers = 1
 
-	if !contactCommMethod.DoValidate() {
-		t.Fatalf("Expect TRUE")
+	if err := contactCommMethod.DoValidate(); err != nil {
+		t.Fatalf("Expect error is nil, but got %v", err)
 	}
 }

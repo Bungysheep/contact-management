@@ -51,7 +51,7 @@ func TestValidate(t *testing.T) {
 	contactCommMethodField.FieldCode = "EMAIL_ADDRESS"
 	contactCommMethodField.FieldValue = "test@gmail.com"
 
-	if !contactCommMethodField.DoValidate() {
-		t.Fatalf("Expect TRUE")
+	if err := contactCommMethodField.DoValidate(); err != nil {
+		t.Fatalf("Expect error is nil, but got %v", err)
 	}
 }

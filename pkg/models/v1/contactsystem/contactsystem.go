@@ -66,6 +66,6 @@ func (cs *ContactSystem) GetAudit() *audit.Audit {
 }
 
 // DoValidate validates fields
-func (cs *ContactSystem) DoValidate() bool {
+func (cs *ContactSystem) DoValidate() error {
 	return cs.DoValidateBase(*cs)
 }

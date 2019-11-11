@@ -37,6 +37,6 @@ func (cml *CommunicationMethodLabel) GetCaption() string {
 }
 
 // DoValidate validates fields
-func (cml *CommunicationMethodLabel) DoValidate() bool {
+func (cml *CommunicationMethodLabel) DoValidate() error {
 	return cml.DoValidateBase(*cml)
 }

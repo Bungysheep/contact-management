@@ -80,7 +80,7 @@ func TestValidate(t *testing.T) {
 	commMethod.Audit.ModifiedAt = timeNow
 	commMethod.Audit.Vers = 1
 
-	if !commMethod.DoValidate() {
-		t.Fatalf("Expect TRUE")
+	if err := commMethod.DoValidate(); err != nil {
+		t.Fatalf("Expect error is nil, but got %v", err)
 	}
 }
