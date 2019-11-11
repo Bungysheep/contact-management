@@ -55,3 +55,26 @@ func TestCreateContact(t *testing.T) {
 		t.Errorf("Expect vers %v, but got %v", 1, contact.GetAudit().GetVers())
 	}
 }
+
+func TestValidate(t *testing.T) {
+	contact := NewContact()
+
+	if contact == nil {
+		t.Fatalf("Expect contact is not nil")
+	}
+
+	timeNow := time.Now()
+
+	contact.ContactSystemCode = "CNTSYS001"
+	contact.ContactID = 1
+	contact.FirstName = "James"
+	contact.LastName = "Embongbulan"
+	contact.Status = "A"
+	contact.Audit.CreatedAt = timeNow
+	contact.Audit.ModifiedAt = timeNow
+	contact.Audit.Vers = 1
+
+	if !contact.DoValidate() {
+		t.Fatalf("Expect TRUE")
+	}
+}

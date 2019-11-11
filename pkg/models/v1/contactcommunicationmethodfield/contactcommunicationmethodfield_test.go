@@ -37,3 +37,21 @@ func TestCreateContactCommunicationMethodField(t *testing.T) {
 		t.Errorf("Expect field value %v, but got %v", "test@gmail.com", contactCommMethodField.GetFieldValue())
 	}
 }
+
+func TestValidate(t *testing.T) {
+	contactCommMethodField := NewContactCommunicationMethodField()
+
+	if contactCommMethodField == nil {
+		t.Fatalf("Expect contact communication method field is not nil")
+	}
+
+	contactCommMethodField.ContactSystemCode = "CNTSYS001"
+	contactCommMethodField.ContactID = 1
+	contactCommMethodField.ContactCommunicationMethodID = 1
+	contactCommMethodField.FieldCode = "EMAIL_ADDRESS"
+	contactCommMethodField.FieldValue = "test@gmail.com"
+
+	if !contactCommMethodField.DoValidate() {
+		t.Fatalf("Expect TRUE")
+	}
+}

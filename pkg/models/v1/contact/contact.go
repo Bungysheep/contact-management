@@ -1,14 +1,18 @@
 package contact
 
-import "github.com/bungysheep/contact-management/pkg/models/v1/audit"
+import (
+	"github.com/bungysheep/contact-management/pkg/models/v1/audit"
+	"github.com/bungysheep/contact-management/pkg/models/v1/modelbase"
+)
 
 // Contact model
 type Contact struct {
-	ContactSystemCode string
+	modelbase.ModelBase
+	ContactSystemCode string `mandatory:"true" max_length:"16" format:"UPPERCASE"`
 	ContactID         int64
-	FirstName         string
-	LastName          string
-	Status            string
+	FirstName         string `mandatory:"true" max_length:"16"`
+	LastName          string `mandatory:"true" max_length:"16"`
+	Status            string `mandatory:"true" max_length:"1" valid_value:"A,I" format:"UPPERCASE"`
 	Audit             *audit.Audit
 }
 
@@ -47,4 +51,9 @@ func (c *Contact) GetStatus() string {
 // GetAudit returns Audit
 func (c *Contact) GetAudit() *audit.Audit {
 	return c.Audit
+}
+
+// DoValidate validates fields
+func (c *Contact) DoValidate() bool {
+	return c.DoValidateBase(*c)
 }
