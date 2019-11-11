@@ -30,3 +30,20 @@ func TestCreateCommunicationMethodLabel(t *testing.T) {
 		t.Errorf("Expect caption %v, but got %v", "Home", commMethodLabel.GetCaption())
 	}
 }
+
+func TestValidate(t *testing.T) {
+	commMethodLabel := NewCommunicationMethodLabel()
+
+	if commMethodLabel == nil {
+		t.Fatalf("Expect communication method label is not nil")
+	}
+
+	commMethodLabel.ContactSystemCode = "CNTSYS001"
+	commMethodLabel.CommunicationMethodCode = "EMAIL"
+	commMethodLabel.CommunicationMethodLabelCode = "HOME"
+	commMethodLabel.Caption = "Home"
+
+	if !commMethodLabel.DoValidate() {
+		t.Fatalf("Expect TRUE")
+	}
+}

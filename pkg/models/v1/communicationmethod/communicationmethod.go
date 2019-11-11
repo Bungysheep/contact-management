@@ -13,7 +13,7 @@ type CommunicationMethod struct {
 	Description             string `mandatory:"true" max_length:"32"`
 	Details                 string `mandatory:"false" max_length:"255"`
 	Status                  string `mandatory:"true" max_length:"1" valid_value:"A,I" format:"UPPERCASE"`
-	FormatField             string `mandatory:"true" max_length:"1024"`
+	FormatField             string `mandatory:"true" max_length:"1024" format:"UPPERCASE"`
 	Audit                   *audit.Audit
 }
 

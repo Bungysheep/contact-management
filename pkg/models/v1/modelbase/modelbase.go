@@ -49,6 +49,16 @@ func (mb *ModelBase) DoValidateBase(model interface{}) bool {
 			case reflect.TypeOf(time.Time{}).Name():
 
 			}
+
+		case reflect.Slice:
+			for j := 0; j < modelValue.Field(i).Len(); j++ {
+				switch modelValue.Field(i).Index(j).Kind() {
+				case reflect.Ptr:
+					if !modelValue.Field(i).Index(j).MethodByName("DoValidate").Call([]reflect.Value{})[0].Bool() {
+						return false
+					}
+				}
+			}
 		}
 	}
 

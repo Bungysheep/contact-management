@@ -1,13 +1,17 @@
 package communicationmethodfield
 
-import "github.com/bungysheep/contact-management/pkg/models/v1/audit"
+import (
+	"github.com/bungysheep/contact-management/pkg/models/v1/audit"
+	"github.com/bungysheep/contact-management/pkg/models/v1/modelbase"
+)
 
 // CommunicationMethodField model
 type CommunicationMethodField struct {
-	ContactSystemCode       string
-	CommunicationMethodCode string
-	FieldCode               string
-	Caption                 string
+	modelbase.ModelBase
+	ContactSystemCode       string `mandatory:"true" max_length:"16" format:"UPPERCASE"`
+	CommunicationMethodCode string `mandatory:"true" max_length:"16" format:"UPPERCASE"`
+	FieldCode               string `mandatory:"true" max_length:"16" format:"UPPERCASE"`
+	Caption                 string `mandatory:"true" max_length:"32"`
 	Sequence                int64
 	Audit                   *audit.Audit
 }
@@ -47,4 +51,9 @@ func (cmf *CommunicationMethodField) GetSequence() int64 {
 // GetAudit returns Audit
 func (cmf *CommunicationMethodField) GetAudit() *audit.Audit {
 	return cmf.Audit
+}
+
+// DoValidate validates fields
+func (cmf *CommunicationMethodField) DoValidate() bool {
+	return cmf.DoValidateBase(*cmf)
 }

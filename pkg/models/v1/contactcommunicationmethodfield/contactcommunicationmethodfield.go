@@ -1,12 +1,15 @@
 package contactcommunicationmethodfield
 
+import "github.com/bungysheep/contact-management/pkg/models/v1/modelbase"
+
 // ContactCommunicationMethodField model
 type ContactCommunicationMethodField struct {
-	ContactSystemCode            string
+	modelbase.ModelBase
+	ContactSystemCode            string `mandatory:"true" max_length:"16" format:"UPPERCASE"`
 	ContactID                    int64
 	ContactCommunicationMethodID int64
-	FieldCode                    string
-	FieldValue                   string
+	FieldCode                    string `mandatory:"true" max_length:"16" format:"UPPERCASE"`
+	FieldValue                   string `mandatory:"false" max_length:"32"`
 }
 
 // NewContactCommunicationMethodField creates Contact Communication Method Field
@@ -37,4 +40,9 @@ func (ccmf *ContactCommunicationMethodField) GetFieldCode() string {
 // GetFieldValue returns Field Value
 func (ccmf *ContactCommunicationMethodField) GetFieldValue() string {
 	return ccmf.FieldValue
+}
+
+// DoValidate validates fields
+func (ccmf *ContactCommunicationMethodField) DoValidate() bool {
+	return ccmf.DoValidateBase(*ccmf)
 }

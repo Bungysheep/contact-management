@@ -1,11 +1,14 @@
 package communicationmethodlabel
 
+import "github.com/bungysheep/contact-management/pkg/models/v1/modelbase"
+
 // CommunicationMethodLabel model
 type CommunicationMethodLabel struct {
-	ContactSystemCode            string
-	CommunicationMethodCode      string
-	CommunicationMethodLabelCode string
-	Caption                      string
+	modelbase.ModelBase
+	ContactSystemCode            string `mandatory:"true" max_length:"16" format:"UPPERCASE"`
+	CommunicationMethodCode      string `mandatory:"true" max_length:"16" format:"UPPERCASE"`
+	CommunicationMethodLabelCode string `mandatory:"true" max_length:"8" format:"UPPERCASE"`
+	Caption                      string `mandatory:"true" max_length:"16"`
 }
 
 // NewCommunicationMethodLabel creates Communication Method Label
@@ -31,4 +34,9 @@ func (cml *CommunicationMethodLabel) GetCommunicationMethodLabelCode() string {
 // GetCaption returns Caption
 func (cml *CommunicationMethodLabel) GetCaption() string {
 	return cml.Caption
+}
+
+// DoValidate validates fields
+func (cml *CommunicationMethodLabel) DoValidate() bool {
+	return cml.DoValidateBase(*cml)
 }

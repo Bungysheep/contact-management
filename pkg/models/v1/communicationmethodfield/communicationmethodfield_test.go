@@ -55,3 +55,26 @@ func TestCreateCommunicationMethodField(t *testing.T) {
 		t.Errorf("Expect vers %v, but got %v", 1, commMethodField.GetAudit().GetVers())
 	}
 }
+
+func TestValidate(t *testing.T) {
+	commMethodField := NewCommunicationMethodField()
+
+	if commMethodField == nil {
+		t.Fatalf("Expect communication method field is not nil")
+	}
+
+	timeNow := time.Now()
+
+	commMethodField.ContactSystemCode = "CNTSYS001"
+	commMethodField.CommunicationMethodCode = "EMAIL"
+	commMethodField.FieldCode = "EMAIL_ADDRESS"
+	commMethodField.Caption = "Email Address"
+	commMethodField.Sequence = 1
+	commMethodField.Audit.CreatedAt = timeNow
+	commMethodField.Audit.ModifiedAt = timeNow
+	commMethodField.Audit.Vers = 1
+
+	if !commMethodField.DoValidate() {
+		t.Fatalf("Expect TRUE")
+	}
+}

@@ -3,17 +3,19 @@ package contactcommunicationmethod
 import (
 	"github.com/bungysheep/contact-management/pkg/models/v1/audit"
 	"github.com/bungysheep/contact-management/pkg/models/v1/contactcommunicationmethodfield"
+	"github.com/bungysheep/contact-management/pkg/models/v1/modelbase"
 )
 
 // ContactCommunicationMethod model
 type ContactCommunicationMethod struct {
-	ContactSystemCode               string
+	modelbase.ModelBase
+	ContactSystemCode               string `mandatory:"true" max_length:"16" format:"UPPERCASE"`
 	ContactID                       int64
 	ContactCommunicationMethodID    int64
-	CommunicationMethodCode         string
-	CommunicationMethodLabelCode    string
-	CommunicationMethodLabelCaption string
-	FormatValue                     string
+	CommunicationMethodCode         string `mandatory:"true" max_length:"16" format:"UPPERCASE"`
+	CommunicationMethodLabelCode    string `mandatory:"true" max_length:"8" format:"UPPERCASE"`
+	CommunicationMethodLabelCaption string `mandatory:"true" max_length:"16"`
+	FormatValue                     string `mandatory:"false" max_length:"1024"`
 	IsDefault                       bool
 	ContactCommunicationMethodField []*contactcommunicationmethodfield.ContactCommunicationMethodField
 	Audit                           *audit.Audit
@@ -75,4 +77,9 @@ func (ccm *ContactCommunicationMethod) GetContactCommunicationMethodField() []*c
 // GetAudit returns Audit
 func (ccm *ContactCommunicationMethod) GetAudit() *audit.Audit {
 	return ccm.Audit
+}
+
+// DoValidate validates fields
+func (ccm *ContactCommunicationMethod) DoValidate() bool {
+	return ccm.DoValidateBase(*ccm)
 }

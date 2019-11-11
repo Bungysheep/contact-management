@@ -91,3 +91,38 @@ func TestCreateContactCommunicationMethod(t *testing.T) {
 		t.Errorf("Expect vers %v, but got %v", 1, contactCommMethod.GetAudit().GetVers())
 	}
 }
+
+func TestValidate(t *testing.T) {
+	contactCommMethod := NewContactCommunicationMethod()
+
+	if contactCommMethod == nil {
+		t.Fatalf("Expect contact communication method is not nil")
+	}
+
+	timeNow := time.Now()
+
+	contactCommMethod.ContactSystemCode = "CNTSYS001"
+	contactCommMethod.ContactID = 1
+	contactCommMethod.ContactCommunicationMethodID = 1
+	contactCommMethod.CommunicationMethodCode = "EMAIL"
+	contactCommMethod.CommunicationMethodLabelCode = "HOME"
+	contactCommMethod.CommunicationMethodLabelCaption = "Home"
+	contactCommMethod.FormatValue = "test@gmail.com"
+	contactCommMethod.IsDefault = true
+
+	contactCommMethodField := contactcommunicationmethodfield.NewContactCommunicationMethodField()
+	contactCommMethodField.ContactSystemCode = "CNTSYS001"
+	contactCommMethodField.ContactID = 1
+	contactCommMethodField.ContactCommunicationMethodID = 1
+	contactCommMethodField.FieldCode = "EMAIL_ADDRESS"
+	contactCommMethodField.FieldValue = "test@gmail.com"
+	contactCommMethod.ContactCommunicationMethodField = append(contactCommMethod.ContactCommunicationMethodField, contactCommMethodField)
+
+	contactCommMethod.Audit.CreatedAt = timeNow
+	contactCommMethod.Audit.ModifiedAt = timeNow
+	contactCommMethod.Audit.Vers = 1
+
+	if !contactCommMethod.DoValidate() {
+		t.Fatalf("Expect TRUE")
+	}
+}
