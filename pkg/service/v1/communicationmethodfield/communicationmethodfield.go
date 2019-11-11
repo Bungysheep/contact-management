@@ -41,6 +41,10 @@ func (cmf *communicationMethodFieldService) DoReadAll(ctx context.Context, conta
 }
 
 func (cmf *communicationMethodFieldService) DoSave(ctx context.Context, data *communicationmethodfieldmodel.CommunicationMethodField) error {
+	if err := data.DoValidate(); err != nil {
+		return nil
+	}
+
 	if err := cmf.DoValidate(ctx, data); err != nil {
 		return err
 	}

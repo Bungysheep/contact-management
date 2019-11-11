@@ -60,6 +60,6 @@ func (cmf *CommunicationMethod) GetAudit() *audit.Audit {
 }
 
 // DoValidate validates fields
-func (cmf *CommunicationMethod) DoValidate() bool {
+func (cmf *CommunicationMethod) DoValidate() error {
 	return cmf.DoValidateBase(*cmf)
 }

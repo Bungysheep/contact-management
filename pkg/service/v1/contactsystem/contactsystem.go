@@ -45,6 +45,10 @@ func (cntsys *contactSystemService) DoReadAll(ctx context.Context) ([]*contactsy
 }
 
 func (cntsys *contactSystemService) DoSave(ctx context.Context, data *contactsystemmodel.ContactSystem) error {
+	if err := data.DoValidate(); err != nil {
+		return nil
+	}
+
 	if err := cntsys.contactSystemRepo.DoUpdate(ctx, data); err != nil {
 		s, ok := status.FromError(err)
 		if ok {

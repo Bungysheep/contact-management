@@ -44,6 +44,10 @@ func (cnt *contactService) DoReadAll(ctx context.Context, contactSystemCode stri
 }
 
 func (cnt *contactService) DoSave(ctx context.Context, data *contactmodel.Contact) error {
+	if err := data.DoValidate(); err != nil {
+		return nil
+	}
+
 	if err := cnt.DoValidate(ctx, data); err != nil {
 		return err
 	}

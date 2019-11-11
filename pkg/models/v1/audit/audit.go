@@ -35,6 +35,6 @@ func (a *Audit) GetVers() int64 {
 }
 
 // DoValidate validates fields
-func (a *Audit) DoValidate() bool {
-	return true
+func (a *Audit) DoValidate() error {
+	return nil
 }

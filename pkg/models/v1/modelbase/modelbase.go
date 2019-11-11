@@ -1,10 +1,13 @@
 package modelbase
 
 import (
+	"fmt"
 	"reflect"
 	"strconv"
 	"strings"
 	"time"
+
+	"github.com/bungysheep/contact-management/pkg/common/message"
 )
 
 // ModelBase model
@@ -16,7 +19,7 @@ func NewModelBase() *ModelBase {
 }
 
 // DoValidateBase validates fields
-func (mb *ModelBase) DoValidateBase(model interface{}) bool {
+func (mb *ModelBase) DoValidateBase(model interface{}) error {
 	modelType := reflect.TypeOf(model)
 	modelValue := reflect.ValueOf(model)
 
@@ -28,20 +31,20 @@ func (mb *ModelBase) DoValidateBase(model interface{}) bool {
 			value := modelValue.Field(i).String()
 
 			if !mb.IsSpecified(value, field.Tag.Get("mandatory")) {
-				return false
+				return fmt.Errorf(message.MustBeSpecified(field.Name))
 			}
 
 			if !mb.IsValidMaxLength(value, field.Tag.Get("max_length")) {
-				return false
+				return fmt.Errorf(message.CannotMoreThanNChars(field.Name, field.Tag.Get("max_length")))
 			}
 
 			if !mb.IsValidValue(value, field.Tag.Get("valid_value")) {
-				return false
+				return fmt.Errorf(message.NotValid(field.Name, field.Tag.Get("valid_value")))
 			}
 
 		case reflect.Ptr:
-			if !modelValue.Field(i).MethodByName("DoValidate").Call([]reflect.Value{})[0].Bool() {
-				return false
+			if err := modelValue.Field(i).MethodByName("DoValidate").Call([]reflect.Value{})[0].Interface(); err != nil {
+				return err.(error)
 			}
 
 		case reflect.Struct:
@@ -54,15 +57,15 @@ func (mb *ModelBase) DoValidateBase(model interface{}) bool {
 			for j := 0; j < modelValue.Field(i).Len(); j++ {
 				switch modelValue.Field(i).Index(j).Kind() {
 				case reflect.Ptr:
-					if !modelValue.Field(i).Index(j).MethodByName("DoValidate").Call([]reflect.Value{})[0].Bool() {
-						return false
+					if err := modelValue.Field(i).Index(j).MethodByName("DoValidate").Call([]reflect.Value{})[0].Interface(); err != nil {
+						return err.(error)
 					}
 				}
 			}
 		}
 	}
 
-	return true
+	return nil
 }
 
 // IsSpecified validates mandatory

@@ -86,3 +86,18 @@ func FailedDeleteAsReferenceExist(name string) string {
 func UnableDeleteDefault(name string) string {
 	return fmt.Sprintf("Unable to delete default %s", name)
 }
+
+// MustBeSpecified message
+func MustBeSpecified(name string) string {
+	return fmt.Sprintf("%s must be specified", name)
+}
+
+// CannotMoreThanNChars message
+func CannotMoreThanNChars(name string, nbr string) string {
+	return fmt.Sprintf("%s can not more than %s chars", name, nbr)
+}
+
+// NotValid message
+func NotValid(name string, value string) string {
+	return fmt.Sprintf("%s '%s' is not valid", name, value)
+}
