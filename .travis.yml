@@ -17,7 +17,7 @@ before_install:
 
 script:
 # Run unit test
-- docker run jamese/contact-management-test go test -short -v ./...
+- docker run jamese/contact-management-test go test -tags dev -short -v ./...
 
 after_success:
 # Build images
