@@ -2,12 +2,13 @@ package main
 
 import (
 	"context"
-	"database/sql"
 	"log"
 	"os"
 	"os/signal"
 
+	"github.com/bungysheep/contact-management/pkg/protocol/db"
 	"github.com/bungysheep/contact-management/pkg/protocol/grpc"
+	_ "github.com/lib/pq"
 )
 
 func main() {
@@ -20,8 +21,10 @@ func main() {
 func runServer() error {
 	ctx := context.Background()
 
-	// Temporary variable
-	var db *sql.DB
+	db, err := db.OpenDbConn()
+	if err != nil {
+		return err
+	}
 
 	grpcServer := &grpc.Server{}
 
@@ -35,6 +38,9 @@ func runServer() error {
 
 			log.Printf("Listener is closing...\n")
 			grpcServer.GetListener().Close()
+
+			log.Printf("Database connection is closing...\n")
+			db.Close()
 
 			<-ctx.Done()
 		}
