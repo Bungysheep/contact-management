@@ -6,6 +6,7 @@ require (
 	github.com/DATA-DOG/go-sqlmock v1.3.3
 	github.com/golang/mock v1.3.1
 	github.com/golang/protobuf v1.3.2
+	github.com/lib/pq v1.2.0
 	golang.org/x/net v0.0.0-20191007182048-72f939374954 // indirect
 	golang.org/x/sys v0.0.0-20191008105621-543471e840be // indirect
 	golang.org/x/text v0.3.2 // indirect
