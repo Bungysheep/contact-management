@@ -3,7 +3,6 @@ package grpc
 import (
 	"context"
 	"database/sql"
-	"log"
 	"net"
 
 	communicationmethodapi "github.com/bungysheep/contact-management/pkg/api/v1/communicationmethod"
@@ -12,6 +11,7 @@ import (
 	contactapi "github.com/bungysheep/contact-management/pkg/api/v1/contact"
 	contactcommunicationmethodapi "github.com/bungysheep/contact-management/pkg/api/v1/contactcommunicationmethod"
 	contactsystemapi "github.com/bungysheep/contact-management/pkg/api/v1/contactsystem"
+	"github.com/bungysheep/contact-management/pkg/logger"
 	communicationmethodservice "github.com/bungysheep/contact-management/pkg/service/v1/communicationmethod"
 	communicationmethodfieldservice "github.com/bungysheep/contact-management/pkg/service/v1/communicationmethodfield"
 	communicationmethodlabelservice "github.com/bungysheep/contact-management/pkg/service/v1/communicationmethodlabel"
@@ -46,7 +46,7 @@ func (s *Server) GetListener() net.Listener {
 
 // RunServer - Run gRpc server
 func (s *Server) RunServer(ctx context.Context, db *sql.DB) error {
-	log.Printf("gRpc server is starting...\n")
+	logger.Log.Info("gRpc server is starting...")
 
 	lis, err := net.Listen("tcp", "0.0.0.0:50051")
 	if err != nil {
@@ -72,6 +72,6 @@ func (s *Server) RunServer(ctx context.Context, db *sql.DB) error {
 	s.grpcServer = server
 	s.listener = lis
 
-	log.Printf("gRpc server is listening on port 50051...\n")
+	logger.Log.Info("gRpc server is listening on port 50051...")
 	return server.Serve(lis)
 }
