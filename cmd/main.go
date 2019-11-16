@@ -23,7 +23,7 @@ func runServer() error {
 	ctx := context.Background()
 
 	if err := logger.InitLog(); err != nil {
-		return nil
+		return err
 	}
 
 	db, err := db.OpenDbConn()
