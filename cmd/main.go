@@ -2,10 +2,11 @@ package main
 
 import (
 	"context"
-	"log"
+	"fmt"
 	"os"
 	"os/signal"
 
+	"github.com/bungysheep/contact-management/pkg/logger"
 	"github.com/bungysheep/contact-management/pkg/protocol/db"
 	"github.com/bungysheep/contact-management/pkg/protocol/grpc"
 	_ "github.com/lib/pq"
@@ -13,13 +14,17 @@ import (
 
 func main() {
 	if err := runServer(); err != nil {
-		log.Fatalf("ERROR: %v", err)
+		logger.Log.Error(fmt.Sprintf("ERROR: %v", err))
 		os.Exit(1)
 	}
 }
 
 func runServer() error {
 	ctx := context.Background()
+
+	if err := logger.InitLog(); err != nil {
+		return nil
+	}
 
 	db, err := db.OpenDbConn()
 	if err != nil {
@@ -33,13 +38,13 @@ func runServer() error {
 
 	go func() {
 		for range c {
-			log.Printf("gRpc server is shutting down...\n")
+			logger.Log.Info("gRpc server is shutting down...")
 			grpcServer.GetGrpcServer().GracefulStop()
 
-			log.Printf("Listener is closing...\n")
+			logger.Log.Info("Listener is closing...")
 			grpcServer.GetListener().Close()
 
-			log.Printf("Database connection is closing...\n")
+			logger.Log.Info("Database connection is closing...")
 			db.Close()
 
 			<-ctx.Done()
