@@ -3,6 +3,7 @@ package audit
 import (
 	"time"
 
+	"github.com/bungysheep/contact-management/pkg/models/v1/message"
 	"github.com/bungysheep/contact-management/pkg/models/v1/modelbase"
 )
 
@@ -35,6 +36,6 @@ func (a *Audit) GetVers() int64 {
 }
 
 // DoValidate validates fields
-func (a *Audit) DoValidate() error {
+func (a *Audit) DoValidate() message.IMessage {
 	return nil
 }

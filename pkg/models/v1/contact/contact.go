@@ -2,6 +2,7 @@ package contact
 
 import (
 	"github.com/bungysheep/contact-management/pkg/models/v1/audit"
+	"github.com/bungysheep/contact-management/pkg/models/v1/message"
 	"github.com/bungysheep/contact-management/pkg/models/v1/modelbase"
 )
 
@@ -54,6 +55,6 @@ func (c *Contact) GetAudit() *audit.Audit {
 }
 
 // DoValidate validates fields
-func (c *Contact) DoValidate() error {
+func (c *Contact) DoValidate() message.IMessage {
 	return c.DoValidateBase(*c)
 }

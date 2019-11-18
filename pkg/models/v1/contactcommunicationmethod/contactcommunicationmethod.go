@@ -3,6 +3,7 @@ package contactcommunicationmethod
 import (
 	"github.com/bungysheep/contact-management/pkg/models/v1/audit"
 	"github.com/bungysheep/contact-management/pkg/models/v1/contactcommunicationmethodfield"
+	"github.com/bungysheep/contact-management/pkg/models/v1/message"
 	"github.com/bungysheep/contact-management/pkg/models/v1/modelbase"
 )
 
@@ -80,6 +81,6 @@ func (ccm *ContactCommunicationMethod) GetAudit() *audit.Audit {
 }
 
 // DoValidate validates fields
-func (ccm *ContactCommunicationMethod) DoValidate() error {
+func (ccm *ContactCommunicationMethod) DoValidate() message.IMessage {
 	return ccm.DoValidateBase(*ccm)
 }

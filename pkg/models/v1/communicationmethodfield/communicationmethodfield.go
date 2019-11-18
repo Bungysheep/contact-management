@@ -2,6 +2,7 @@ package communicationmethodfield
 
 import (
 	"github.com/bungysheep/contact-management/pkg/models/v1/audit"
+	"github.com/bungysheep/contact-management/pkg/models/v1/message"
 	"github.com/bungysheep/contact-management/pkg/models/v1/modelbase"
 )
 
@@ -54,6 +55,6 @@ func (cmf *CommunicationMethodField) GetAudit() *audit.Audit {
 }
 
 // DoValidate validates fields
-func (cmf *CommunicationMethodField) DoValidate() error {
+func (cmf *CommunicationMethodField) DoValidate() message.IMessage {
 	return cmf.DoValidateBase(*cmf)
 }

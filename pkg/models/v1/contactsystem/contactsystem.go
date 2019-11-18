@@ -6,6 +6,7 @@ import (
 
 	"github.com/bungysheep/contact-management/pkg/common/constant/stringformat"
 	"github.com/bungysheep/contact-management/pkg/models/v1/audit"
+	"github.com/bungysheep/contact-management/pkg/models/v1/message"
 	"github.com/bungysheep/contact-management/pkg/models/v1/modelbase"
 )
 
@@ -66,6 +67,6 @@ func (cs *ContactSystem) GetAudit() *audit.Audit {
 }
 
 // DoValidate validates fields
-func (cs *ContactSystem) DoValidate() error {
+func (cs *ContactSystem) DoValidate() message.IMessage {
 	return cs.DoValidateBase(*cs)
 }

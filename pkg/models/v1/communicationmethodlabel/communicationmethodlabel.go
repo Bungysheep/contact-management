@@ -2,6 +2,8 @@ package communicationmethodlabel
 
 import "github.com/bungysheep/contact-management/pkg/models/v1/modelbase"
 
+import "github.com/bungysheep/contact-management/pkg/models/v1/message"
+
 // CommunicationMethodLabel model
 type CommunicationMethodLabel struct {
 	modelbase.ModelBase
@@ -37,6 +39,6 @@ func (cml *CommunicationMethodLabel) GetCaption() string {
 }
 
 // DoValidate validates fields
-func (cml *CommunicationMethodLabel) DoValidate() error {
+func (cml *CommunicationMethodLabel) DoValidate() message.IMessage {
 	return cml.DoValidateBase(*cml)
 }

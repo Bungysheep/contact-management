@@ -1,6 +1,11 @@
 package message
 
-import "fmt"
+import (
+	"fmt"
+
+	"github.com/bungysheep/contact-management/pkg/common/constant/messagetype"
+	"github.com/bungysheep/contact-management/pkg/models/v1/message"
+)
 
 // Unimplemented message
 func Unimplemented(entityName string) string {
@@ -88,16 +93,16 @@ func UnableDeleteDefault(name string) string {
 }
 
 // MustBeSpecified message
-func MustBeSpecified(name string) string {
-	return fmt.Sprintf("%s must be specified", name)
+func MustBeSpecified(name string) message.IMessage {
+	return message.NewMessage("CNT0018", messagetype.Error, "%s must be specified", name)
 }
 
 // CannotMoreThanNChars message
-func CannotMoreThanNChars(name string, nbr string) string {
-	return fmt.Sprintf("%s can not more than %s chars", name, nbr)
+func CannotMoreThanNChars(name string, nbr string) message.IMessage {
+	return message.NewMessage("CNT0019", messagetype.Error, "%s can not more than %s chars", name, nbr)
 }
 
 // NotValid message
-func NotValid(name string, value string) string {
-	return fmt.Sprintf("%s '%s' is not valid", name, value)
+func NotValid(name string, value string) message.IMessage {
+	return message.NewMessage("CNT0020", messagetype.Error, "%s '%s' is not valid", name, value)
 }
