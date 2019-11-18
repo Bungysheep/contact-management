@@ -143,11 +143,34 @@ func doReadAll(ctx context.Context, input *communicationmethodlabelmodel.Communi
 
 func doSave(ctx context.Context, input *communicationmethodlabelmodel.CommunicationMethodLabel) func(t *testing.T) {
 	return func(t *testing.T) {
+		t.Run("DoSave fail validation Communication Method Label", doSaveFailValidation(ctx))
+
 		t.Run("DoSave invalid Communication Method", doSaveInvalidCommunicationMethod(ctx, input))
 
-		t.Run("DoSave new Contact System", doSaveNew(ctx, input))
+		t.Run("DoSave new Communication Method Label", doSaveNew(ctx, input))
 
-		t.Run("DoSave existing Contact System", doSaveExisting(ctx, input))
+		t.Run("DoSave existing Communication Method Label", doSaveExisting(ctx, input))
+	}
+}
+
+func doSaveFailValidation(ctx context.Context) func(t *testing.T) {
+	return func(t *testing.T) {
+		input := &communicationmethodlabelmodel.CommunicationMethodLabel{
+			ContactSystemCode:            "CNTSYS000000000001",
+			CommunicationMethodCode:      "EMAIL",
+			CommunicationMethodLabelCode: "HOME",
+			Caption:                      "Home",
+		}
+
+		err := svc.DoSave(ctx, input)
+		if err != nil {
+			s, ok := status.FromError(err)
+			if ok {
+				if s.Code() != codes.Unknown {
+					t.Fatalf("Expect a Unknown error, but got %s", s.Code())
+				}
+			}
+		}
 	}
 }
 

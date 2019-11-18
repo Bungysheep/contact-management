@@ -551,6 +551,8 @@ func doReadAllExisting(ctx context.Context, input *contactcommunicationmethodmod
 
 func doSave(ctx context.Context, input *contactcommunicationmethodmodel.ContactCommunicationMethod) func(t *testing.T) {
 	return func(t *testing.T) {
+		t.Run("DoSave fail validation Contact Communication Method", doSaveFailValidation(ctx))
+
 		t.Run("DoSave invalid Contact", doSaveInvalidContact(ctx, input))
 
 		t.Run("DoSave invalid Communication Method", doSaveInvalidCommunicationMethod(ctx, input))
@@ -566,6 +568,40 @@ func doSave(ctx context.Context, input *contactcommunicationmethodmodel.ContactC
 		t.Run("DoSave existing Contact Communication Method with existing Field", doSaveExisting(ctx, input))
 
 		t.Run("DoSave existing Contact Communication Method with new Field", doSaveExistingWithNewField(ctx, input))
+	}
+}
+
+func doSaveFailValidation(ctx context.Context) func(t *testing.T) {
+	return func(t *testing.T) {
+		input := &contactcommunicationmethodmodel.ContactCommunicationMethod{
+			ContactSystemCode:               "CNTSYS000000000001",
+			ContactID:                       1,
+			ContactCommunicationMethodID:    1,
+			CommunicationMethodCode:         "EMAIL",
+			CommunicationMethodLabelCode:    "HOME",
+			CommunicationMethodLabelCaption: "Home",
+			FormatValue:                     "test@gmail.com",
+			IsDefault:                       true,
+			ContactCommunicationMethodField: []*contactcommunicationmethodfieldmodel.ContactCommunicationMethodField{
+				&contactcommunicationmethodfieldmodel.ContactCommunicationMethodField{
+					ContactSystemCode:            "CNTSYS001",
+					ContactID:                    1,
+					ContactCommunicationMethodID: 1,
+					FieldCode:                    "EMAIL_ADDRESS",
+					FieldValue:                   "test@gmail.com",
+				},
+			},
+		}
+
+		err := svc.DoSave(ctx, input)
+		if err != nil {
+			s, ok := status.FromError(err)
+			if ok {
+				if s.Code() != codes.Unknown {
+					t.Fatalf("Expect a Unknown error, but got %s", s.Code())
+				}
+			}
+		}
 	}
 }
 

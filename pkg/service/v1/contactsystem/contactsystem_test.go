@@ -151,9 +151,32 @@ func doReadAll(ctx context.Context, input *contactsystemmodel.ContactSystem) fun
 
 func doSave(ctx context.Context, input *contactsystemmodel.ContactSystem) func(t *testing.T) {
 	return func(t *testing.T) {
+		t.Run("DoSave fail validation Contact System", doSaveFailValidation(ctx))
+
 		t.Run("DoSave new Contact System", doSaveNew(ctx, input))
 
 		t.Run("DoSave existing Contact System", doSaveExisting(ctx, input))
+	}
+}
+
+func doSaveFailValidation(ctx context.Context) func(t *testing.T) {
+	return func(t *testing.T) {
+		input := &contactsystemmodel.ContactSystem{
+			ContactSystemCode: "CNTSYS001",
+			Description:       "Contact System 1",
+			Details:           "Contact System 1",
+			Status:            "X",
+		}
+
+		err := svc.DoSave(ctx, input)
+		if err != nil {
+			s, ok := status.FromError(err)
+			if ok {
+				if s.Code() != codes.Unknown {
+					t.Fatalf("Expect a Unknown error, but got %s", s.Code())
+				}
+			}
+		}
 	}
 }
 

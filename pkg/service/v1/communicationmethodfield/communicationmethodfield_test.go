@@ -161,11 +161,35 @@ func doReadAll(ctx context.Context, input *communicationmethodfieldmodel.Communi
 
 func doSave(ctx context.Context, input *communicationmethodfieldmodel.CommunicationMethodField) func(t *testing.T) {
 	return func(t *testing.T) {
+		t.Run("DoSave fail validation Communication Method Field", doSaveFailValidation(ctx))
+
 		t.Run("DoSave invalid Communication Method", doSaveInvalidCommunicationMethod(ctx, input))
 
 		t.Run("DoSave new Communication Method Field", doSaveNew(ctx, input))
 
 		t.Run("DoSave existing Communication Method Field", doSaveExisting(ctx, input))
+	}
+}
+
+func doSaveFailValidation(ctx context.Context) func(t *testing.T) {
+	return func(t *testing.T) {
+		input := &communicationmethodfieldmodel.CommunicationMethodField{
+			ContactSystemCode:       "CNTSYS000000000001",
+			CommunicationMethodCode: "EMAIL",
+			FieldCode:               "EMAIL_ADDRESS",
+			Caption:                 "Email Address",
+			Sequence:                1,
+		}
+
+		err := svc.DoSave(ctx, input)
+		if err != nil {
+			s, ok := status.FromError(err)
+			if ok {
+				if s.Code() != codes.Unknown {
+					t.Fatalf("Expect a Unknown error, but got %s", s.Code())
+				}
+			}
+		}
 	}
 }
 

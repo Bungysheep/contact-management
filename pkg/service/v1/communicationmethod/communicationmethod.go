@@ -48,7 +48,7 @@ func (cm *communicationMethodService) DoReadAll(ctx context.Context, contactSyst
 
 func (cm *communicationMethodService) DoSave(ctx context.Context, data *communicationmethodmodel.CommunicationMethod) error {
 	if err := data.DoValidate(); err != nil {
-		return nil
+		return err
 	}
 
 	if err := cm.DoValidate(ctx, data); err != nil {
