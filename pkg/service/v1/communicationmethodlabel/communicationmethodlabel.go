@@ -42,7 +42,7 @@ func (cm *communicationMethodLabelService) DoReadAll(ctx context.Context, contac
 
 func (cm *communicationMethodLabelService) DoSave(ctx context.Context, data *communicationmethodlabelmodel.CommunicationMethodLabel) error {
 	if err := data.DoValidate(); err != nil {
-		return nil
+		return err
 	}
 
 	if err := cm.DoValidate(ctx, data); err != nil {
