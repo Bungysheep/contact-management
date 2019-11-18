@@ -2,6 +2,8 @@ package contactcommunicationmethodfield
 
 import "github.com/bungysheep/contact-management/pkg/models/v1/modelbase"
 
+import "github.com/bungysheep/contact-management/pkg/models/v1/message"
+
 // ContactCommunicationMethodField model
 type ContactCommunicationMethodField struct {
 	modelbase.ModelBase
@@ -43,6 +45,6 @@ func (ccmf *ContactCommunicationMethodField) GetFieldValue() string {
 }
 
 // DoValidate validates fields
-func (ccmf *ContactCommunicationMethodField) DoValidate() error {
+func (ccmf *ContactCommunicationMethodField) DoValidate() message.IMessage {
 	return ccmf.DoValidateBase(*ccmf)
 }
