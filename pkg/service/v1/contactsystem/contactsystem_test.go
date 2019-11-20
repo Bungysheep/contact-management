@@ -11,8 +11,6 @@ import (
 	"github.com/DATA-DOG/go-sqlmock"
 	auditmodel "github.com/bungysheep/contact-management/pkg/models/v1/audit"
 	contactsystemmodel "github.com/bungysheep/contact-management/pkg/models/v1/contactsystem"
-	"google.golang.org/grpc/codes"
-	"google.golang.org/grpc/status"
 )
 
 var (
@@ -169,13 +167,8 @@ func doSaveFailValidation(ctx context.Context) func(t *testing.T) {
 		}
 
 		err := svc.DoSave(ctx, input)
-		if err != nil {
-			s, ok := status.FromError(err)
-			if ok {
-				if s.Code() != codes.Unknown {
-					t.Fatalf("Expect a Unknown error, but got %s", s.Code())
-				}
-			}
+		if err == nil {
+			t.Fatalf("Expect error is not nil")
 		}
 	}
 }
@@ -247,14 +240,7 @@ func doDeleteAnyCommunicationMethodReference(ctx context.Context, input *contact
 		expQuery.WithArgs(input.GetContactSystemCode()).WillReturnRows(rows)
 
 		err := svc.DoDelete(ctx, input.GetContactSystemCode())
-		if err != nil {
-			s, ok := status.FromError(err)
-			if ok {
-				if s.Code() != codes.Unknown {
-					t.Fatalf("Expect a NotFound error, but got %s", s.Code())
-				}
-			}
-		} else {
+		if err == nil {
 			t.Errorf("Expect error is not nil")
 		}
 	}
@@ -270,14 +256,7 @@ func doDeleteFailAnyCommunicationMethodReference(ctx context.Context, input *con
 		expQuery.WithArgs(input.GetContactSystemCode()).WillReturnRows(rows)
 
 		err := svc.DoDelete(ctx, input.GetContactSystemCode())
-		if err != nil {
-			s, ok := status.FromError(err)
-			if ok {
-				if s.Code() != codes.Unknown {
-					t.Fatalf("Expect a NotFound error, but got %s", s.Code())
-				}
-			}
-		} else {
+		if err == nil {
 			t.Errorf("Expect error is not nil")
 		}
 	}
@@ -296,14 +275,7 @@ func doDeleteFailAnyContactReference(ctx context.Context, input *contactsystemmo
 		expContactQuery.WithArgs(input.GetContactSystemCode()).WillReturnRows(rows)
 
 		err := svc.DoDelete(ctx, input.GetContactSystemCode())
-		if err != nil {
-			s, ok := status.FromError(err)
-			if ok {
-				if s.Code() != codes.Unknown {
-					t.Fatalf("Expect a NotFound error, but got %s", s.Code())
-				}
-			}
-		} else {
+		if err == nil {
 			t.Errorf("Expect error is not nil")
 		}
 	}
@@ -324,14 +296,7 @@ func doDeleteAnyContactReference(ctx context.Context, input *contactsystemmodel.
 		expContactQuery.WithArgs(input.GetContactSystemCode()).WillReturnRows(rows)
 
 		err := svc.DoDelete(ctx, input.GetContactSystemCode())
-		if err != nil {
-			s, ok := status.FromError(err)
-			if ok {
-				if s.Code() != codes.Unknown {
-					t.Fatalf("Expect a NotFound error, but got %s", s.Code())
-				}
-			}
-		} else {
+		if err == nil {
 			t.Errorf("Expect error is not nil")
 		}
 	}

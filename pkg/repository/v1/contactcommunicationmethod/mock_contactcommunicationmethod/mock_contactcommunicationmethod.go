@@ -7,6 +7,7 @@ package mock_contactcommunicationmethod
 import (
 	context "context"
 	contactcommunicationmethod "github.com/bungysheep/contact-management/pkg/models/v1/contactcommunicationmethod"
+	message "github.com/bungysheep/contact-management/pkg/models/v1/message"
 	gomock "github.com/golang/mock/gomock"
 	reflect "reflect"
 )
@@ -35,11 +36,11 @@ func (m *MockIContactCommunicationMethodRepository) EXPECT() *MockIContactCommun
 }
 
 // DoRead mocks base method
-func (m *MockIContactCommunicationMethodRepository) DoRead(arg0 context.Context, arg1 string, arg2, arg3 int64) (*contactcommunicationmethod.ContactCommunicationMethod, error) {
+func (m *MockIContactCommunicationMethodRepository) DoRead(arg0 context.Context, arg1 string, arg2, arg3 int64) (*contactcommunicationmethod.ContactCommunicationMethod, message.IMessage) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "DoRead", arg0, arg1, arg2, arg3)
 	ret0, _ := ret[0].(*contactcommunicationmethod.ContactCommunicationMethod)
-	ret1, _ := ret[1].(error)
+	ret1, _ := ret[1].(message.IMessage)
 	return ret0, ret1
 }
 
@@ -50,11 +51,11 @@ func (mr *MockIContactCommunicationMethodRepositoryMockRecorder) DoRead(arg0, ar
 }
 
 // DoReadAll mocks base method
-func (m *MockIContactCommunicationMethodRepository) DoReadAll(arg0 context.Context, arg1 string, arg2 int64) ([]*contactcommunicationmethod.ContactCommunicationMethod, error) {
+func (m *MockIContactCommunicationMethodRepository) DoReadAll(arg0 context.Context, arg1 string, arg2 int64) ([]*contactcommunicationmethod.ContactCommunicationMethod, message.IMessage) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "DoReadAll", arg0, arg1, arg2)
 	ret0, _ := ret[0].([]*contactcommunicationmethod.ContactCommunicationMethod)
-	ret1, _ := ret[1].(error)
+	ret1, _ := ret[1].(message.IMessage)
 	return ret0, ret1
 }
 
@@ -65,10 +66,10 @@ func (mr *MockIContactCommunicationMethodRepositoryMockRecorder) DoReadAll(arg0,
 }
 
 // DoInsert mocks base method
-func (m *MockIContactCommunicationMethodRepository) DoInsert(arg0 context.Context, arg1 *contactcommunicationmethod.ContactCommunicationMethod) error {
+func (m *MockIContactCommunicationMethodRepository) DoInsert(arg0 context.Context, arg1 *contactcommunicationmethod.ContactCommunicationMethod) message.IMessage {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "DoInsert", arg0, arg1)
-	ret0, _ := ret[0].(error)
+	ret0, _ := ret[0].(message.IMessage)
 	return ret0
 }
 
@@ -79,10 +80,10 @@ func (mr *MockIContactCommunicationMethodRepositoryMockRecorder) DoInsert(arg0, 
 }
 
 // DoUpdate mocks base method
-func (m *MockIContactCommunicationMethodRepository) DoUpdate(arg0 context.Context, arg1 *contactcommunicationmethod.ContactCommunicationMethod) error {
+func (m *MockIContactCommunicationMethodRepository) DoUpdate(arg0 context.Context, arg1 *contactcommunicationmethod.ContactCommunicationMethod) message.IMessage {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "DoUpdate", arg0, arg1)
-	ret0, _ := ret[0].(error)
+	ret0, _ := ret[0].(message.IMessage)
 	return ret0
 }
 
@@ -93,10 +94,10 @@ func (mr *MockIContactCommunicationMethodRepositoryMockRecorder) DoUpdate(arg0, 
 }
 
 // DoDelete mocks base method
-func (m *MockIContactCommunicationMethodRepository) DoDelete(arg0 context.Context, arg1 string, arg2, arg3 int64) error {
+func (m *MockIContactCommunicationMethodRepository) DoDelete(arg0 context.Context, arg1 string, arg2, arg3 int64) message.IMessage {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "DoDelete", arg0, arg1, arg2, arg3)
-	ret0, _ := ret[0].(error)
+	ret0, _ := ret[0].(message.IMessage)
 	return ret0
 }
 
@@ -107,10 +108,10 @@ func (mr *MockIContactCommunicationMethodRepositoryMockRecorder) DoDelete(arg0, 
 }
 
 // DoDeleteAll mocks base method
-func (m *MockIContactCommunicationMethodRepository) DoDeleteAll(arg0 context.Context, arg1 string, arg2 int64) error {
+func (m *MockIContactCommunicationMethodRepository) DoDeleteAll(arg0 context.Context, arg1 string, arg2 int64) message.IMessage {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "DoDeleteAll", arg0, arg1, arg2)
-	ret0, _ := ret[0].(error)
+	ret0, _ := ret[0].(message.IMessage)
 	return ret0
 }
 

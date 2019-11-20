@@ -7,6 +7,7 @@ package mock_contactsystem
 import (
 	context "context"
 	contactsystem "github.com/bungysheep/contact-management/pkg/models/v1/contactsystem"
+	message "github.com/bungysheep/contact-management/pkg/models/v1/message"
 	gomock "github.com/golang/mock/gomock"
 	reflect "reflect"
 )
@@ -35,11 +36,11 @@ func (m *MockIContactSystemRepository) EXPECT() *MockIContactSystemRepositoryMoc
 }
 
 // DoRead mocks base method
-func (m *MockIContactSystemRepository) DoRead(arg0 context.Context, arg1 string) (*contactsystem.ContactSystem, error) {
+func (m *MockIContactSystemRepository) DoRead(arg0 context.Context, arg1 string) (*contactsystem.ContactSystem, message.IMessage) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "DoRead", arg0, arg1)
 	ret0, _ := ret[0].(*contactsystem.ContactSystem)
-	ret1, _ := ret[1].(error)
+	ret1, _ := ret[1].(message.IMessage)
 	return ret0, ret1
 }
 
@@ -50,11 +51,11 @@ func (mr *MockIContactSystemRepositoryMockRecorder) DoRead(arg0, arg1 interface{
 }
 
 // DoReadAll mocks base method
-func (m *MockIContactSystemRepository) DoReadAll(arg0 context.Context) ([]*contactsystem.ContactSystem, error) {
+func (m *MockIContactSystemRepository) DoReadAll(arg0 context.Context) ([]*contactsystem.ContactSystem, message.IMessage) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "DoReadAll", arg0)
 	ret0, _ := ret[0].([]*contactsystem.ContactSystem)
-	ret1, _ := ret[1].(error)
+	ret1, _ := ret[1].(message.IMessage)
 	return ret0, ret1
 }
 
@@ -65,10 +66,10 @@ func (mr *MockIContactSystemRepositoryMockRecorder) DoReadAll(arg0 interface{}) 
 }
 
 // DoInsert mocks base method
-func (m *MockIContactSystemRepository) DoInsert(arg0 context.Context, arg1 *contactsystem.ContactSystem) error {
+func (m *MockIContactSystemRepository) DoInsert(arg0 context.Context, arg1 *contactsystem.ContactSystem) message.IMessage {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "DoInsert", arg0, arg1)
-	ret0, _ := ret[0].(error)
+	ret0, _ := ret[0].(message.IMessage)
 	return ret0
 }
 
@@ -79,10 +80,10 @@ func (mr *MockIContactSystemRepositoryMockRecorder) DoInsert(arg0, arg1 interfac
 }
 
 // DoUpdate mocks base method
-func (m *MockIContactSystemRepository) DoUpdate(arg0 context.Context, arg1 *contactsystem.ContactSystem) error {
+func (m *MockIContactSystemRepository) DoUpdate(arg0 context.Context, arg1 *contactsystem.ContactSystem) message.IMessage {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "DoUpdate", arg0, arg1)
-	ret0, _ := ret[0].(error)
+	ret0, _ := ret[0].(message.IMessage)
 	return ret0
 }
 
@@ -93,10 +94,10 @@ func (mr *MockIContactSystemRepositoryMockRecorder) DoUpdate(arg0, arg1 interfac
 }
 
 // DoDelete mocks base method
-func (m *MockIContactSystemRepository) DoDelete(arg0 context.Context, arg1 string) error {
+func (m *MockIContactSystemRepository) DoDelete(arg0 context.Context, arg1 string) message.IMessage {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "DoDelete", arg0, arg1)
-	ret0, _ := ret[0].(error)
+	ret0, _ := ret[0].(message.IMessage)
 	return ret0
 }
 

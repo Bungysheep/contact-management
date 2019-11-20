@@ -7,6 +7,7 @@ package mock_contactcommunicationmethod
 import (
 	context "context"
 	contactcommunicationmethod "github.com/bungysheep/contact-management/pkg/models/v1/contactcommunicationmethod"
+	message "github.com/bungysheep/contact-management/pkg/models/v1/message"
 	gomock "github.com/golang/mock/gomock"
 	reflect "reflect"
 )
@@ -35,11 +36,11 @@ func (m *MockIContactCommunicationMethodService) EXPECT() *MockIContactCommunica
 }
 
 // DoRead mocks base method
-func (m *MockIContactCommunicationMethodService) DoRead(arg0 context.Context, arg1 string, arg2, arg3 int64) (*contactcommunicationmethod.ContactCommunicationMethod, error) {
+func (m *MockIContactCommunicationMethodService) DoRead(arg0 context.Context, arg1 string, arg2, arg3 int64) (*contactcommunicationmethod.ContactCommunicationMethod, message.IMessage) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "DoRead", arg0, arg1, arg2, arg3)
 	ret0, _ := ret[0].(*contactcommunicationmethod.ContactCommunicationMethod)
-	ret1, _ := ret[1].(error)
+	ret1, _ := ret[1].(message.IMessage)
 	return ret0, ret1
 }
 
@@ -50,11 +51,11 @@ func (mr *MockIContactCommunicationMethodServiceMockRecorder) DoRead(arg0, arg1,
 }
 
 // DoReadAll mocks base method
-func (m *MockIContactCommunicationMethodService) DoReadAll(arg0 context.Context, arg1 string, arg2 int64) ([]*contactcommunicationmethod.ContactCommunicationMethod, error) {
+func (m *MockIContactCommunicationMethodService) DoReadAll(arg0 context.Context, arg1 string, arg2 int64) ([]*contactcommunicationmethod.ContactCommunicationMethod, message.IMessage) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "DoReadAll", arg0, arg1, arg2)
 	ret0, _ := ret[0].([]*contactcommunicationmethod.ContactCommunicationMethod)
-	ret1, _ := ret[1].(error)
+	ret1, _ := ret[1].(message.IMessage)
 	return ret0, ret1
 }
 
@@ -65,10 +66,10 @@ func (mr *MockIContactCommunicationMethodServiceMockRecorder) DoReadAll(arg0, ar
 }
 
 // DoSave mocks base method
-func (m *MockIContactCommunicationMethodService) DoSave(arg0 context.Context, arg1 *contactcommunicationmethod.ContactCommunicationMethod) error {
+func (m *MockIContactCommunicationMethodService) DoSave(arg0 context.Context, arg1 *contactcommunicationmethod.ContactCommunicationMethod) message.IMessage {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "DoSave", arg0, arg1)
-	ret0, _ := ret[0].(error)
+	ret0, _ := ret[0].(message.IMessage)
 	return ret0
 }
 
@@ -79,10 +80,10 @@ func (mr *MockIContactCommunicationMethodServiceMockRecorder) DoSave(arg0, arg1 
 }
 
 // DoDelete mocks base method
-func (m *MockIContactCommunicationMethodService) DoDelete(arg0 context.Context, arg1 string, arg2, arg3 int64) error {
+func (m *MockIContactCommunicationMethodService) DoDelete(arg0 context.Context, arg1 string, arg2, arg3 int64) message.IMessage {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "DoDelete", arg0, arg1, arg2, arg3)
-	ret0, _ := ret[0].(error)
+	ret0, _ := ret[0].(message.IMessage)
 	return ret0
 }
 

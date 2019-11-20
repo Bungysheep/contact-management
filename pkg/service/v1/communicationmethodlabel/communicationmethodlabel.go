@@ -4,19 +4,19 @@ import (
 	"context"
 	"database/sql"
 
+	"github.com/bungysheep/contact-management/pkg/common/constant/messagecode"
 	communicationmethodlabelmodel "github.com/bungysheep/contact-management/pkg/models/v1/communicationmethodlabel"
+	messagemodel "github.com/bungysheep/contact-management/pkg/models/v1/message"
 	communicationmethodrepository "github.com/bungysheep/contact-management/pkg/repository/v1/communicationmethod"
 	communicationmethodlabelrepository "github.com/bungysheep/contact-management/pkg/repository/v1/communicationmethodlabel"
-	"google.golang.org/grpc/codes"
-	"google.golang.org/grpc/status"
 )
 
 // ICommunicationMethodLabelService - Communication Method Label service interface
 type ICommunicationMethodLabelService interface {
-	DoRead(context.Context, string, string, string) (*communicationmethodlabelmodel.CommunicationMethodLabel, error)
-	DoReadAll(context.Context, string, string) ([]*communicationmethodlabelmodel.CommunicationMethodLabel, error)
-	DoSave(context.Context, *communicationmethodlabelmodel.CommunicationMethodLabel) error
-	DoDelete(context.Context, string, string, string) error
+	DoRead(context.Context, string, string, string) (*communicationmethodlabelmodel.CommunicationMethodLabel, messagemodel.IMessage)
+	DoReadAll(context.Context, string, string) ([]*communicationmethodlabelmodel.CommunicationMethodLabel, messagemodel.IMessage)
+	DoSave(context.Context, *communicationmethodlabelmodel.CommunicationMethodLabel) messagemodel.IMessage
+	DoDelete(context.Context, string, string, string) messagemodel.IMessage
 }
 
 type communicationMethodLabelService struct {
@@ -32,15 +32,15 @@ func NewCommunicationMethodLabelService(db *sql.DB) ICommunicationMethodLabelSer
 	}
 }
 
-func (cm *communicationMethodLabelService) DoRead(ctx context.Context, contactSystemCode string, communicationMethodCode string, communicationMethodLabelCode string) (*communicationmethodlabelmodel.CommunicationMethodLabel, error) {
+func (cm *communicationMethodLabelService) DoRead(ctx context.Context, contactSystemCode string, communicationMethodCode string, communicationMethodLabelCode string) (*communicationmethodlabelmodel.CommunicationMethodLabel, messagemodel.IMessage) {
 	return cm.communicationMethodLabelRepo.DoRead(ctx, contactSystemCode, communicationMethodCode, communicationMethodLabelCode)
 }
 
-func (cm *communicationMethodLabelService) DoReadAll(ctx context.Context, contactSystemCode string, communicationMethodCode string) ([]*communicationmethodlabelmodel.CommunicationMethodLabel, error) {
+func (cm *communicationMethodLabelService) DoReadAll(ctx context.Context, contactSystemCode string, communicationMethodCode string) ([]*communicationmethodlabelmodel.CommunicationMethodLabel, messagemodel.IMessage) {
 	return cm.communicationMethodLabelRepo.DoReadAll(ctx, contactSystemCode, communicationMethodCode)
 }
 
-func (cm *communicationMethodLabelService) DoSave(ctx context.Context, data *communicationmethodlabelmodel.CommunicationMethodLabel) error {
+func (cm *communicationMethodLabelService) DoSave(ctx context.Context, data *communicationmethodlabelmodel.CommunicationMethodLabel) messagemodel.IMessage {
 	if err := data.DoValidate(); err != nil {
 		return err
 	}
@@ -50,22 +50,19 @@ func (cm *communicationMethodLabelService) DoSave(ctx context.Context, data *com
 	}
 
 	if err := cm.communicationMethodLabelRepo.DoUpdate(ctx, data); err != nil {
-		s, ok := status.FromError(err)
-		if ok {
-			if s.Code() == codes.NotFound {
-				return cm.communicationMethodLabelRepo.DoInsert(ctx, data)
-			}
+		if err.Code() == messagecode.NotFound {
+			return cm.communicationMethodLabelRepo.DoInsert(ctx, data)
 		}
 	}
 
 	return nil
 }
 
-func (cm *communicationMethodLabelService) DoDelete(ctx context.Context, contactSystemCode string, communicationMethodCode string, communicationMethodLabelCode string) error {
+func (cm *communicationMethodLabelService) DoDelete(ctx context.Context, contactSystemCode string, communicationMethodCode string, communicationMethodLabelCode string) messagemodel.IMessage {
 	return cm.communicationMethodLabelRepo.DoDelete(ctx, contactSystemCode, communicationMethodCode, communicationMethodLabelCode)
 }
 
-func (cm *communicationMethodLabelService) DoValidate(ctx context.Context, data *communicationmethodlabelmodel.CommunicationMethodLabel) error {
+func (cm *communicationMethodLabelService) DoValidate(ctx context.Context, data *communicationmethodlabelmodel.CommunicationMethodLabel) messagemodel.IMessage {
 	if _, err := cm.communicationMethodRepo.DoRead(ctx, data.GetContactSystemCode(), data.GetCommunicationMethodCode()); err != nil {
 		return err
 	}

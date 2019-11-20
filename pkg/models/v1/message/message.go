@@ -6,6 +6,7 @@ import "fmt"
 
 // IMessage interface
 type IMessage interface {
+	Code() string
 	IsError() bool
 	Error() string
 }
@@ -26,6 +27,11 @@ func NewMessage(code string, messageType messagetype.MessageType, definition str
 		definition:  definition,
 		args:        args,
 	}
+}
+
+// Code is message code
+func (m *Message) Code() string {
+	return m.code
 }
 
 // IsError whether is error or not

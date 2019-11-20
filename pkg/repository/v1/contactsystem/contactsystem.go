@@ -6,17 +6,16 @@ import (
 
 	"github.com/bungysheep/contact-management/pkg/common/message"
 	contactsystemmodel "github.com/bungysheep/contact-management/pkg/models/v1/contactsystem"
-	"google.golang.org/grpc/codes"
-	"google.golang.org/grpc/status"
+	messagemodel "github.com/bungysheep/contact-management/pkg/models/v1/message"
 )
 
 // IContactSystemRepository - Contact System repository interface
 type IContactSystemRepository interface {
-	DoRead(context.Context, string) (*contactsystemmodel.ContactSystem, error)
-	DoReadAll(context.Context) ([]*contactsystemmodel.ContactSystem, error)
-	DoInsert(context.Context, *contactsystemmodel.ContactSystem) error
-	DoUpdate(context.Context, *contactsystemmodel.ContactSystem) error
-	DoDelete(context.Context, string) error
+	DoRead(context.Context, string) (*contactsystemmodel.ContactSystem, messagemodel.IMessage)
+	DoReadAll(context.Context) ([]*contactsystemmodel.ContactSystem, messagemodel.IMessage)
+	DoInsert(context.Context, *contactsystemmodel.ContactSystem) messagemodel.IMessage
+	DoUpdate(context.Context, *contactsystemmodel.ContactSystem) messagemodel.IMessage
+	DoDelete(context.Context, string) messagemodel.IMessage
 }
 
 type contactSystemRepository struct {
@@ -28,12 +27,12 @@ func NewContactSystemRepository(db *sql.DB) IContactSystemRepository {
 	return &contactSystemRepository{db: db}
 }
 
-func (cntsys *contactSystemRepository) DoRead(ctx context.Context, contactSystemCode string) (*contactsystemmodel.ContactSystem, error) {
+func (cntsys *contactSystemRepository) DoRead(ctx context.Context, contactSystemCode string) (*contactsystemmodel.ContactSystem, messagemodel.IMessage) {
 	result := contactsystemmodel.NewContactSystem()
 
 	conn, err := cntsys.db.Conn(ctx)
 	if err != nil {
-		return nil, status.Errorf(codes.Unknown, message.FailedConnectToDatabase(err))
+		return nil, message.FailedConnectToDatabase(err)
 	}
 	defer conn.Close()
 
@@ -43,20 +42,20 @@ func (cntsys *contactSystemRepository) DoRead(ctx context.Context, contactSystem
 		FROM contact_system 
 		WHERE contact_system_code=$1`)
 	if err != nil {
-		return nil, status.Errorf(codes.Unknown, message.FailedPrepareRead("Contact System", err))
+		return nil, message.FailedPrepareRead("Contact System", err)
 	}
 
 	rows, err := stmt.QueryContext(ctx, contactSystemCode)
 	if err != nil {
-		return nil, status.Errorf(codes.Unknown, message.FailedRead("Contact System", err))
+		return nil, message.FailedRead("Contact System", err)
 	}
 	defer rows.Close()
 
 	if !rows.Next() {
 		if err := rows.Err(); err != nil {
-			return nil, status.Errorf(codes.Unknown, message.FailedRetrieveRow("Contact System", err))
+			return nil, message.FailedRetrieveRow("Contact System", err)
 		}
-		return nil, status.Errorf(codes.NotFound, message.DoesNotExist("Contact System"))
+		return nil, message.DoesNotExist("Contact System")
 	}
 
 	if err := rows.Scan(
@@ -67,18 +66,18 @@ func (cntsys *contactSystemRepository) DoRead(ctx context.Context, contactSystem
 		&result.GetAudit().CreatedAt,
 		&result.GetAudit().ModifiedAt,
 		&result.GetAudit().Vers); err != nil {
-		return nil, status.Errorf(codes.Unknown, message.FailedRetrieveValues("Contact System", err))
+		return nil, message.FailedRetrieveValues("Contact System", err)
 	}
 
 	return result, nil
 }
 
-func (cntsys *contactSystemRepository) DoReadAll(ctx context.Context) ([]*contactsystemmodel.ContactSystem, error) {
+func (cntsys *contactSystemRepository) DoReadAll(ctx context.Context) ([]*contactsystemmodel.ContactSystem, messagemodel.IMessage) {
 	result := make([]*contactsystemmodel.ContactSystem, 0)
 
 	conn, err := cntsys.db.Conn(ctx)
 	if err != nil {
-		return result, status.Errorf(codes.Unknown, message.FailedConnectToDatabase(err))
+		return result, message.FailedConnectToDatabase(err)
 	}
 	defer conn.Close()
 
@@ -87,22 +86,22 @@ func (cntsys *contactSystemRepository) DoReadAll(ctx context.Context) ([]*contac
 			created_at, modified_at, vers 
 		FROM contact_system`)
 	if err != nil {
-		return result, status.Errorf(codes.Unknown, message.FailedPrepareRead("Contact System", err))
+		return result, message.FailedPrepareRead("Contact System", err)
 	}
 
 	rows, err := stmt.QueryContext(ctx)
 	if err != nil {
-		return result, status.Errorf(codes.Unknown, message.FailedRead("Contact System", err))
+		return result, message.FailedRead("Contact System", err)
 	}
 	defer rows.Close()
 
 	for {
 		if !rows.Next() {
 			if err := rows.Err(); err != nil {
-				return result, status.Errorf(codes.Unknown, message.FailedRetrieveRow("Contact System", err))
+				return result, message.FailedRetrieveRow("Contact System", err)
 			}
 			if len(result) == 0 {
-				return result, status.Errorf(codes.NotFound, message.DoesNotExist("Contact System"))
+				return result, message.DoesNotExist("Contact System")
 			}
 			break
 		}
@@ -116,7 +115,7 @@ func (cntsys *contactSystemRepository) DoReadAll(ctx context.Context) ([]*contac
 			&contactSystem.GetAudit().CreatedAt,
 			&contactSystem.GetAudit().ModifiedAt,
 			&contactSystem.GetAudit().Vers); err != nil {
-			return result, status.Errorf(codes.Unknown, message.FailedRetrieveValues("Contact System", err))
+			return result, message.FailedRetrieveValues("Contact System", err)
 		}
 
 		result = append(result, contactSystem)
@@ -125,10 +124,10 @@ func (cntsys *contactSystemRepository) DoReadAll(ctx context.Context) ([]*contac
 	return result, nil
 }
 
-func (cntsys *contactSystemRepository) DoInsert(ctx context.Context, data *contactsystemmodel.ContactSystem) error {
+func (cntsys *contactSystemRepository) DoInsert(ctx context.Context, data *contactsystemmodel.ContactSystem) messagemodel.IMessage {
 	conn, err := cntsys.db.Conn(ctx)
 	if err != nil {
-		return status.Errorf(codes.Unknown, message.FailedConnectToDatabase(err))
+		return message.FailedConnectToDatabase(err)
 	}
 	defer conn.Close()
 
@@ -139,26 +138,26 @@ func (cntsys *contactSystemRepository) DoInsert(ctx context.Context, data *conta
 		VALUES ($1, $2, $3, $4, 
 			$5, $6, 1)`)
 	if err != nil {
-		return status.Errorf(codes.Unknown, message.FailedPrepareInsert("Contact System", err))
+		return message.FailedPrepareInsert("Contact System", err)
 	}
 
 	result, err := stmt.ExecContext(ctx, data.GetContactSystemCode(), data.GetDescription(), data.GetDetails(), data.GetStatus(), data.GetAudit().GetCreatedAt(), data.GetAudit().GetModifiedAt())
 	if err != nil {
-		return status.Errorf(codes.Unknown, message.FailedInsert("Contact System", err))
+		return message.FailedInsert("Contact System", err)
 	}
 
 	rows, _ := result.RowsAffected()
 	if rows == 0 {
-		return status.Errorf(codes.Unknown, message.NoRowInserted())
+		return message.NoRowInserted()
 	}
 
 	return nil
 }
 
-func (cntsys *contactSystemRepository) DoUpdate(ctx context.Context, data *contactsystemmodel.ContactSystem) error {
+func (cntsys *contactSystemRepository) DoUpdate(ctx context.Context, data *contactsystemmodel.ContactSystem) messagemodel.IMessage {
 	conn, err := cntsys.db.Conn(ctx)
 	if err != nil {
-		return status.Errorf(codes.Unknown, message.FailedConnectToDatabase(err))
+		return message.FailedConnectToDatabase(err)
 	}
 	defer conn.Close()
 
@@ -167,26 +166,26 @@ func (cntsys *contactSystemRepository) DoUpdate(ctx context.Context, data *conta
 			modified_at=$5, vers=vers+1 
 		WHERE contact_system_code=$1`)
 	if err != nil {
-		return status.Errorf(codes.Unknown, message.FailedPrepareUpdate("Contact System", err))
+		return message.FailedPrepareUpdate("Contact System", err)
 	}
 
 	result, err := stmt.ExecContext(ctx, data.GetContactSystemCode(), data.GetDescription(), data.GetDetails(), data.GetStatus(), data.GetAudit().GetModifiedAt())
 	if err != nil {
-		return status.Errorf(codes.Unknown, message.FailedUpdate("Contact System", err))
+		return message.FailedUpdate("Contact System", err)
 	}
 
 	rows, _ := result.RowsAffected()
 	if rows == 0 {
-		return status.Errorf(codes.NotFound, message.DoesNotExist("Contact System"))
+		return message.DoesNotExist("Contact System")
 	}
 
 	return nil
 }
 
-func (cntsys *contactSystemRepository) DoDelete(ctx context.Context, contactSystemCode string) error {
+func (cntsys *contactSystemRepository) DoDelete(ctx context.Context, contactSystemCode string) messagemodel.IMessage {
 	conn, err := cntsys.db.Conn(ctx)
 	if err != nil {
-		return status.Errorf(codes.Unknown, message.FailedConnectToDatabase(err))
+		return message.FailedConnectToDatabase(err)
 	}
 	defer conn.Close()
 
@@ -194,17 +193,17 @@ func (cntsys *contactSystemRepository) DoDelete(ctx context.Context, contactSyst
 		`DELETE FROM contact_system 
 		WHERE contact_system_code=$1`)
 	if err != nil {
-		return status.Errorf(codes.Unknown, message.FailedPrepareDelete("Contact System", err))
+		return message.FailedPrepareDelete("Contact System", err)
 	}
 
 	result, err := stmt.ExecContext(ctx, contactSystemCode)
 	if err != nil {
-		return status.Errorf(codes.Unknown, message.FailedDelete("Contact System", err))
+		return message.FailedDelete("Contact System", err)
 	}
 
 	rows, _ := result.RowsAffected()
 	if rows == 0 {
-		return status.Errorf(codes.NotFound, message.DoesNotExist("Contact System"))
+		return message.DoesNotExist("Contact System")
 	}
 
 	return nil

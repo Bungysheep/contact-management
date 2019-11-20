@@ -7,6 +7,7 @@ package mock_contactsystem
 import (
 	context "context"
 	contactsystem "github.com/bungysheep/contact-management/pkg/models/v1/contactsystem"
+	message "github.com/bungysheep/contact-management/pkg/models/v1/message"
 	gomock "github.com/golang/mock/gomock"
 	reflect "reflect"
 )
@@ -35,11 +36,11 @@ func (m *MockIContactSystemService) EXPECT() *MockIContactSystemServiceMockRecor
 }
 
 // DoRead mocks base method
-func (m *MockIContactSystemService) DoRead(arg0 context.Context, arg1 string) (*contactsystem.ContactSystem, error) {
+func (m *MockIContactSystemService) DoRead(arg0 context.Context, arg1 string) (*contactsystem.ContactSystem, message.IMessage) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "DoRead", arg0, arg1)
 	ret0, _ := ret[0].(*contactsystem.ContactSystem)
-	ret1, _ := ret[1].(error)
+	ret1, _ := ret[1].(message.IMessage)
 	return ret0, ret1
 }
 
@@ -50,11 +51,11 @@ func (mr *MockIContactSystemServiceMockRecorder) DoRead(arg0, arg1 interface{}) 
 }
 
 // DoReadAll mocks base method
-func (m *MockIContactSystemService) DoReadAll(arg0 context.Context) ([]*contactsystem.ContactSystem, error) {
+func (m *MockIContactSystemService) DoReadAll(arg0 context.Context) ([]*contactsystem.ContactSystem, message.IMessage) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "DoReadAll", arg0)
 	ret0, _ := ret[0].([]*contactsystem.ContactSystem)
-	ret1, _ := ret[1].(error)
+	ret1, _ := ret[1].(message.IMessage)
 	return ret0, ret1
 }
 
@@ -65,10 +66,10 @@ func (mr *MockIContactSystemServiceMockRecorder) DoReadAll(arg0 interface{}) *go
 }
 
 // DoSave mocks base method
-func (m *MockIContactSystemService) DoSave(arg0 context.Context, arg1 *contactsystem.ContactSystem) error {
+func (m *MockIContactSystemService) DoSave(arg0 context.Context, arg1 *contactsystem.ContactSystem) message.IMessage {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "DoSave", arg0, arg1)
-	ret0, _ := ret[0].(error)
+	ret0, _ := ret[0].(message.IMessage)
 	return ret0
 }
 
@@ -79,10 +80,10 @@ func (mr *MockIContactSystemServiceMockRecorder) DoSave(arg0, arg1 interface{}) 
 }
 
 // DoDelete mocks base method
-func (m *MockIContactSystemService) DoDelete(arg0 context.Context, arg1 string) error {
+func (m *MockIContactSystemService) DoDelete(arg0 context.Context, arg1 string) message.IMessage {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "DoDelete", arg0, arg1)
-	ret0, _ := ret[0].(error)
+	ret0, _ := ret[0].(message.IMessage)
 	return ret0
 }
 

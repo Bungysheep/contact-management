@@ -11,8 +11,6 @@ import (
 	"github.com/DATA-DOG/go-sqlmock"
 	auditmodel "github.com/bungysheep/contact-management/pkg/models/v1/audit"
 	contactmodel "github.com/bungysheep/contact-management/pkg/models/v1/contact"
-	"google.golang.org/grpc/codes"
-	"google.golang.org/grpc/status"
 )
 
 var (
@@ -183,13 +181,8 @@ func doSaveFailValidation(ctx context.Context) func(t *testing.T) {
 		}
 
 		err := svc.DoSave(ctx, input)
-		if err != nil {
-			s, ok := status.FromError(err)
-			if ok {
-				if s.Code() != codes.Unknown {
-					t.Fatalf("Expect a Unknown error, but got %s", s.Code())
-				}
-			}
+		if err == nil {
+			t.Fatalf("Expect error is not nil")
 		}
 	}
 }
@@ -205,13 +198,8 @@ func doSaveInvalidContactSystem(ctx context.Context, input *contactmodel.Contact
 		expQuery.WithArgs(input.GetContactSystemCode()).WillReturnRows(rows)
 
 		err := svc.DoSave(ctx, input)
-		if err != nil {
-			s, ok := status.FromError(err)
-			if ok {
-				if s.Code() != codes.NotFound {
-					t.Fatalf("Expect a NotFound error, but got %s", s.Code())
-				}
-			}
+		if err == nil {
+			t.Fatalf("Expect error is not nil")
 		}
 	}
 }
@@ -291,13 +279,8 @@ func doDeleteFailContactCommunicationMethod(ctx context.Context, input *contactm
 		expQuery.WithArgs(input.GetContactSystemCode(), input.GetContactID()).WillReturnError(fmt.Errorf("Delete all contact communication methods failed"))
 
 		err := svc.DoDelete(ctx, input.GetContactSystemCode(), input.GetContactID())
-		if err != nil {
-			s, ok := status.FromError(err)
-			if ok {
-				if s.Code() != codes.Unknown {
-					t.Fatalf("Expect a Unknown error, but got %s", s.Code())
-				}
-			}
+		if err == nil {
+			t.Fatalf("Expect error is not nil")
 		}
 	}
 }

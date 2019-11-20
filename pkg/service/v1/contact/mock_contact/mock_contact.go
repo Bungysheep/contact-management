@@ -7,6 +7,7 @@ package mock_contact
 import (
 	context "context"
 	contact "github.com/bungysheep/contact-management/pkg/models/v1/contact"
+	message "github.com/bungysheep/contact-management/pkg/models/v1/message"
 	gomock "github.com/golang/mock/gomock"
 	reflect "reflect"
 )
@@ -35,11 +36,11 @@ func (m *MockIContactService) EXPECT() *MockIContactServiceMockRecorder {
 }
 
 // DoRead mocks base method
-func (m *MockIContactService) DoRead(arg0 context.Context, arg1 string, arg2 int64) (*contact.Contact, error) {
+func (m *MockIContactService) DoRead(arg0 context.Context, arg1 string, arg2 int64) (*contact.Contact, message.IMessage) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "DoRead", arg0, arg1, arg2)
 	ret0, _ := ret[0].(*contact.Contact)
-	ret1, _ := ret[1].(error)
+	ret1, _ := ret[1].(message.IMessage)
 	return ret0, ret1
 }
 
@@ -50,11 +51,11 @@ func (mr *MockIContactServiceMockRecorder) DoRead(arg0, arg1, arg2 interface{}) 
 }
 
 // DoReadAll mocks base method
-func (m *MockIContactService) DoReadAll(arg0 context.Context, arg1 string) ([]*contact.Contact, error) {
+func (m *MockIContactService) DoReadAll(arg0 context.Context, arg1 string) ([]*contact.Contact, message.IMessage) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "DoReadAll", arg0, arg1)
 	ret0, _ := ret[0].([]*contact.Contact)
-	ret1, _ := ret[1].(error)
+	ret1, _ := ret[1].(message.IMessage)
 	return ret0, ret1
 }
 
@@ -65,10 +66,10 @@ func (mr *MockIContactServiceMockRecorder) DoReadAll(arg0, arg1 interface{}) *go
 }
 
 // DoSave mocks base method
-func (m *MockIContactService) DoSave(arg0 context.Context, arg1 *contact.Contact) error {
+func (m *MockIContactService) DoSave(arg0 context.Context, arg1 *contact.Contact) message.IMessage {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "DoSave", arg0, arg1)
-	ret0, _ := ret[0].(error)
+	ret0, _ := ret[0].(message.IMessage)
 	return ret0
 }
 
@@ -79,10 +80,10 @@ func (mr *MockIContactServiceMockRecorder) DoSave(arg0, arg1 interface{}) *gomoc
 }
 
 // DoDelete mocks base method
-func (m *MockIContactService) DoDelete(arg0 context.Context, arg1 string, arg2 int64) error {
+func (m *MockIContactService) DoDelete(arg0 context.Context, arg1 string, arg2 int64) message.IMessage {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "DoDelete", arg0, arg1, arg2)
-	ret0, _ := ret[0].(error)
+	ret0, _ := ret[0].(message.IMessage)
 	return ret0
 }
 

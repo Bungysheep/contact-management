@@ -7,6 +7,7 @@ package mock_contactcommunicationmethodfield
 import (
 	context "context"
 	contactcommunicationmethodfield "github.com/bungysheep/contact-management/pkg/models/v1/contactcommunicationmethodfield"
+	message "github.com/bungysheep/contact-management/pkg/models/v1/message"
 	gomock "github.com/golang/mock/gomock"
 	reflect "reflect"
 )
@@ -35,11 +36,11 @@ func (m *MockIContactCommunicationMethodFieldRepository) EXPECT() *MockIContactC
 }
 
 // DoRead mocks base method
-func (m *MockIContactCommunicationMethodFieldRepository) DoRead(arg0 context.Context, arg1 string, arg2, arg3 int64) ([]*contactcommunicationmethodfield.ContactCommunicationMethodField, error) {
+func (m *MockIContactCommunicationMethodFieldRepository) DoRead(arg0 context.Context, arg1 string, arg2, arg3 int64) ([]*contactcommunicationmethodfield.ContactCommunicationMethodField, message.IMessage) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "DoRead", arg0, arg1, arg2, arg3)
 	ret0, _ := ret[0].([]*contactcommunicationmethodfield.ContactCommunicationMethodField)
-	ret1, _ := ret[1].(error)
+	ret1, _ := ret[1].(message.IMessage)
 	return ret0, ret1
 }
 
@@ -50,10 +51,10 @@ func (mr *MockIContactCommunicationMethodFieldRepositoryMockRecorder) DoRead(arg
 }
 
 // DoInsert mocks base method
-func (m *MockIContactCommunicationMethodFieldRepository) DoInsert(arg0 context.Context, arg1 *contactcommunicationmethodfield.ContactCommunicationMethodField) error {
+func (m *MockIContactCommunicationMethodFieldRepository) DoInsert(arg0 context.Context, arg1 *contactcommunicationmethodfield.ContactCommunicationMethodField) message.IMessage {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "DoInsert", arg0, arg1)
-	ret0, _ := ret[0].(error)
+	ret0, _ := ret[0].(message.IMessage)
 	return ret0
 }
 
@@ -64,10 +65,10 @@ func (mr *MockIContactCommunicationMethodFieldRepositoryMockRecorder) DoInsert(a
 }
 
 // DoUpdate mocks base method
-func (m *MockIContactCommunicationMethodFieldRepository) DoUpdate(arg0 context.Context, arg1 *contactcommunicationmethodfield.ContactCommunicationMethodField) error {
+func (m *MockIContactCommunicationMethodFieldRepository) DoUpdate(arg0 context.Context, arg1 *contactcommunicationmethodfield.ContactCommunicationMethodField) message.IMessage {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "DoUpdate", arg0, arg1)
-	ret0, _ := ret[0].(error)
+	ret0, _ := ret[0].(message.IMessage)
 	return ret0
 }
 
@@ -78,10 +79,10 @@ func (mr *MockIContactCommunicationMethodFieldRepositoryMockRecorder) DoUpdate(a
 }
 
 // DoDelete mocks base method
-func (m *MockIContactCommunicationMethodFieldRepository) DoDelete(arg0 context.Context, arg1 string, arg2, arg3 int64) error {
+func (m *MockIContactCommunicationMethodFieldRepository) DoDelete(arg0 context.Context, arg1 string, arg2, arg3 int64) message.IMessage {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "DoDelete", arg0, arg1, arg2, arg3)
-	ret0, _ := ret[0].(error)
+	ret0, _ := ret[0].(message.IMessage)
 	return ret0
 }
 

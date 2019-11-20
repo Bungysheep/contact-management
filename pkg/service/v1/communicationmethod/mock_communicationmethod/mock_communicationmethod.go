@@ -7,6 +7,7 @@ package mock_communicationmethod
 import (
 	context "context"
 	communicationmethod "github.com/bungysheep/contact-management/pkg/models/v1/communicationmethod"
+	message "github.com/bungysheep/contact-management/pkg/models/v1/message"
 	gomock "github.com/golang/mock/gomock"
 	reflect "reflect"
 )
@@ -35,11 +36,11 @@ func (m *MockICommunicationMethodService) EXPECT() *MockICommunicationMethodServ
 }
 
 // DoRead mocks base method
-func (m *MockICommunicationMethodService) DoRead(arg0 context.Context, arg1, arg2 string) (*communicationmethod.CommunicationMethod, error) {
+func (m *MockICommunicationMethodService) DoRead(arg0 context.Context, arg1, arg2 string) (*communicationmethod.CommunicationMethod, message.IMessage) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "DoRead", arg0, arg1, arg2)
 	ret0, _ := ret[0].(*communicationmethod.CommunicationMethod)
-	ret1, _ := ret[1].(error)
+	ret1, _ := ret[1].(message.IMessage)
 	return ret0, ret1
 }
 
@@ -50,11 +51,11 @@ func (mr *MockICommunicationMethodServiceMockRecorder) DoRead(arg0, arg1, arg2 i
 }
 
 // DoReadAll mocks base method
-func (m *MockICommunicationMethodService) DoReadAll(arg0 context.Context, arg1 string) ([]*communicationmethod.CommunicationMethod, error) {
+func (m *MockICommunicationMethodService) DoReadAll(arg0 context.Context, arg1 string) ([]*communicationmethod.CommunicationMethod, message.IMessage) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "DoReadAll", arg0, arg1)
 	ret0, _ := ret[0].([]*communicationmethod.CommunicationMethod)
-	ret1, _ := ret[1].(error)
+	ret1, _ := ret[1].(message.IMessage)
 	return ret0, ret1
 }
 
@@ -65,10 +66,10 @@ func (mr *MockICommunicationMethodServiceMockRecorder) DoReadAll(arg0, arg1 inte
 }
 
 // DoSave mocks base method
-func (m *MockICommunicationMethodService) DoSave(arg0 context.Context, arg1 *communicationmethod.CommunicationMethod) error {
+func (m *MockICommunicationMethodService) DoSave(arg0 context.Context, arg1 *communicationmethod.CommunicationMethod) message.IMessage {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "DoSave", arg0, arg1)
-	ret0, _ := ret[0].(error)
+	ret0, _ := ret[0].(message.IMessage)
 	return ret0
 }
 
@@ -79,10 +80,10 @@ func (mr *MockICommunicationMethodServiceMockRecorder) DoSave(arg0, arg1 interfa
 }
 
 // DoDelete mocks base method
-func (m *MockICommunicationMethodService) DoDelete(arg0 context.Context, arg1, arg2 string) error {
+func (m *MockICommunicationMethodService) DoDelete(arg0 context.Context, arg1, arg2 string) message.IMessage {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "DoDelete", arg0, arg1, arg2)
-	ret0, _ := ret[0].(error)
+	ret0, _ := ret[0].(message.IMessage)
 	return ret0
 }
 
