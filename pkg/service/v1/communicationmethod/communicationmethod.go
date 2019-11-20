@@ -4,21 +4,21 @@ import (
 	"context"
 	"database/sql"
 
+	"github.com/bungysheep/contact-management/pkg/common/constant/messagecode"
 	communicationmethodmodel "github.com/bungysheep/contact-management/pkg/models/v1/communicationmethod"
+	messagemodel "github.com/bungysheep/contact-management/pkg/models/v1/message"
 	communicationmethodrepository "github.com/bungysheep/contact-management/pkg/repository/v1/communicationmethod"
 	communicationmethodfieldrepository "github.com/bungysheep/contact-management/pkg/repository/v1/communicationmethodfield"
 	communicationmethodlabelrepository "github.com/bungysheep/contact-management/pkg/repository/v1/communicationmethodlabel"
 	contactsystemrepository "github.com/bungysheep/contact-management/pkg/repository/v1/contactsystem"
-	"google.golang.org/grpc/codes"
-	"google.golang.org/grpc/status"
 )
 
 // ICommunicationMethodService - Communication Method service interface
 type ICommunicationMethodService interface {
-	DoRead(context.Context, string, string) (*communicationmethodmodel.CommunicationMethod, error)
-	DoReadAll(context.Context, string) ([]*communicationmethodmodel.CommunicationMethod, error)
-	DoSave(context.Context, *communicationmethodmodel.CommunicationMethod) error
-	DoDelete(context.Context, string, string) error
+	DoRead(context.Context, string, string) (*communicationmethodmodel.CommunicationMethod, messagemodel.IMessage)
+	DoReadAll(context.Context, string) ([]*communicationmethodmodel.CommunicationMethod, messagemodel.IMessage)
+	DoSave(context.Context, *communicationmethodmodel.CommunicationMethod) messagemodel.IMessage
+	DoDelete(context.Context, string, string) messagemodel.IMessage
 }
 
 type communicationMethodService struct {
@@ -38,15 +38,15 @@ func NewCommunicationMethodService(db *sql.DB) ICommunicationMethodService {
 	}
 }
 
-func (cm *communicationMethodService) DoRead(ctx context.Context, contactSystemCode string, communicationMethodCode string) (*communicationmethodmodel.CommunicationMethod, error) {
+func (cm *communicationMethodService) DoRead(ctx context.Context, contactSystemCode string, communicationMethodCode string) (*communicationmethodmodel.CommunicationMethod, messagemodel.IMessage) {
 	return cm.communicationMethodRepo.DoRead(ctx, contactSystemCode, communicationMethodCode)
 }
 
-func (cm *communicationMethodService) DoReadAll(ctx context.Context, contactSystemCode string) ([]*communicationmethodmodel.CommunicationMethod, error) {
+func (cm *communicationMethodService) DoReadAll(ctx context.Context, contactSystemCode string) ([]*communicationmethodmodel.CommunicationMethod, messagemodel.IMessage) {
 	return cm.communicationMethodRepo.DoReadAll(ctx, contactSystemCode)
 }
 
-func (cm *communicationMethodService) DoSave(ctx context.Context, data *communicationmethodmodel.CommunicationMethod) error {
+func (cm *communicationMethodService) DoSave(ctx context.Context, data *communicationmethodmodel.CommunicationMethod) messagemodel.IMessage {
 	if err := data.DoValidate(); err != nil {
 		return err
 	}
@@ -56,18 +56,15 @@ func (cm *communicationMethodService) DoSave(ctx context.Context, data *communic
 	}
 
 	if err := cm.communicationMethodRepo.DoUpdate(ctx, data); err != nil {
-		s, ok := status.FromError(err)
-		if ok {
-			if s.Code() == codes.NotFound {
-				return cm.communicationMethodRepo.DoInsert(ctx, data)
-			}
+		if err.Code() == messagecode.NotFound {
+			return cm.communicationMethodRepo.DoInsert(ctx, data)
 		}
 	}
 
 	return nil
 }
 
-func (cm *communicationMethodService) DoDelete(ctx context.Context, contactSystemCode string, communicationMethodCode string) error {
+func (cm *communicationMethodService) DoDelete(ctx context.Context, contactSystemCode string, communicationMethodCode string) messagemodel.IMessage {
 	if err := cm.communicationMethodFieldRepo.DoDeleteAll(ctx, contactSystemCode, communicationMethodCode); err != nil {
 		return err
 	}
@@ -79,7 +76,7 @@ func (cm *communicationMethodService) DoDelete(ctx context.Context, contactSyste
 	return cm.communicationMethodRepo.DoDelete(ctx, contactSystemCode, communicationMethodCode)
 }
 
-func (cm *communicationMethodService) DoValidate(ctx context.Context, data *communicationmethodmodel.CommunicationMethod) error {
+func (cm *communicationMethodService) DoValidate(ctx context.Context, data *communicationmethodmodel.CommunicationMethod) messagemodel.IMessage {
 	if _, err := cm.contactSystemRepo.DoRead(ctx, data.GetContactSystemCode()); err != nil {
 		return err
 	}

@@ -9,8 +9,6 @@ import (
 
 	"github.com/DATA-DOG/go-sqlmock"
 	communicationmethodlabelmodel "github.com/bungysheep/contact-management/pkg/models/v1/communicationmethodlabel"
-	"google.golang.org/grpc/codes"
-	"google.golang.org/grpc/status"
 )
 
 var (
@@ -163,13 +161,8 @@ func doSaveFailValidation(ctx context.Context) func(t *testing.T) {
 		}
 
 		err := svc.DoSave(ctx, input)
-		if err != nil {
-			s, ok := status.FromError(err)
-			if ok {
-				if s.Code() != codes.Unknown {
-					t.Fatalf("Expect a Unknown error, but got %s", s.Code())
-				}
-			}
+		if err == nil {
+			t.Fatalf("Expect error is not nil")
 		}
 	}
 }
@@ -185,13 +178,8 @@ func doSaveInvalidCommunicationMethod(ctx context.Context, input *communicationm
 		expQuery.WithArgs(input.GetContactSystemCode(), input.GetCommunicationMethodCode()).WillReturnRows(rows)
 
 		err := svc.DoSave(ctx, input)
-		if err != nil {
-			s, ok := status.FromError(err)
-			if ok {
-				if s.Code() != codes.NotFound {
-					t.Fatalf("Expect a NotFound error, but got %s", s.Code())
-				}
-			}
+		if err == nil {
+			t.Fatalf("Expect error is not nil")
 		}
 	}
 }

@@ -7,6 +7,7 @@ package mock_communicationmethodfield
 import (
 	context "context"
 	communicationmethodfield "github.com/bungysheep/contact-management/pkg/models/v1/communicationmethodfield"
+	message "github.com/bungysheep/contact-management/pkg/models/v1/message"
 	gomock "github.com/golang/mock/gomock"
 	reflect "reflect"
 )
@@ -35,11 +36,11 @@ func (m *MockICommunicationMethodFieldService) EXPECT() *MockICommunicationMetho
 }
 
 // DoRead mocks base method
-func (m *MockICommunicationMethodFieldService) DoRead(arg0 context.Context, arg1, arg2, arg3 string) (*communicationmethodfield.CommunicationMethodField, error) {
+func (m *MockICommunicationMethodFieldService) DoRead(arg0 context.Context, arg1, arg2, arg3 string) (*communicationmethodfield.CommunicationMethodField, message.IMessage) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "DoRead", arg0, arg1, arg2, arg3)
 	ret0, _ := ret[0].(*communicationmethodfield.CommunicationMethodField)
-	ret1, _ := ret[1].(error)
+	ret1, _ := ret[1].(message.IMessage)
 	return ret0, ret1
 }
 
@@ -50,11 +51,11 @@ func (mr *MockICommunicationMethodFieldServiceMockRecorder) DoRead(arg0, arg1, a
 }
 
 // DoReadAll mocks base method
-func (m *MockICommunicationMethodFieldService) DoReadAll(arg0 context.Context, arg1, arg2 string) ([]*communicationmethodfield.CommunicationMethodField, error) {
+func (m *MockICommunicationMethodFieldService) DoReadAll(arg0 context.Context, arg1, arg2 string) ([]*communicationmethodfield.CommunicationMethodField, message.IMessage) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "DoReadAll", arg0, arg1, arg2)
 	ret0, _ := ret[0].([]*communicationmethodfield.CommunicationMethodField)
-	ret1, _ := ret[1].(error)
+	ret1, _ := ret[1].(message.IMessage)
 	return ret0, ret1
 }
 
@@ -65,10 +66,10 @@ func (mr *MockICommunicationMethodFieldServiceMockRecorder) DoReadAll(arg0, arg1
 }
 
 // DoSave mocks base method
-func (m *MockICommunicationMethodFieldService) DoSave(arg0 context.Context, arg1 *communicationmethodfield.CommunicationMethodField) error {
+func (m *MockICommunicationMethodFieldService) DoSave(arg0 context.Context, arg1 *communicationmethodfield.CommunicationMethodField) message.IMessage {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "DoSave", arg0, arg1)
-	ret0, _ := ret[0].(error)
+	ret0, _ := ret[0].(message.IMessage)
 	return ret0
 }
 
@@ -79,10 +80,10 @@ func (mr *MockICommunicationMethodFieldServiceMockRecorder) DoSave(arg0, arg1 in
 }
 
 // DoDelete mocks base method
-func (m *MockICommunicationMethodFieldService) DoDelete(arg0 context.Context, arg1, arg2, arg3 string) error {
+func (m *MockICommunicationMethodFieldService) DoDelete(arg0 context.Context, arg1, arg2, arg3 string) message.IMessage {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "DoDelete", arg0, arg1, arg2, arg3)
-	ret0, _ := ret[0].(error)
+	ret0, _ := ret[0].(message.IMessage)
 	return ret0
 }
 

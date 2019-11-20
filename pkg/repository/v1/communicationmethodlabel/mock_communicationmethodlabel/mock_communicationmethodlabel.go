@@ -7,6 +7,7 @@ package mock_communicationmethodlabel
 import (
 	context "context"
 	communicationmethodlabel "github.com/bungysheep/contact-management/pkg/models/v1/communicationmethodlabel"
+	message "github.com/bungysheep/contact-management/pkg/models/v1/message"
 	gomock "github.com/golang/mock/gomock"
 	reflect "reflect"
 )
@@ -35,11 +36,11 @@ func (m *MockICommunicationMethodLabelRepository) EXPECT() *MockICommunicationMe
 }
 
 // DoRead mocks base method
-func (m *MockICommunicationMethodLabelRepository) DoRead(arg0 context.Context, arg1, arg2, arg3 string) (*communicationmethodlabel.CommunicationMethodLabel, error) {
+func (m *MockICommunicationMethodLabelRepository) DoRead(arg0 context.Context, arg1, arg2, arg3 string) (*communicationmethodlabel.CommunicationMethodLabel, message.IMessage) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "DoRead", arg0, arg1, arg2, arg3)
 	ret0, _ := ret[0].(*communicationmethodlabel.CommunicationMethodLabel)
-	ret1, _ := ret[1].(error)
+	ret1, _ := ret[1].(message.IMessage)
 	return ret0, ret1
 }
 
@@ -50,11 +51,11 @@ func (mr *MockICommunicationMethodLabelRepositoryMockRecorder) DoRead(arg0, arg1
 }
 
 // DoReadAll mocks base method
-func (m *MockICommunicationMethodLabelRepository) DoReadAll(arg0 context.Context, arg1, arg2 string) ([]*communicationmethodlabel.CommunicationMethodLabel, error) {
+func (m *MockICommunicationMethodLabelRepository) DoReadAll(arg0 context.Context, arg1, arg2 string) ([]*communicationmethodlabel.CommunicationMethodLabel, message.IMessage) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "DoReadAll", arg0, arg1, arg2)
 	ret0, _ := ret[0].([]*communicationmethodlabel.CommunicationMethodLabel)
-	ret1, _ := ret[1].(error)
+	ret1, _ := ret[1].(message.IMessage)
 	return ret0, ret1
 }
 
@@ -65,10 +66,10 @@ func (mr *MockICommunicationMethodLabelRepositoryMockRecorder) DoReadAll(arg0, a
 }
 
 // DoInsert mocks base method
-func (m *MockICommunicationMethodLabelRepository) DoInsert(arg0 context.Context, arg1 *communicationmethodlabel.CommunicationMethodLabel) error {
+func (m *MockICommunicationMethodLabelRepository) DoInsert(arg0 context.Context, arg1 *communicationmethodlabel.CommunicationMethodLabel) message.IMessage {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "DoInsert", arg0, arg1)
-	ret0, _ := ret[0].(error)
+	ret0, _ := ret[0].(message.IMessage)
 	return ret0
 }
 
@@ -79,10 +80,10 @@ func (mr *MockICommunicationMethodLabelRepositoryMockRecorder) DoInsert(arg0, ar
 }
 
 // DoUpdate mocks base method
-func (m *MockICommunicationMethodLabelRepository) DoUpdate(arg0 context.Context, arg1 *communicationmethodlabel.CommunicationMethodLabel) error {
+func (m *MockICommunicationMethodLabelRepository) DoUpdate(arg0 context.Context, arg1 *communicationmethodlabel.CommunicationMethodLabel) message.IMessage {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "DoUpdate", arg0, arg1)
-	ret0, _ := ret[0].(error)
+	ret0, _ := ret[0].(message.IMessage)
 	return ret0
 }
 
@@ -93,10 +94,10 @@ func (mr *MockICommunicationMethodLabelRepositoryMockRecorder) DoUpdate(arg0, ar
 }
 
 // DoDelete mocks base method
-func (m *MockICommunicationMethodLabelRepository) DoDelete(arg0 context.Context, arg1, arg2, arg3 string) error {
+func (m *MockICommunicationMethodLabelRepository) DoDelete(arg0 context.Context, arg1, arg2, arg3 string) message.IMessage {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "DoDelete", arg0, arg1, arg2, arg3)
-	ret0, _ := ret[0].(error)
+	ret0, _ := ret[0].(message.IMessage)
 	return ret0
 }
 
@@ -107,10 +108,10 @@ func (mr *MockICommunicationMethodLabelRepositoryMockRecorder) DoDelete(arg0, ar
 }
 
 // DoDeleteAll mocks base method
-func (m *MockICommunicationMethodLabelRepository) DoDeleteAll(arg0 context.Context, arg1, arg2 string) error {
+func (m *MockICommunicationMethodLabelRepository) DoDeleteAll(arg0 context.Context, arg1, arg2 string) message.IMessage {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "DoDeleteAll", arg0, arg1, arg2)
-	ret0, _ := ret[0].(error)
+	ret0, _ := ret[0].(message.IMessage)
 	return ret0
 }
 

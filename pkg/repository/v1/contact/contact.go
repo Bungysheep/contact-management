@@ -6,18 +6,17 @@ import (
 
 	"github.com/bungysheep/contact-management/pkg/common/message"
 	contactmodel "github.com/bungysheep/contact-management/pkg/models/v1/contact"
-	"google.golang.org/grpc/codes"
-	"google.golang.org/grpc/status"
+	messagemodel "github.com/bungysheep/contact-management/pkg/models/v1/message"
 )
 
 // IContactRepository - Contact repository interface
 type IContactRepository interface {
-	DoRead(context.Context, string, int64) (*contactmodel.Contact, error)
-	DoReadAll(context.Context, string) ([]*contactmodel.Contact, error)
-	DoInsert(context.Context, *contactmodel.Contact) error
-	DoUpdate(context.Context, *contactmodel.Contact) error
-	DoDelete(context.Context, string, int64) error
-	AnyReference(context.Context, string) (bool, error)
+	DoRead(context.Context, string, int64) (*contactmodel.Contact, messagemodel.IMessage)
+	DoReadAll(context.Context, string) ([]*contactmodel.Contact, messagemodel.IMessage)
+	DoInsert(context.Context, *contactmodel.Contact) messagemodel.IMessage
+	DoUpdate(context.Context, *contactmodel.Contact) messagemodel.IMessage
+	DoDelete(context.Context, string, int64) messagemodel.IMessage
+	AnyReference(context.Context, string) (bool, messagemodel.IMessage)
 }
 
 type contactRepository struct {
@@ -29,12 +28,12 @@ func NewContactRepository(db *sql.DB) IContactRepository {
 	return &contactRepository{db: db}
 }
 
-func (cm *contactRepository) DoRead(ctx context.Context, contactSystemCode string, contactID int64) (*contactmodel.Contact, error) {
+func (cm *contactRepository) DoRead(ctx context.Context, contactSystemCode string, contactID int64) (*contactmodel.Contact, messagemodel.IMessage) {
 	result := contactmodel.NewContact()
 
 	conn, err := cm.db.Conn(ctx)
 	if err != nil {
-		return nil, status.Errorf(codes.Unknown, message.FailedConnectToDatabase(err))
+		return nil, message.FailedConnectToDatabase(err)
 	}
 	defer conn.Close()
 
@@ -45,20 +44,20 @@ func (cm *contactRepository) DoRead(ctx context.Context, contactSystemCode strin
 		WHERE contact_system_code=$1 
 			AND contact_id=$2`)
 	if err != nil {
-		return nil, status.Errorf(codes.Unknown, message.FailedPrepareRead("Contact", err))
+		return nil, message.FailedPrepareRead("Contact", err)
 	}
 
 	rows, err := stmt.QueryContext(ctx, contactSystemCode, contactID)
 	if err != nil {
-		return nil, status.Errorf(codes.Unknown, message.FailedRead("Contact", err))
+		return nil, message.FailedRead("Contact", err)
 	}
 	defer rows.Close()
 
 	if !rows.Next() {
 		if err := rows.Err(); err != nil {
-			return nil, status.Errorf(codes.Unknown, message.FailedRetrieveRow("Contact", err))
+			return nil, message.FailedRetrieveRow("Contact", err)
 		}
-		return nil, status.Errorf(codes.NotFound, message.DoesNotExist("Contact"))
+		return nil, message.DoesNotExist("Contact")
 	}
 
 	if err := rows.Scan(
@@ -70,18 +69,18 @@ func (cm *contactRepository) DoRead(ctx context.Context, contactSystemCode strin
 		&result.GetAudit().CreatedAt,
 		&result.GetAudit().ModifiedAt,
 		&result.GetAudit().Vers); err != nil {
-		return nil, status.Errorf(codes.Unknown, message.FailedRetrieveValues("Contact", err))
+		return nil, message.FailedRetrieveValues("Contact", err)
 	}
 
 	return result, nil
 }
 
-func (cm *contactRepository) DoReadAll(ctx context.Context, contactSystemCode string) ([]*contactmodel.Contact, error) {
+func (cm *contactRepository) DoReadAll(ctx context.Context, contactSystemCode string) ([]*contactmodel.Contact, messagemodel.IMessage) {
 	result := make([]*contactmodel.Contact, 0)
 
 	conn, err := cm.db.Conn(ctx)
 	if err != nil {
-		return result, status.Errorf(codes.Unknown, message.FailedConnectToDatabase(err))
+		return result, message.FailedConnectToDatabase(err)
 	}
 	defer conn.Close()
 
@@ -91,22 +90,22 @@ func (cm *contactRepository) DoReadAll(ctx context.Context, contactSystemCode st
 		FROM contact 
 		WHERE contact_system_code=$1`)
 	if err != nil {
-		return result, status.Errorf(codes.Unknown, message.FailedPrepareRead("Contact", err))
+		return result, message.FailedPrepareRead("Contact", err)
 	}
 
 	rows, err := stmt.QueryContext(ctx, contactSystemCode)
 	if err != nil {
-		return result, status.Errorf(codes.Unknown, message.FailedRead("Contact", err))
+		return result, message.FailedRead("Contact", err)
 	}
 	defer rows.Close()
 
 	for {
 		if !rows.Next() {
 			if err := rows.Err(); err != nil {
-				return result, status.Errorf(codes.Unknown, message.FailedRetrieveRow("Contact", err))
+				return result, message.FailedRetrieveRow("Contact", err)
 			}
 			if len(result) == 0 {
-				return result, status.Errorf(codes.NotFound, message.DoesNotExist("Contact"))
+				return result, message.DoesNotExist("Contact")
 			}
 			break
 		}
@@ -121,7 +120,7 @@ func (cm *contactRepository) DoReadAll(ctx context.Context, contactSystemCode st
 			&contact.GetAudit().CreatedAt,
 			&contact.GetAudit().ModifiedAt,
 			&contact.GetAudit().Vers); err != nil {
-			return result, status.Errorf(codes.Unknown, message.FailedRetrieveValues("Contact", err))
+			return result, message.FailedRetrieveValues("Contact", err)
 		}
 
 		result = append(result, contact)
@@ -130,10 +129,10 @@ func (cm *contactRepository) DoReadAll(ctx context.Context, contactSystemCode st
 	return result, nil
 }
 
-func (cm *contactRepository) DoInsert(ctx context.Context, data *contactmodel.Contact) error {
+func (cm *contactRepository) DoInsert(ctx context.Context, data *contactmodel.Contact) messagemodel.IMessage {
 	conn, err := cm.db.Conn(ctx)
 	if err != nil {
-		return status.Errorf(codes.Unknown, message.FailedConnectToDatabase(err))
+		return message.FailedConnectToDatabase(err)
 	}
 	defer conn.Close()
 
@@ -144,26 +143,26 @@ func (cm *contactRepository) DoInsert(ctx context.Context, data *contactmodel.Co
 		VALUES ($1, $2, $3, $4, 
 			$5, $6, 1)`)
 	if err != nil {
-		return status.Errorf(codes.Unknown, message.FailedPrepareInsert("Contact", err))
+		return message.FailedPrepareInsert("Contact", err)
 	}
 
 	result, err := stmt.ExecContext(ctx, data.GetContactSystemCode(), data.GetFirstName(), data.GetLastName(), data.GetStatus(), data.GetAudit().GetCreatedAt(), data.GetAudit().GetModifiedAt())
 	if err != nil {
-		return status.Errorf(codes.Unknown, message.FailedInsert("Contact", err))
+		return message.FailedInsert("Contact", err)
 	}
 
 	rows, _ := result.RowsAffected()
 	if rows == 0 {
-		return status.Errorf(codes.Unknown, message.NoRowInserted())
+		return message.NoRowInserted()
 	}
 
 	return nil
 }
 
-func (cm *contactRepository) DoUpdate(ctx context.Context, data *contactmodel.Contact) error {
+func (cm *contactRepository) DoUpdate(ctx context.Context, data *contactmodel.Contact) messagemodel.IMessage {
 	conn, err := cm.db.Conn(ctx)
 	if err != nil {
-		return status.Errorf(codes.Unknown, message.FailedConnectToDatabase(err))
+		return message.FailedConnectToDatabase(err)
 	}
 	defer conn.Close()
 
@@ -173,26 +172,26 @@ func (cm *contactRepository) DoUpdate(ctx context.Context, data *contactmodel.Co
 		WHERE contact_system_code=$1 
 			AND contact_id=$2`)
 	if err != nil {
-		return status.Errorf(codes.Unknown, message.FailedPrepareUpdate("Contact", err))
+		return message.FailedPrepareUpdate("Contact", err)
 	}
 
 	result, err := stmt.ExecContext(ctx, data.GetContactSystemCode(), data.GetContactID(), data.GetFirstName(), data.GetLastName(), data.GetStatus(), data.GetAudit().GetModifiedAt())
 	if err != nil {
-		return status.Errorf(codes.Unknown, message.FailedUpdate("Contact", err))
+		return message.FailedUpdate("Contact", err)
 	}
 
 	rows, _ := result.RowsAffected()
 	if rows == 0 {
-		return status.Errorf(codes.NotFound, message.DoesNotExist("Contact"))
+		return message.DoesNotExist("Contact")
 	}
 
 	return nil
 }
 
-func (cm *contactRepository) DoDelete(ctx context.Context, contactSystemCode string, contactID int64) error {
+func (cm *contactRepository) DoDelete(ctx context.Context, contactSystemCode string, contactID int64) messagemodel.IMessage {
 	conn, err := cm.db.Conn(ctx)
 	if err != nil {
-		return status.Errorf(codes.Unknown, message.FailedConnectToDatabase(err))
+		return message.FailedConnectToDatabase(err)
 	}
 	defer conn.Close()
 
@@ -201,26 +200,26 @@ func (cm *contactRepository) DoDelete(ctx context.Context, contactSystemCode str
 		WHERE contact_system_code=$1 
 			AND contact_id=$2`)
 	if err != nil {
-		return status.Errorf(codes.Unknown, message.FailedPrepareDelete("Contact", err))
+		return message.FailedPrepareDelete("Contact", err)
 	}
 
 	result, err := stmt.ExecContext(ctx, contactSystemCode, contactID)
 	if err != nil {
-		return status.Errorf(codes.Unknown, message.FailedDelete("Contact", err))
+		return message.FailedDelete("Contact", err)
 	}
 
 	rows, _ := result.RowsAffected()
 	if rows == 0 {
-		return status.Errorf(codes.NotFound, message.DoesNotExist("Contact"))
+		return message.DoesNotExist("Contact")
 	}
 
 	return nil
 }
 
-func (cm *contactRepository) AnyReference(ctx context.Context, contactSystemCode string) (bool, error) {
+func (cm *contactRepository) AnyReference(ctx context.Context, contactSystemCode string) (bool, messagemodel.IMessage) {
 	conn, err := cm.db.Conn(ctx)
 	if err != nil {
-		return false, status.Errorf(codes.Unknown, message.FailedConnectToDatabase(err))
+		return false, message.FailedConnectToDatabase(err)
 	}
 	defer conn.Close()
 
@@ -229,18 +228,18 @@ func (cm *contactRepository) AnyReference(ctx context.Context, contactSystemCode
 		FROM contact 
 		WHERE contact_system_code=$1`)
 	if err != nil {
-		return false, status.Errorf(codes.Unknown, message.FailedPrepareRead("Contact", err))
+		return false, message.FailedPrepareRead("Contact", err)
 	}
 
 	rows, err := stmt.QueryContext(ctx, contactSystemCode)
 	if err != nil {
-		return false, status.Errorf(codes.Unknown, message.FailedRead("Contact", err))
+		return false, message.FailedRead("Contact", err)
 	}
 	defer rows.Close()
 
 	if !rows.Next() {
 		if err := rows.Err(); err != nil {
-			return false, status.Errorf(codes.Unknown, message.FailedRetrieveRow("Contact", err))
+			return false, message.FailedRetrieveRow("Contact", err)
 		}
 		return false, nil
 	}

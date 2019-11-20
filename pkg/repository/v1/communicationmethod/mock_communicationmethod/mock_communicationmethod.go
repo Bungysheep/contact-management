@@ -7,6 +7,7 @@ package mock_communicationmethod
 import (
 	context "context"
 	communicationmethod "github.com/bungysheep/contact-management/pkg/models/v1/communicationmethod"
+	message "github.com/bungysheep/contact-management/pkg/models/v1/message"
 	gomock "github.com/golang/mock/gomock"
 	reflect "reflect"
 )
@@ -35,11 +36,11 @@ func (m *MockICommunicationMethodRepository) EXPECT() *MockICommunicationMethodR
 }
 
 // DoRead mocks base method
-func (m *MockICommunicationMethodRepository) DoRead(arg0 context.Context, arg1, arg2 string) (*communicationmethod.CommunicationMethod, error) {
+func (m *MockICommunicationMethodRepository) DoRead(arg0 context.Context, arg1, arg2 string) (*communicationmethod.CommunicationMethod, message.IMessage) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "DoRead", arg0, arg1, arg2)
 	ret0, _ := ret[0].(*communicationmethod.CommunicationMethod)
-	ret1, _ := ret[1].(error)
+	ret1, _ := ret[1].(message.IMessage)
 	return ret0, ret1
 }
 
@@ -50,11 +51,11 @@ func (mr *MockICommunicationMethodRepositoryMockRecorder) DoRead(arg0, arg1, arg
 }
 
 // DoReadAll mocks base method
-func (m *MockICommunicationMethodRepository) DoReadAll(arg0 context.Context, arg1 string) ([]*communicationmethod.CommunicationMethod, error) {
+func (m *MockICommunicationMethodRepository) DoReadAll(arg0 context.Context, arg1 string) ([]*communicationmethod.CommunicationMethod, message.IMessage) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "DoReadAll", arg0, arg1)
 	ret0, _ := ret[0].([]*communicationmethod.CommunicationMethod)
-	ret1, _ := ret[1].(error)
+	ret1, _ := ret[1].(message.IMessage)
 	return ret0, ret1
 }
 
@@ -65,10 +66,10 @@ func (mr *MockICommunicationMethodRepositoryMockRecorder) DoReadAll(arg0, arg1 i
 }
 
 // DoInsert mocks base method
-func (m *MockICommunicationMethodRepository) DoInsert(arg0 context.Context, arg1 *communicationmethod.CommunicationMethod) error {
+func (m *MockICommunicationMethodRepository) DoInsert(arg0 context.Context, arg1 *communicationmethod.CommunicationMethod) message.IMessage {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "DoInsert", arg0, arg1)
-	ret0, _ := ret[0].(error)
+	ret0, _ := ret[0].(message.IMessage)
 	return ret0
 }
 
@@ -79,10 +80,10 @@ func (mr *MockICommunicationMethodRepositoryMockRecorder) DoInsert(arg0, arg1 in
 }
 
 // DoUpdate mocks base method
-func (m *MockICommunicationMethodRepository) DoUpdate(arg0 context.Context, arg1 *communicationmethod.CommunicationMethod) error {
+func (m *MockICommunicationMethodRepository) DoUpdate(arg0 context.Context, arg1 *communicationmethod.CommunicationMethod) message.IMessage {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "DoUpdate", arg0, arg1)
-	ret0, _ := ret[0].(error)
+	ret0, _ := ret[0].(message.IMessage)
 	return ret0
 }
 
@@ -93,10 +94,10 @@ func (mr *MockICommunicationMethodRepositoryMockRecorder) DoUpdate(arg0, arg1 in
 }
 
 // DoDelete mocks base method
-func (m *MockICommunicationMethodRepository) DoDelete(arg0 context.Context, arg1, arg2 string) error {
+func (m *MockICommunicationMethodRepository) DoDelete(arg0 context.Context, arg1, arg2 string) message.IMessage {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "DoDelete", arg0, arg1, arg2)
-	ret0, _ := ret[0].(error)
+	ret0, _ := ret[0].(message.IMessage)
 	return ret0
 }
 
@@ -107,11 +108,11 @@ func (mr *MockICommunicationMethodRepositoryMockRecorder) DoDelete(arg0, arg1, a
 }
 
 // AnyReference mocks base method
-func (m *MockICommunicationMethodRepository) AnyReference(arg0 context.Context, arg1 string) (bool, error) {
+func (m *MockICommunicationMethodRepository) AnyReference(arg0 context.Context, arg1 string) (bool, message.IMessage) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "AnyReference", arg0, arg1)
 	ret0, _ := ret[0].(bool)
-	ret1, _ := ret[1].(error)
+	ret1, _ := ret[1].(message.IMessage)
 	return ret0, ret1
 }
 

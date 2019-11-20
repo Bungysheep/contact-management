@@ -11,8 +11,6 @@ import (
 	"github.com/DATA-DOG/go-sqlmock"
 	auditmodel "github.com/bungysheep/contact-management/pkg/models/v1/audit"
 	communicationmethodmodel "github.com/bungysheep/contact-management/pkg/models/v1/communicationmethod"
-	"google.golang.org/grpc/codes"
-	"google.golang.org/grpc/status"
 )
 
 var (
@@ -195,13 +193,8 @@ func doSaveFailValidation(ctx context.Context) func(t *testing.T) {
 		}
 
 		err := svc.DoSave(ctx, input)
-		if err != nil {
-			s, ok := status.FromError(err)
-			if ok {
-				if s.Code() != codes.Unknown {
-					t.Fatalf("Expect a Unknown error, but got %s", s.Code())
-				}
-			}
+		if err == nil {
+			t.Fatalf("Expect error is not nil")
 		}
 	}
 }
@@ -217,13 +210,8 @@ func doSaveInvalidContactSystem(ctx context.Context, input *communicationmethodm
 		expQuery.WithArgs(input.GetContactSystemCode()).WillReturnRows(rows)
 
 		err := svc.DoSave(ctx, input)
-		if err != nil {
-			s, ok := status.FromError(err)
-			if ok {
-				if s.Code() != codes.NotFound {
-					t.Fatalf("Expect a NotFound error, but got %s", s.Code())
-				}
-			}
+		if err == nil {
+			t.Fatalf("Expect error is not nil")
 		}
 	}
 }
@@ -302,13 +290,8 @@ func doDeleteFailCommunicationMethodField(ctx context.Context, input *communicat
 		expCommMethodFieldQuery.WithArgs(input.GetContactSystemCode(), input.GetCommunicationMethodCode()).WillReturnError(fmt.Errorf("Delete all communication method fields failed"))
 
 		err := svc.DoDelete(ctx, input.GetContactSystemCode(), input.GetCommunicationMethodCode())
-		if err != nil {
-			s, ok := status.FromError(err)
-			if ok {
-				if s.Code() != codes.Unknown {
-					t.Fatalf("Expect a Unknown error, but got %s", s.Code())
-				}
-			}
+		if err == nil {
+			t.Fatalf("Expect error is not nil")
 		}
 	}
 }
@@ -322,13 +305,8 @@ func doDeleteFailCommunicationMethodLabel(ctx context.Context, input *communicat
 		expCommMethodLabelQuery.WithArgs(input.GetContactSystemCode(), input.GetCommunicationMethodCode()).WillReturnError(fmt.Errorf("Delete all communication method labels failed"))
 
 		err := svc.DoDelete(ctx, input.GetContactSystemCode(), input.GetCommunicationMethodCode())
-		if err != nil {
-			s, ok := status.FromError(err)
-			if ok {
-				if s.Code() != codes.Unknown {
-					t.Fatalf("Expect a Unknown error, but got %s", s.Code())
-				}
-			}
+		if err == nil {
+			t.Fatalf("Expect error is not nil")
 		}
 	}
 }

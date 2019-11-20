@@ -11,8 +11,6 @@ import (
 	"github.com/DATA-DOG/go-sqlmock"
 	auditmodel "github.com/bungysheep/contact-management/pkg/models/v1/audit"
 	contactsystemmodel "github.com/bungysheep/contact-management/pkg/models/v1/contactsystem"
-	"google.golang.org/grpc/codes"
-	"google.golang.org/grpc/status"
 )
 
 var (
@@ -118,14 +116,7 @@ func doReadFailContactSystem(ctx context.Context, input *contactsystemmodel.Cont
 		expQuery.WithArgs(input.GetContactSystemCode()).WillReturnError(fmt.Errorf("DoRead contact system failed"))
 
 		res, err := repo.DoRead(ctx, input.GetContactSystemCode())
-		if err != nil {
-			s, ok := status.FromError(err)
-			if ok {
-				if s.Code() != codes.Unknown {
-					t.Fatalf("Expect a Unknown error, but got %s", s.Code())
-				}
-			}
-		} else {
+		if err == nil {
 			t.Errorf("Expect error is not nil")
 		}
 
@@ -146,14 +137,7 @@ func doReadUnexistingContactSystem(ctx context.Context, input *contactsystemmode
 		expQuery.WithArgs(input.GetContactSystemCode()).WillReturnRows(rows)
 
 		res, err := repo.DoRead(ctx, input.GetContactSystemCode())
-		if err != nil {
-			s, ok := status.FromError(err)
-			if ok {
-				if s.Code() != codes.NotFound {
-					t.Fatalf("Expect a NotFound error, but got %s", s.Code())
-				}
-			}
-		} else {
+		if err == nil {
 			t.Errorf("Expect error is not nil")
 		}
 
@@ -178,14 +162,7 @@ func doReadRowErrorContactSystem(ctx context.Context, input *contactsystemmodel.
 		expQuery.WithArgs(input.GetContactSystemCode()).WillReturnRows(rows)
 
 		res, err := repo.DoRead(ctx, input.GetContactSystemCode())
-		if err != nil {
-			s, ok := status.FromError(err)
-			if ok {
-				if s.Code() != codes.Unknown {
-					t.Fatalf("Expect a Unknown error, but got %s", s.Code())
-				}
-			}
-		} else {
+		if err == nil {
 			t.Errorf("Expect error is not nil")
 		}
 
@@ -244,14 +221,7 @@ func doReadAllFailContactSystems(ctx context.Context, input *contactsystemmodel.
 		expQuery.WillReturnError(fmt.Errorf("DoReadAll contact system failed"))
 
 		res, err := repo.DoReadAll(ctx)
-		if err != nil {
-			s, ok := status.FromError(err)
-			if ok {
-				if s.Code() != codes.Unknown {
-					t.Fatalf("Expect a Unknown error, but got %s", s.Code())
-				}
-			}
-		} else {
+		if err == nil {
 			t.Errorf("Expect error is not nil")
 		}
 
@@ -276,14 +246,7 @@ func doReadAllUnexistingContactSystems(ctx context.Context, input *contactsystem
 		expQuery.WillReturnRows(rows)
 
 		res, err := repo.DoReadAll(ctx)
-		if err != nil {
-			s, ok := status.FromError(err)
-			if ok {
-				if s.Code() != codes.NotFound {
-					t.Fatalf("Expect a NotFound error, but got %s", s.Code())
-				}
-			}
-		} else {
+		if err == nil {
 			t.Errorf("Expect error is not nil")
 		}
 
@@ -314,14 +277,7 @@ func doReadAllRowErrorContactSystems(ctx context.Context, input *contactsystemmo
 		expQuery.WillReturnRows(rows)
 
 		res, err := repo.DoReadAll(ctx)
-		if err != nil {
-			s, ok := status.FromError(err)
-			if ok {
-				if s.Code() != codes.Unknown {
-					t.Fatalf("Expect a Unknown error, but got %s", s.Code())
-				}
-			}
-		} else {
+		if err == nil {
 			t.Errorf("Expect error is not nil")
 		}
 
@@ -395,14 +351,7 @@ func doSaveNewFailContactSystem(ctx context.Context, input *contactsystemmodel.C
 		expInsQuery.WithArgs(input.GetContactSystemCode(), input.GetDescription(), input.GetDetails(), input.GetStatus(), tmNow, tmNow).WillReturnError(fmt.Errorf("DoInsert contact system failed"))
 
 		err := repo.DoInsert(ctx, input)
-		if err != nil {
-			s, ok := status.FromError(err)
-			if ok {
-				if s.Code() != codes.Unknown {
-					t.Fatalf("Expect a Unknown error, but got %s", s.Code())
-				}
-			}
-		} else {
+		if err == nil {
 			t.Errorf("Expect error is not nil")
 		}
 	}
@@ -442,14 +391,7 @@ func doSaveExistingFailContactSystem(ctx context.Context, input *contactsystemmo
 		expUpdQuery.WithArgs(input.GetContactSystemCode(), input.GetDescription(), input.GetDetails(), input.GetStatus(), tmNow).WillReturnError(fmt.Errorf("DoUpdate contact system failed"))
 
 		err := repo.DoUpdate(ctx, input)
-		if err != nil {
-			s, ok := status.FromError(err)
-			if ok {
-				if s.Code() != codes.Unknown {
-					t.Fatalf("Expect a Unknown error, but got %s", s.Code())
-				}
-			}
-		} else {
+		if err == nil {
 			t.Errorf("Expect error is not nil")
 		}
 	}
@@ -481,14 +423,7 @@ func doDeleteFailContactSystem(ctx context.Context, input *contactsystemmodel.Co
 		expQuery.WithArgs(input.GetContactSystemCode()).WillReturnError(fmt.Errorf("Delete contact system failed"))
 
 		err := repo.DoDelete(ctx, input.GetContactSystemCode())
-		if err != nil {
-			s, ok := status.FromError(err)
-			if ok {
-				if s.Code() != codes.Unknown {
-					t.Fatalf("Expect a Unknown error, but got %s", s.Code())
-				}
-			}
-		} else {
+		if err == nil {
 			t.Errorf("Expect error is not nil")
 		}
 	}
@@ -500,14 +435,7 @@ func doDeleteUnexistingContactSystem(ctx context.Context, input *contactsystemmo
 		expQuery.WithArgs(input.GetContactSystemCode()).WillReturnResult(sqlmock.NewResult(0, 0))
 
 		err := repo.DoDelete(ctx, input.GetContactSystemCode())
-		if err != nil {
-			s, ok := status.FromError(err)
-			if ok {
-				if s.Code() != codes.NotFound {
-					t.Fatalf("Expect a NotFound error, but got %s", s.Code())
-				}
-			}
-		} else {
+		if err == nil {
 			t.Errorf("Expect error is not nil")
 		}
 	}

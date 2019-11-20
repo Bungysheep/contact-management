@@ -11,8 +11,6 @@ import (
 	"github.com/DATA-DOG/go-sqlmock"
 	auditmodel "github.com/bungysheep/contact-management/pkg/models/v1/audit"
 	communicationmethodfieldmodel "github.com/bungysheep/contact-management/pkg/models/v1/communicationmethodfield"
-	"google.golang.org/grpc/codes"
-	"google.golang.org/grpc/status"
 )
 
 var (
@@ -133,14 +131,7 @@ func doReadFailCommunicationMethodField(ctx context.Context, input *communicatio
 		expQuery.WithArgs(input.GetContactSystemCode(), input.GetCommunicationMethodCode(), input.GetFieldCode()).WillReturnError(fmt.Errorf("DoRead communication method field failed"))
 
 		res, err := repo.DoRead(ctx, input.GetContactSystemCode(), input.GetCommunicationMethodCode(), input.GetFieldCode())
-		if err != nil {
-			s, ok := status.FromError(err)
-			if ok {
-				if s.Code() != codes.Unknown {
-					t.Fatalf("Expect a Unknown error, but got %s", s.Code())
-				}
-			}
-		} else {
+		if err == nil {
 			t.Errorf("Expect error is not nil")
 		}
 
@@ -161,14 +152,7 @@ func doReadUnexistingCommunicationMethodField(ctx context.Context, input *commun
 		expQuery.WithArgs(input.GetContactSystemCode(), input.GetCommunicationMethodCode(), input.GetFieldCode()).WillReturnRows(rows)
 
 		res, err := repo.DoRead(ctx, input.GetContactSystemCode(), input.GetCommunicationMethodCode(), input.GetFieldCode())
-		if err != nil {
-			s, ok := status.FromError(err)
-			if ok {
-				if s.Code() != codes.NotFound {
-					t.Fatalf("Expect a NotFound error, but got %s", s.Code())
-				}
-			}
-		} else {
+		if err == nil {
 			t.Errorf("Expect error is not nil")
 		}
 
@@ -193,14 +177,7 @@ func doReadRowErrorCommunicationMethodField(ctx context.Context, input *communic
 		expQuery.WithArgs(input.GetContactSystemCode(), input.GetCommunicationMethodCode(), input.GetFieldCode()).WillReturnRows(rows)
 
 		res, err := repo.DoRead(ctx, input.GetContactSystemCode(), input.GetCommunicationMethodCode(), input.GetFieldCode())
-		if err != nil {
-			s, ok := status.FromError(err)
-			if ok {
-				if s.Code() != codes.Unknown {
-					t.Fatalf("Expect a Unknown error, but got %s", s.Code())
-				}
-			}
-		} else {
+		if err == nil {
 			t.Errorf("Expect error is not nil")
 		}
 
@@ -263,14 +240,7 @@ func doReadAllFailCommunicationMethodFields(ctx context.Context, input *communic
 		expQuery.WithArgs(input.GetContactSystemCode(), input.GetCommunicationMethodCode()).WillReturnError(fmt.Errorf("DoReadAll communication method field failed"))
 
 		res, err := repo.DoReadAll(ctx, input.GetContactSystemCode(), input.GetCommunicationMethodCode())
-		if err != nil {
-			s, ok := status.FromError(err)
-			if ok {
-				if s.Code() != codes.Unknown {
-					t.Fatalf("Expect a Unknown error, but got %s", s.Code())
-				}
-			}
-		} else {
+		if err == nil {
 			t.Errorf("Expect error is not nil")
 		}
 
@@ -295,14 +265,7 @@ func doReadAllUnexistingCommunicationMethodFields(ctx context.Context, input *co
 		expQuery.WithArgs(input.GetContactSystemCode(), input.GetCommunicationMethodCode()).WillReturnRows(rows)
 
 		res, err := repo.DoReadAll(ctx, input.GetContactSystemCode(), input.GetCommunicationMethodCode())
-		if err != nil {
-			s, ok := status.FromError(err)
-			if ok {
-				if s.Code() != codes.NotFound {
-					t.Fatalf("Expect a NotFound error, but got %s", s.Code())
-				}
-			}
-		} else {
+		if err == nil {
 			t.Errorf("Expect error is not nil")
 		}
 
@@ -333,14 +296,7 @@ func doReadAllRowErrorCommunicationMethodFields(ctx context.Context, input *comm
 		expQuery.WithArgs(input.GetContactSystemCode(), input.GetCommunicationMethodCode()).WillReturnRows(rows)
 
 		res, err := repo.DoReadAll(ctx, input.GetContactSystemCode(), input.GetCommunicationMethodCode())
-		if err != nil {
-			s, ok := status.FromError(err)
-			if ok {
-				if s.Code() != codes.Unknown {
-					t.Fatalf("Expect a Unknown error, but got %s", s.Code())
-				}
-			}
-		} else {
+		if err == nil {
 			t.Errorf("Expect error is not nil")
 		}
 
@@ -418,14 +374,7 @@ func doSaveNewFailCommunicationMethodField(ctx context.Context, input *communica
 		expInsQuery.WithArgs(input.GetContactSystemCode(), input.GetCommunicationMethodCode(), input.GetFieldCode(), input.GetCaption(), input.GetSequence(), tmNow, tmNow).WillReturnError(fmt.Errorf("DoInsert communication method field failed"))
 
 		err := repo.DoInsert(ctx, input)
-		if err != nil {
-			s, ok := status.FromError(err)
-			if ok {
-				if s.Code() != codes.Unknown {
-					t.Fatalf("Expect a Unknown error, but got %s", s.Code())
-				}
-			}
-		} else {
+		if err == nil {
 			t.Errorf("Expect error is not nil")
 		}
 	}
@@ -465,14 +414,7 @@ func doSaveExistingFailCommunicationMethodField(ctx context.Context, input *comm
 		expUpdQuery.WithArgs(input.GetContactSystemCode(), input.GetCommunicationMethodCode(), input.GetFieldCode(), input.GetCaption(), input.GetSequence(), tmNow).WillReturnError(fmt.Errorf("DoUpdate communication method field failed"))
 
 		err := repo.DoUpdate(ctx, input)
-		if err != nil {
-			s, ok := status.FromError(err)
-			if ok {
-				if s.Code() != codes.Unknown {
-					t.Fatalf("Expect a Unknown error, but got %s", s.Code())
-				}
-			}
-		} else {
+		if err == nil {
 			t.Errorf("Expect error is not nil")
 		}
 	}
@@ -504,14 +446,7 @@ func doDeleteFailCommunicationMethodField(ctx context.Context, input *communicat
 		expQuery.WithArgs(input.GetContactSystemCode(), input.GetCommunicationMethodCode(), input.GetFieldCode()).WillReturnError(fmt.Errorf("Delete communication method field failed"))
 
 		err := repo.DoDelete(ctx, input.GetContactSystemCode(), input.GetCommunicationMethodCode(), input.GetFieldCode())
-		if err != nil {
-			s, ok := status.FromError(err)
-			if ok {
-				if s.Code() != codes.Unknown {
-					t.Fatalf("Expect a Unknown error, but got %s", s.Code())
-				}
-			}
-		} else {
+		if err == nil {
 			t.Errorf("Expect error is not nil")
 		}
 	}
@@ -523,14 +458,7 @@ func doDeleteUnexistingCommunicationMethodField(ctx context.Context, input *comm
 		expQuery.WithArgs(input.GetContactSystemCode(), input.GetCommunicationMethodCode(), input.GetFieldCode()).WillReturnResult(sqlmock.NewResult(0, 0))
 
 		err := repo.DoDelete(ctx, input.GetContactSystemCode(), input.GetCommunicationMethodCode(), input.GetFieldCode())
-		if err != nil {
-			s, ok := status.FromError(err)
-			if ok {
-				if s.Code() != codes.NotFound {
-					t.Fatalf("Expect a NotFound error, but got %s", s.Code())
-				}
-			}
-		} else {
+		if err == nil {
 			t.Errorf("Expect error is not nil")
 		}
 	}
@@ -554,14 +482,7 @@ func doDeleteAllFailCommunicationMethodField(ctx context.Context, input *communi
 		expQuery.WithArgs(input.GetContactSystemCode(), input.GetCommunicationMethodCode()).WillReturnError(fmt.Errorf("Delete all communication method fields failed"))
 
 		err := repo.DoDeleteAll(ctx, input.GetContactSystemCode(), input.GetCommunicationMethodCode())
-		if err != nil {
-			s, ok := status.FromError(err)
-			if ok {
-				if s.Code() != codes.Unknown {
-					t.Fatalf("Expect a Unknown error, but got %s", s.Code())
-				}
-			}
-		} else {
+		if err == nil {
 			t.Errorf("Expect error is not nil")
 		}
 	}
@@ -574,12 +495,7 @@ func doDeleteAllUnexistingCommunicationMethodField(ctx context.Context, input *c
 
 		err := repo.DoDeleteAll(ctx, input.GetContactSystemCode(), input.GetCommunicationMethodCode())
 		if err != nil {
-			s, ok := status.FromError(err)
-			if ok {
-				if s.Code() != codes.NotFound {
-					t.Fatalf("Expect a NotFound error, but got %s", s.Code())
-				}
-			}
+			t.Errorf("Expect error is nil, but got %v", err)
 		}
 	}
 }
