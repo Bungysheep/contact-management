@@ -25,6 +25,7 @@ import (
 	contactcommunicationmethodserviceserver "github.com/bungysheep/contact-management/pkg/serviceserver/v1/contactcommunicationmethod"
 	contactsystemserviceserver "github.com/bungysheep/contact-management/pkg/serviceserver/v1/contactsystem"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials"
 	"google.golang.org/grpc/reflection"
 )
 
@@ -53,8 +54,16 @@ func (s *Server) RunServer(ctx context.Context, db *sql.DB) error {
 		return err
 	}
 
+	// Load ssl certificate
+	creds, err := credentials.NewServerTLSFromFile("./cert/server.crt", "./cert/server.pem")
+	if err != nil {
+		return err
+	}
+
 	// Define server options
-	opts := []grpc.ServerOption{}
+	opts := []grpc.ServerOption{
+		grpc.Creds(creds),
+	}
 
 	server := grpc.NewServer(opts...)
 
