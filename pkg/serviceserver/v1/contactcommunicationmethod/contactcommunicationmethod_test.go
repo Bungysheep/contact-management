@@ -34,6 +34,7 @@ func TestMain(m *testing.M) {
 		CommunicationMethodLabelCode:    "HOME",
 		CommunicationMethodLabelCaption: "Home",
 		FormatValue:                     "test@gmail.com",
+		Status:                          "A",
 		IsDefault:                       true,
 		ContactCommunicationMethodField: make([]*contactcommunicationmethodfieldmodel.ContactCommunicationMethodField, 0),
 		Audit: &auditmodel.Audit{
@@ -49,6 +50,7 @@ func TestMain(m *testing.M) {
 		CommunicationMethodLabelCode:    "WORK",
 		CommunicationMethodLabelCaption: "Work",
 		FormatValue:                     "62-81234567890",
+		Status:                          "A",
 		IsDefault:                       true,
 		ContactCommunicationMethodField: make([]*contactcommunicationmethodfieldmodel.ContactCommunicationMethodField, 0),
 		Audit: &auditmodel.Audit{
@@ -64,6 +66,7 @@ func TestMain(m *testing.M) {
 		CommunicationMethodLabelCode:    "SCHOOL",
 		CommunicationMethodLabelCaption: "School",
 		FormatValue:                     "62-2471234567",
+		Status:                          "A",
 		IsDefault:                       true,
 		ContactCommunicationMethodField: make([]*contactcommunicationmethodfieldmodel.ContactCommunicationMethodField, 0),
 		Audit: &auditmodel.Audit{
@@ -140,6 +143,10 @@ func doRead(ctx context.Context, input *contactcommunicationmethodmodel.ContactC
 			t.Errorf("Expect format value %s, but got %s", input.GetFormatValue(), resp.GetContactCommunicationMethod().GetFormatValue())
 		}
 
+		if resp.GetContactCommunicationMethod().GetStatus() != input.GetStatus() {
+			t.Errorf("Expect status %s, but got %s", input.GetStatus(), resp.GetContactCommunicationMethod().GetStatus())
+		}
+
 		if resp.GetContactCommunicationMethod().GetIsDefault() != input.GetIsDefault() {
 			t.Errorf("Expect default %v, but got %v", input.GetIsDefault(), resp.GetContactCommunicationMethod().GetIsDefault())
 		}
@@ -198,6 +205,10 @@ func doReadAll(ctx context.Context, input *contactcommunicationmethodmodel.Conta
 			t.Errorf("Expect format value %s, but got %s", input.GetFormatValue(), resp.GetContactCommunicationMethod()[0].GetFormatValue())
 		}
 
+		if resp.GetContactCommunicationMethod()[0].GetStatus() != input.GetStatus() {
+			t.Errorf("Expect status %s, but got %s", input.GetStatus(), resp.GetContactCommunicationMethod()[0].GetStatus())
+		}
+
 		if resp.GetContactCommunicationMethod()[0].GetIsDefault() != input.GetIsDefault() {
 			t.Errorf("Expect default %v, but got %v", input.GetIsDefault(), resp.GetContactCommunicationMethod()[0].GetIsDefault())
 		}
@@ -219,6 +230,7 @@ func doSave(ctx context.Context, input *contactcommunicationmethodmodel.ContactC
 		contactCommMethod.CommunicationMethodLabelCode = input.GetCommunicationMethodLabelCode()
 		contactCommMethod.CommunicationMethodLabelCaption = input.GetCommunicationMethodLabelCaption()
 		contactCommMethod.FormatValue = input.GetFormatValue()
+		contactCommMethod.Status = input.GetStatus()
 		contactCommMethod.IsDefault = input.GetIsDefault()
 		contactCommMethod.GetAudit().CreatedAt, _ = ptypes.TimestampProto(input.GetAudit().GetCreatedAt())
 		contactCommMethod.GetAudit().ModifiedAt, _ = ptypes.TimestampProto(input.GetAudit().GetModifiedAt())

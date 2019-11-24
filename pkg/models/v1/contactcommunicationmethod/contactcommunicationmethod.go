@@ -17,6 +17,7 @@ type ContactCommunicationMethod struct {
 	CommunicationMethodLabelCode    string `mandatory:"true" max_length:"8" format:"UPPERCASE"`
 	CommunicationMethodLabelCaption string `mandatory:"true" max_length:"16"`
 	FormatValue                     string `mandatory:"false" max_length:"1024"`
+	Status                          string `mandatory:"true" max_length:"1" valid_value:"A,I" format:"UPPERCASE"`
 	IsDefault                       bool
 	ContactCommunicationMethodField []*contactcommunicationmethodfield.ContactCommunicationMethodField
 	Audit                           *audit.Audit
@@ -63,6 +64,11 @@ func (ccm *ContactCommunicationMethod) GetCommunicationMethodLabelCaption() stri
 // GetFormatValue returns Format Value
 func (ccm *ContactCommunicationMethod) GetFormatValue() string {
 	return ccm.FormatValue
+}
+
+// GetStatus returns Status
+func (ccm *ContactCommunicationMethod) GetStatus() string {
+	return ccm.Status
 }
 
 // GetIsDefault returns Is Default

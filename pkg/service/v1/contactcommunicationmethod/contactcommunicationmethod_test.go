@@ -38,6 +38,7 @@ func TestMain(m *testing.M) {
 		CommunicationMethodLabelCode:    "HOME",
 		CommunicationMethodLabelCaption: "Home",
 		FormatValue:                     "test@gmail.com",
+		Status:                          "A",
 		IsDefault:                       true,
 		ContactCommunicationMethodField: []*contactcommunicationmethodfieldmodel.ContactCommunicationMethodField{
 			&contactcommunicationmethodfieldmodel.ContactCommunicationMethodField{
@@ -56,6 +57,7 @@ func TestMain(m *testing.M) {
 		CommunicationMethodLabelCode:    "WORK",
 		CommunicationMethodLabelCaption: "Work",
 		FormatValue:                     "62-81234567890",
+		Status:                          "A",
 		IsDefault:                       false,
 		ContactCommunicationMethodField: []*contactcommunicationmethodfieldmodel.ContactCommunicationMethodField{
 			&contactcommunicationmethodfieldmodel.ContactCommunicationMethodField{
@@ -74,6 +76,7 @@ func TestMain(m *testing.M) {
 		CommunicationMethodLabelCode:    "SCHOOL",
 		CommunicationMethodLabelCaption: "School",
 		FormatValue:                     "62-2471234567",
+		Status:                          "A",
 		IsDefault:                       false,
 		ContactCommunicationMethodField: []*contactcommunicationmethodfieldmodel.ContactCommunicationMethodField{
 			&contactcommunicationmethodfieldmodel.ContactCommunicationMethodField{
@@ -115,7 +118,7 @@ func doReadFail(ctx context.Context, input *contactcommunicationmethodmodel.Cont
 	return func(t *testing.T) {
 		expQuery := mock.ExpectPrepare(
 			`SELECT ccm.contact_system_code, ccm.contact_id, ccm.contact_communication_method_id, 
-				ccm.communication_method_code, ccm.communication_method_label_code, cml.caption, ccm.format_value, ccm.is_default, 
+				ccm.communication_method_code, ccm.communication_method_label_code, cml.caption, ccm.format_value, ccm.status, ccm.is_default, 
 				ccm.created_at, ccm.modified_at, ccm.vers 
 			FROM contact_communication_method ccm
 			INNER JOIN communication_method_label cml`).ExpectQuery()
@@ -136,12 +139,12 @@ func doReadFailField(ctx context.Context, input *contactcommunicationmethodmodel
 	return func(t *testing.T) {
 		tmNow := time.Now().In(time.UTC)
 
-		rows := sqlmock.NewRows([]string{"contact_system_code", "contact_id", "contact_communication_method_id", "communication_method_code", "communication_method_label_code", "communication_method_label_code", "format_value", "is_default", "created_at", "modified_at", "vers"}).
-			AddRow(input.GetContactSystemCode(), input.GetContactID(), input.GetContactCommunicationMethodID(), input.GetCommunicationMethodCode(), input.GetCommunicationMethodLabelCode(), input.GetCommunicationMethodLabelCaption(), input.GetFormatValue(), input.GetIsDefault(), tmNow, tmNow, 1)
+		rows := sqlmock.NewRows([]string{"contact_system_code", "contact_id", "contact_communication_method_id", "communication_method_code", "communication_method_label_code", "communication_method_label_code", "format_value", "status", "is_default", "created_at", "modified_at", "vers"}).
+			AddRow(input.GetContactSystemCode(), input.GetContactID(), input.GetContactCommunicationMethodID(), input.GetCommunicationMethodCode(), input.GetCommunicationMethodLabelCode(), input.GetCommunicationMethodLabelCaption(), input.GetFormatValue(), input.GetStatus(), input.GetIsDefault(), tmNow, tmNow, 1)
 
 		expQuery := mock.ExpectPrepare(
 			`SELECT ccm.contact_system_code, ccm.contact_id, ccm.contact_communication_method_id, 
-				ccm.communication_method_code, ccm.communication_method_label_code, cml.caption, ccm.format_value, ccm.is_default, 
+				ccm.communication_method_code, ccm.communication_method_label_code, cml.caption, ccm.format_value, ccm.status, ccm.is_default, 
 				ccm.created_at, ccm.modified_at, ccm.vers 
 			FROM contact_communication_method ccm
 			INNER JOIN communication_method_label cml`).ExpectQuery()
@@ -193,6 +196,10 @@ func doReadFailField(ctx context.Context, input *contactcommunicationmethodmodel
 			t.Errorf("Expect format value %s, but got %s", input.GetFormatValue(), resp.GetFormatValue())
 		}
 
+		if resp.GetStatus() != input.GetStatus() {
+			t.Errorf("Expect status %s, but got %s", input.GetStatus(), resp.GetStatus())
+		}
+
 		if resp.GetIsDefault() != input.GetIsDefault() {
 			t.Errorf("Expect default %v, but got %v", input.GetIsDefault(), resp.GetIsDefault())
 		}
@@ -211,12 +218,12 @@ func doReadExisting(ctx context.Context, input *contactcommunicationmethodmodel.
 	return func(t *testing.T) {
 		tmNow := time.Now().In(time.UTC)
 
-		rows := sqlmock.NewRows([]string{"contact_system_code", "contact_id", "contact_communication_method_id", "communication_method_code", "communication_method_label_code", "communication_method_label_code", "format_value", "is_default", "created_at", "modified_at", "vers"}).
-			AddRow(input.GetContactSystemCode(), input.GetContactID(), input.GetContactCommunicationMethodID(), input.GetCommunicationMethodCode(), input.GetCommunicationMethodLabelCode(), input.GetCommunicationMethodLabelCaption(), input.GetFormatValue(), input.GetIsDefault(), tmNow, tmNow, 1)
+		rows := sqlmock.NewRows([]string{"contact_system_code", "contact_id", "contact_communication_method_id", "communication_method_code", "communication_method_label_code", "communication_method_label_code", "format_value", "status", "is_default", "created_at", "modified_at", "vers"}).
+			AddRow(input.GetContactSystemCode(), input.GetContactID(), input.GetContactCommunicationMethodID(), input.GetCommunicationMethodCode(), input.GetCommunicationMethodLabelCode(), input.GetCommunicationMethodLabelCaption(), input.GetFormatValue(), input.GetStatus(), input.GetIsDefault(), tmNow, tmNow, 1)
 
 		expQuery := mock.ExpectPrepare(
 			`SELECT ccm.contact_system_code, ccm.contact_id, ccm.contact_communication_method_id, 
-				ccm.communication_method_code, ccm.communication_method_label_code, cml.caption, ccm.format_value, ccm.is_default, 
+				ccm.communication_method_code, ccm.communication_method_label_code, cml.caption, ccm.format_value, ccm.status, ccm.is_default, 
 				ccm.created_at, ccm.modified_at, ccm.vers 
 			FROM contact_communication_method ccm
 			INNER JOIN communication_method_label cml`).ExpectQuery()
@@ -275,6 +282,10 @@ func doReadExisting(ctx context.Context, input *contactcommunicationmethodmodel.
 			t.Errorf("Expect default %v, but got %v", input.GetIsDefault(), resp.GetIsDefault())
 		}
 
+		if resp.GetStatus() != input.GetStatus() {
+			t.Errorf("Expect status %s, but got %s", input.GetStatus(), resp.GetStatus())
+		}
+
 		if resp.GetContactCommunicationMethodField() == nil {
 			t.Fatalf("Expect contact communication method fields is not nil")
 		}
@@ -319,7 +330,7 @@ func doReadAllFail(ctx context.Context, input *contactcommunicationmethodmodel.C
 	return func(t *testing.T) {
 		expQuery := mock.ExpectPrepare(
 			`SELECT ccm.contact_system_code, ccm.contact_id, ccm.contact_communication_method_id, 
-				ccm.communication_method_code, ccm.communication_method_label_code, cml.caption, ccm.format_value, ccm.is_default, 
+				ccm.communication_method_code, ccm.communication_method_label_code, cml.caption, ccm.format_value, ccm.status, ccm.is_default, 
 				ccm.created_at, ccm.modified_at, ccm.vers 
 			FROM contact_communication_method ccm
 			INNER JOIN communication_method_label cml`).ExpectQuery()
@@ -344,14 +355,14 @@ func doReadAllFailField(ctx context.Context, input *contactcommunicationmethodmo
 	return func(t *testing.T) {
 		tmNow := time.Now().In(time.UTC)
 
-		rows := sqlmock.NewRows([]string{"contact_system_code", "contact_id", "contact_communication_method_id", "communication_method_code", "communication_method_label_code", "communication_method_label_code", "format_value", "is_default", "created_at", "modified_at", "vers"}).
-			AddRow(data[0].GetContactSystemCode(), data[0].GetContactID(), data[0].GetContactCommunicationMethodID(), data[0].GetCommunicationMethodCode(), data[0].GetCommunicationMethodLabelCode(), data[0].GetCommunicationMethodLabelCaption(), data[0].GetFormatValue(), data[0].GetIsDefault(), tmNow, tmNow, 1).
-			AddRow(data[1].GetContactSystemCode(), data[1].GetContactID(), data[1].GetContactCommunicationMethodID(), data[1].GetCommunicationMethodCode(), data[1].GetCommunicationMethodLabelCode(), data[1].GetCommunicationMethodLabelCaption(), data[1].GetFormatValue(), data[1].GetIsDefault(), tmNow, tmNow, 1).
-			AddRow(data[2].GetContactSystemCode(), data[2].GetContactID(), data[2].GetContactCommunicationMethodID(), data[2].GetCommunicationMethodCode(), data[2].GetCommunicationMethodLabelCode(), data[2].GetCommunicationMethodLabelCaption(), data[2].GetFormatValue(), data[2].GetIsDefault(), tmNow, tmNow, 1)
+		rows := sqlmock.NewRows([]string{"contact_system_code", "contact_id", "contact_communication_method_id", "communication_method_code", "communication_method_label_code", "communication_method_label_code", "format_value", "status", "is_default", "created_at", "modified_at", "vers"}).
+			AddRow(data[0].GetContactSystemCode(), data[0].GetContactID(), data[0].GetContactCommunicationMethodID(), data[0].GetCommunicationMethodCode(), data[0].GetCommunicationMethodLabelCode(), data[0].GetCommunicationMethodLabelCaption(), data[0].GetFormatValue(), data[0].GetStatus(), data[0].GetIsDefault(), tmNow, tmNow, 1).
+			AddRow(data[1].GetContactSystemCode(), data[1].GetContactID(), data[1].GetContactCommunicationMethodID(), data[1].GetCommunicationMethodCode(), data[1].GetCommunicationMethodLabelCode(), data[1].GetCommunicationMethodLabelCaption(), data[1].GetFormatValue(), data[1].GetStatus(), data[1].GetIsDefault(), tmNow, tmNow, 1).
+			AddRow(data[2].GetContactSystemCode(), data[2].GetContactID(), data[2].GetContactCommunicationMethodID(), data[2].GetCommunicationMethodCode(), data[2].GetCommunicationMethodLabelCode(), data[2].GetCommunicationMethodLabelCaption(), data[2].GetFormatValue(), data[2].GetStatus(), data[2].GetIsDefault(), tmNow, tmNow, 1)
 
 		expQuery := mock.ExpectPrepare(
 			`SELECT ccm.contact_system_code, ccm.contact_id, ccm.contact_communication_method_id, 
-				ccm.communication_method_code, ccm.communication_method_label_code, cml.caption, ccm.format_value, ccm.is_default, 
+				ccm.communication_method_code, ccm.communication_method_label_code, cml.caption, ccm.format_value, ccm.status, ccm.is_default, 
 				ccm.created_at, ccm.modified_at, ccm.vers 
 			FROM contact_communication_method ccm
 			INNER JOIN communication_method_label cml`).ExpectQuery()
@@ -403,6 +414,10 @@ func doReadAllFailField(ctx context.Context, input *contactcommunicationmethodmo
 			t.Errorf("Expect format value %s, but got %s", input.GetFormatValue(), resp[0].GetFormatValue())
 		}
 
+		if resp[0].GetStatus() != input.GetStatus() {
+			t.Errorf("Expect status %s, but got %s", input.GetStatus(), resp[0].GetStatus())
+		}
+
 		if resp[0].GetIsDefault() != input.GetIsDefault() {
 			t.Errorf("Expect default %v, but got %v", input.GetIsDefault(), resp[0].GetIsDefault())
 		}
@@ -421,14 +436,14 @@ func doReadAllExisting(ctx context.Context, input *contactcommunicationmethodmod
 	return func(t *testing.T) {
 		tmNow := time.Now().In(time.UTC)
 
-		rows := sqlmock.NewRows([]string{"contact_system_code", "contact_id", "contact_communication_method_id", "communication_method_code", "communication_method_label_code", "communication_method_label_code", "format_value", "is_default", "created_at", "modified_at", "vers"}).
-			AddRow(data[0].GetContactSystemCode(), data[0].GetContactID(), data[0].GetContactCommunicationMethodID(), data[0].GetCommunicationMethodCode(), data[0].GetCommunicationMethodLabelCode(), data[0].GetCommunicationMethodLabelCaption(), data[0].GetFormatValue(), data[0].GetIsDefault(), tmNow, tmNow, 1).
-			AddRow(data[1].GetContactSystemCode(), data[1].GetContactID(), data[1].GetContactCommunicationMethodID(), data[1].GetCommunicationMethodCode(), data[1].GetCommunicationMethodLabelCode(), data[1].GetCommunicationMethodLabelCaption(), data[1].GetFormatValue(), data[1].GetIsDefault(), tmNow, tmNow, 1).
-			AddRow(data[2].GetContactSystemCode(), data[2].GetContactID(), data[2].GetContactCommunicationMethodID(), data[2].GetCommunicationMethodCode(), data[2].GetCommunicationMethodLabelCode(), data[2].GetCommunicationMethodLabelCaption(), data[2].GetFormatValue(), data[2].GetIsDefault(), tmNow, tmNow, 1)
+		rows := sqlmock.NewRows([]string{"contact_system_code", "contact_id", "contact_communication_method_id", "communication_method_code", "communication_method_label_code", "communication_method_label_code", "format_value", "status", "is_default", "created_at", "modified_at", "vers"}).
+			AddRow(data[0].GetContactSystemCode(), data[0].GetContactID(), data[0].GetContactCommunicationMethodID(), data[0].GetCommunicationMethodCode(), data[0].GetCommunicationMethodLabelCode(), data[0].GetCommunicationMethodLabelCaption(), data[0].GetFormatValue(), data[0].GetStatus(), data[0].GetIsDefault(), tmNow, tmNow, 1).
+			AddRow(data[1].GetContactSystemCode(), data[1].GetContactID(), data[1].GetContactCommunicationMethodID(), data[1].GetCommunicationMethodCode(), data[1].GetCommunicationMethodLabelCode(), data[1].GetCommunicationMethodLabelCaption(), data[1].GetFormatValue(), data[1].GetStatus(), data[1].GetIsDefault(), tmNow, tmNow, 1).
+			AddRow(data[2].GetContactSystemCode(), data[2].GetContactID(), data[2].GetContactCommunicationMethodID(), data[2].GetCommunicationMethodCode(), data[2].GetCommunicationMethodLabelCode(), data[2].GetCommunicationMethodLabelCaption(), data[2].GetFormatValue(), data[2].GetStatus(), data[2].GetIsDefault(), tmNow, tmNow, 1)
 
 		expQuery := mock.ExpectPrepare(
 			`SELECT ccm.contact_system_code, ccm.contact_id, ccm.contact_communication_method_id, 
-				ccm.communication_method_code, ccm.communication_method_label_code, cml.caption, ccm.format_value, ccm.is_default, 
+				ccm.communication_method_code, ccm.communication_method_label_code, cml.caption, ccm.format_value, ccm.status, ccm.is_default, 
 				ccm.created_at, ccm.modified_at, ccm.vers 
 			FROM contact_communication_method ccm
 			INNER JOIN communication_method_label cml`).ExpectQuery()
@@ -483,6 +498,10 @@ func doReadAllExisting(ctx context.Context, input *contactcommunicationmethodmod
 
 		if resp[0].GetFormatValue() != input.GetFormatValue() {
 			t.Errorf("Expect format value %s, but got %s", input.GetFormatValue(), resp[0].GetFormatValue())
+		}
+
+		if resp[0].GetStatus() != input.GetStatus() {
+			t.Errorf("Expect status %s, but got %s", input.GetStatus(), resp[0].GetStatus())
 		}
 
 		if resp[0].GetIsDefault() != input.GetIsDefault() {
@@ -551,6 +570,7 @@ func doSaveFailValidation(ctx context.Context) func(t *testing.T) {
 			CommunicationMethodLabelCode:    "HOME",
 			CommunicationMethodLabelCaption: "Home",
 			FormatValue:                     "test@gmail.com",
+			Status:                          "A",
 			IsDefault:                       true,
 			ContactCommunicationMethodField: []*contactcommunicationmethodfieldmodel.ContactCommunicationMethodField{
 				&contactcommunicationmethodfieldmodel.ContactCommunicationMethodField{
@@ -688,10 +708,10 @@ func doSaveFailNew(ctx context.Context, input *contactcommunicationmethodmodel.C
 		expCommMethodLabelQuery.WithArgs(input.GetContactSystemCode(), input.GetCommunicationMethodCode(), input.GetCommunicationMethodLabelCode()).WillReturnRows(commMethodLabelRows)
 
 		expUpdQuery := mock.ExpectPrepare("UPDATE contact_communication_method").ExpectExec()
-		expUpdQuery.WithArgs(input.GetContactSystemCode(), input.GetContactID(), input.GetContactCommunicationMethodID(), input.GetCommunicationMethodCode(), input.GetCommunicationMethodLabelCode(), input.GetFormatValue(), input.GetIsDefault(), tmNow).WillReturnResult(sqlmock.NewResult(0, 0))
+		expUpdQuery.WithArgs(input.GetContactSystemCode(), input.GetContactID(), input.GetContactCommunicationMethodID(), input.GetCommunicationMethodCode(), input.GetCommunicationMethodLabelCode(), input.GetFormatValue(), input.GetStatus(), input.GetIsDefault(), tmNow).WillReturnResult(sqlmock.NewResult(0, 0))
 
 		expInsQuery := mock.ExpectPrepare("INSERT INTO contact_communication_method").ExpectExec()
-		expInsQuery.WithArgs(input.GetContactSystemCode(), input.GetContactID(), input.GetCommunicationMethodCode(), input.GetCommunicationMethodLabelCode(), input.GetFormatValue(), input.GetIsDefault(), tmNow, tmNow).WillReturnError(fmt.Errorf("DoInsert contact communication method failed"))
+		expInsQuery.WithArgs(input.GetContactSystemCode(), input.GetContactID(), input.GetCommunicationMethodCode(), input.GetCommunicationMethodLabelCode(), input.GetFormatValue(), input.GetStatus(), input.GetIsDefault(), tmNow, tmNow).WillReturnError(fmt.Errorf("DoInsert contact communication method failed"))
 
 		err := svc.DoSave(ctx, input)
 		if err == nil {
@@ -737,10 +757,10 @@ func doSaveFailNewField(ctx context.Context, input *contactcommunicationmethodmo
 		expCommMethodLabelQuery.WithArgs(input.GetContactSystemCode(), input.GetCommunicationMethodCode(), input.GetCommunicationMethodLabelCode()).WillReturnRows(commMethodLabelRows)
 
 		expUpdQuery := mock.ExpectPrepare("UPDATE contact_communication_method").ExpectExec()
-		expUpdQuery.WithArgs(input.GetContactSystemCode(), input.GetContactID(), input.GetContactCommunicationMethodID(), input.GetCommunicationMethodCode(), input.GetCommunicationMethodLabelCode(), input.GetFormatValue(), input.GetIsDefault(), tmNow).WillReturnResult(sqlmock.NewResult(0, 0))
+		expUpdQuery.WithArgs(input.GetContactSystemCode(), input.GetContactID(), input.GetContactCommunicationMethodID(), input.GetCommunicationMethodCode(), input.GetCommunicationMethodLabelCode(), input.GetFormatValue(), input.GetStatus(), input.GetIsDefault(), tmNow).WillReturnResult(sqlmock.NewResult(0, 0))
 
 		expInsQuery := mock.ExpectPrepare("INSERT INTO contact_communication_method").ExpectExec()
-		expInsQuery.WithArgs(input.GetContactSystemCode(), input.GetContactID(), input.GetCommunicationMethodCode(), input.GetCommunicationMethodLabelCode(), input.GetFormatValue(), input.GetIsDefault(), tmNow, tmNow).WillReturnResult(sqlmock.NewResult(0, 1))
+		expInsQuery.WithArgs(input.GetContactSystemCode(), input.GetContactID(), input.GetCommunicationMethodCode(), input.GetCommunicationMethodLabelCode(), input.GetFormatValue(), input.GetStatus(), input.GetIsDefault(), tmNow, tmNow).WillReturnResult(sqlmock.NewResult(0, 1))
 
 		expInsQuery = mock.ExpectPrepare("INSERT INTO contact_communication_method_field").ExpectExec()
 		expInsQuery.WithArgs(input.GetContactCommunicationMethodField()[0].GetContactSystemCode(), input.GetContactCommunicationMethodField()[0].GetContactID(), input.GetContactCommunicationMethodField()[0].GetContactCommunicationMethodID(), input.GetContactCommunicationMethodField()[0].GetFieldCode(), input.GetContactCommunicationMethodField()[0].GetFieldValue()).WillReturnError(fmt.Errorf("DoInsert contact communication method field failed"))
@@ -789,10 +809,10 @@ func doSaveNew(ctx context.Context, input *contactcommunicationmethodmodel.Conta
 		expCommMethodLabelQuery.WithArgs(input.GetContactSystemCode(), input.GetCommunicationMethodCode(), input.GetCommunicationMethodLabelCode()).WillReturnRows(commMethodLabelRows)
 
 		expUpdQuery := mock.ExpectPrepare("UPDATE contact_communication_method").ExpectExec()
-		expUpdQuery.WithArgs(input.GetContactSystemCode(), input.GetContactID(), input.GetContactCommunicationMethodID(), input.GetCommunicationMethodCode(), input.GetCommunicationMethodLabelCode(), input.GetFormatValue(), input.GetIsDefault(), tmNow).WillReturnResult(sqlmock.NewResult(0, 0))
+		expUpdQuery.WithArgs(input.GetContactSystemCode(), input.GetContactID(), input.GetContactCommunicationMethodID(), input.GetCommunicationMethodCode(), input.GetCommunicationMethodLabelCode(), input.GetFormatValue(), input.GetStatus(), input.GetIsDefault(), tmNow).WillReturnResult(sqlmock.NewResult(0, 0))
 
 		expInsQuery := mock.ExpectPrepare("INSERT INTO contact_communication_method").ExpectExec()
-		expInsQuery.WithArgs(input.GetContactSystemCode(), input.GetContactID(), input.GetCommunicationMethodCode(), input.GetCommunicationMethodLabelCode(), input.GetFormatValue(), input.GetIsDefault(), tmNow, tmNow).WillReturnResult(sqlmock.NewResult(0, 1))
+		expInsQuery.WithArgs(input.GetContactSystemCode(), input.GetContactID(), input.GetCommunicationMethodCode(), input.GetCommunicationMethodLabelCode(), input.GetFormatValue(), input.GetStatus(), input.GetIsDefault(), tmNow, tmNow).WillReturnResult(sqlmock.NewResult(0, 1))
 
 		expInsQuery = mock.ExpectPrepare("INSERT INTO contact_communication_method_field").ExpectExec()
 		expInsQuery.WithArgs(input.GetContactCommunicationMethodField()[0].GetContactSystemCode(), input.GetContactCommunicationMethodField()[0].GetContactID(), input.GetContactCommunicationMethodField()[0].GetContactCommunicationMethodID(), input.GetContactCommunicationMethodField()[0].GetFieldCode(), input.GetContactCommunicationMethodField()[0].GetFieldValue()).WillReturnResult(sqlmock.NewResult(0, 1))
@@ -841,7 +861,7 @@ func doSaveExisting(ctx context.Context, input *contactcommunicationmethodmodel.
 		expCommMethodLabelQuery.WithArgs(input.GetContactSystemCode(), input.GetCommunicationMethodCode(), input.GetCommunicationMethodLabelCode()).WillReturnRows(commMethodLabelRows)
 
 		expUpdQuery := mock.ExpectPrepare("UPDATE contact_communication_method").ExpectExec()
-		expUpdQuery.WithArgs(input.GetContactSystemCode(), input.GetContactID(), input.GetContactCommunicationMethodID(), input.GetCommunicationMethodCode(), input.GetCommunicationMethodLabelCode(), input.GetFormatValue(), input.GetIsDefault(), tmNow).WillReturnResult(sqlmock.NewResult(0, 1))
+		expUpdQuery.WithArgs(input.GetContactSystemCode(), input.GetContactID(), input.GetContactCommunicationMethodID(), input.GetCommunicationMethodCode(), input.GetCommunicationMethodLabelCode(), input.GetFormatValue(), input.GetStatus(), input.GetIsDefault(), tmNow).WillReturnResult(sqlmock.NewResult(0, 1))
 
 		expUpdQuery = mock.ExpectPrepare("UPDATE contact_communication_method_field").ExpectExec()
 		expUpdQuery.WithArgs(input.GetContactCommunicationMethodField()[0].GetContactSystemCode(), input.GetContactCommunicationMethodField()[0].GetContactID(), input.GetContactCommunicationMethodField()[0].GetContactCommunicationMethodID(), input.GetContactCommunicationMethodField()[0].GetFieldCode(), input.GetContactCommunicationMethodField()[0].GetFieldValue()).WillReturnResult(sqlmock.NewResult(0, 1))
@@ -890,7 +910,7 @@ func doSaveExistingWithNewField(ctx context.Context, input *contactcommunication
 		expCommMethodLabelQuery.WithArgs(input.GetContactSystemCode(), input.GetCommunicationMethodCode(), input.GetCommunicationMethodLabelCode()).WillReturnRows(commMethodLabelRows)
 
 		expUpdQuery := mock.ExpectPrepare("UPDATE contact_communication_method").ExpectExec()
-		expUpdQuery.WithArgs(input.GetContactSystemCode(), input.GetContactID(), input.GetContactCommunicationMethodID(), input.GetCommunicationMethodCode(), input.GetCommunicationMethodLabelCode(), input.GetFormatValue(), input.GetIsDefault(), tmNow).WillReturnResult(sqlmock.NewResult(0, 1))
+		expUpdQuery.WithArgs(input.GetContactSystemCode(), input.GetContactID(), input.GetContactCommunicationMethodID(), input.GetCommunicationMethodCode(), input.GetCommunicationMethodLabelCode(), input.GetFormatValue(), input.GetStatus(), input.GetIsDefault(), tmNow).WillReturnResult(sqlmock.NewResult(0, 1))
 
 		expUpdQuery = mock.ExpectPrepare("UPDATE contact_communication_method_field").ExpectExec()
 		expUpdQuery.WithArgs(input.GetContactCommunicationMethodField()[0].GetContactSystemCode(), input.GetContactCommunicationMethodField()[0].GetContactID(), input.GetContactCommunicationMethodField()[0].GetContactCommunicationMethodID(), input.GetContactCommunicationMethodField()[0].GetFieldCode(), input.GetContactCommunicationMethodField()[0].GetFieldValue()).WillReturnResult(sqlmock.NewResult(0, 0))
@@ -921,7 +941,7 @@ func doDeleteFailDefault(ctx context.Context, input *contactcommunicationmethodm
 	return func(t *testing.T) {
 		expDefCommMethodQuery := mock.ExpectPrepare(
 			`SELECT ccm.contact_system_code, ccm.contact_id, ccm.contact_communication_method_id, 
-				ccm.communication_method_code, ccm.communication_method_label_code, cml.caption, ccm.format_value, ccm.is_default, 
+				ccm.communication_method_code, ccm.communication_method_label_code, cml.caption, ccm.format_value, ccm.status, ccm.is_default, 
 				ccm.created_at, ccm.modified_at, ccm.vers 
 			FROM contact_communication_method ccm
 			INNER JOIN communication_method_label cml`).ExpectQuery()
@@ -938,12 +958,12 @@ func doDeleteDefault(ctx context.Context, input *contactcommunicationmethodmodel
 	return func(t *testing.T) {
 		tmNow := time.Now().In(time.UTC)
 
-		rows := sqlmock.NewRows([]string{"contact_system_code", "contact_id", "contact_communication_method_id", "communication_method_code", "communication_method_label_code", "communication_method_label_code", "format_value", "is_default", "created_at", "modified_at", "vers"}).
-			AddRow(input.GetContactSystemCode(), input.GetContactID(), input.GetContactCommunicationMethodID(), input.GetCommunicationMethodCode(), input.GetCommunicationMethodLabelCode(), input.GetCommunicationMethodLabelCaption(), input.GetFormatValue(), true, tmNow, tmNow, 1)
+		rows := sqlmock.NewRows([]string{"contact_system_code", "contact_id", "contact_communication_method_id", "communication_method_code", "communication_method_label_code", "communication_method_label_code", "format_value", "status", "is_default", "created_at", "modified_at", "vers"}).
+			AddRow(input.GetContactSystemCode(), input.GetContactID(), input.GetContactCommunicationMethodID(), input.GetCommunicationMethodCode(), input.GetCommunicationMethodLabelCode(), input.GetCommunicationMethodLabelCaption(), input.GetFormatValue(), "A", true, tmNow, tmNow, 1)
 
 		expDefCommMethodQuery := mock.ExpectPrepare(
 			`SELECT ccm.contact_system_code, ccm.contact_id, ccm.contact_communication_method_id, 
-				ccm.communication_method_code, ccm.communication_method_label_code, cml.caption, ccm.format_value, ccm.is_default, 
+				ccm.communication_method_code, ccm.communication_method_label_code, cml.caption, ccm.format_value, ccm.status, ccm.is_default, 
 				ccm.created_at, ccm.modified_at, ccm.vers 
 			FROM contact_communication_method ccm
 			INNER JOIN communication_method_label cml`).ExpectQuery()
@@ -960,12 +980,12 @@ func doDeleteFailField(ctx context.Context, input *contactcommunicationmethodmod
 	return func(t *testing.T) {
 		tmNow := time.Now().In(time.UTC)
 
-		rows := sqlmock.NewRows([]string{"contact_system_code", "contact_id", "contact_communication_method_id", "communication_method_code", "communication_method_label_code", "communication_method_label_code", "format_value", "is_default", "created_at", "modified_at", "vers"}).
-			AddRow(input.GetContactSystemCode(), input.GetContactID(), input.GetContactCommunicationMethodID(), input.GetCommunicationMethodCode(), input.GetCommunicationMethodLabelCode(), input.GetCommunicationMethodLabelCaption(), input.GetFormatValue(), input.GetIsDefault(), tmNow, tmNow, 1)
+		rows := sqlmock.NewRows([]string{"contact_system_code", "contact_id", "contact_communication_method_id", "communication_method_code", "communication_method_label_code", "communication_method_label_code", "format_value", "status", "is_default", "created_at", "modified_at", "vers"}).
+			AddRow(input.GetContactSystemCode(), input.GetContactID(), input.GetContactCommunicationMethodID(), input.GetCommunicationMethodCode(), input.GetCommunicationMethodLabelCode(), input.GetCommunicationMethodLabelCaption(), input.GetFormatValue(), input.GetStatus(), input.GetIsDefault(), tmNow, tmNow, 1)
 
 		expDefCommMethodQuery := mock.ExpectPrepare(
 			`SELECT ccm.contact_system_code, ccm.contact_id, ccm.contact_communication_method_id, 
-				ccm.communication_method_code, ccm.communication_method_label_code, cml.caption, ccm.format_value, ccm.is_default, 
+				ccm.communication_method_code, ccm.communication_method_label_code, cml.caption, ccm.format_value, ccm.status, ccm.is_default, 
 				ccm.created_at, ccm.modified_at, ccm.vers 
 			FROM contact_communication_method ccm
 			INNER JOIN communication_method_label cml`).ExpectQuery()
@@ -985,12 +1005,12 @@ func doDeleteExisting(ctx context.Context, input *contactcommunicationmethodmode
 	return func(t *testing.T) {
 		tmNow := time.Now().In(time.UTC)
 
-		rows := sqlmock.NewRows([]string{"contact_system_code", "contact_id", "contact_communication_method_id", "communication_method_code", "communication_method_label_code", "communication_method_label_code", "format_value", "is_default", "created_at", "modified_at", "vers"}).
-			AddRow(input.GetContactSystemCode(), input.GetContactID(), input.GetContactCommunicationMethodID(), input.GetCommunicationMethodCode(), input.GetCommunicationMethodLabelCode(), input.GetCommunicationMethodLabelCaption(), input.GetFormatValue(), input.GetIsDefault(), tmNow, tmNow, 1)
+		rows := sqlmock.NewRows([]string{"contact_system_code", "contact_id", "contact_communication_method_id", "communication_method_code", "communication_method_label_code", "communication_method_label_code", "format_value", "status", "is_default", "created_at", "modified_at", "vers"}).
+			AddRow(input.GetContactSystemCode(), input.GetContactID(), input.GetContactCommunicationMethodID(), input.GetCommunicationMethodCode(), input.GetCommunicationMethodLabelCode(), input.GetCommunicationMethodLabelCaption(), input.GetFormatValue(), input.GetStatus(), input.GetIsDefault(), tmNow, tmNow, 1)
 
 		expDefCommMethodQuery := mock.ExpectPrepare(
 			`SELECT ccm.contact_system_code, ccm.contact_id, ccm.contact_communication_method_id, 
-				ccm.communication_method_code, ccm.communication_method_label_code, cml.caption, ccm.format_value, ccm.is_default, 
+				ccm.communication_method_code, ccm.communication_method_label_code, cml.caption, ccm.format_value, ccm.status, ccm.is_default, 
 				ccm.created_at, ccm.modified_at, ccm.vers 
 			FROM contact_communication_method ccm
 			INNER JOIN communication_method_label cml`).ExpectQuery()

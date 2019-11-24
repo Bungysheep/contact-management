@@ -39,7 +39,7 @@ func (cm *contactCommunicationMethodRepository) DoRead(ctx context.Context, cont
 
 	stmt, err := conn.PrepareContext(ctx,
 		`SELECT ccm.contact_system_code, ccm.contact_id, ccm.contact_communication_method_id, 
-			ccm.communication_method_code, ccm.communication_method_label_code, cml.caption, ccm.format_value, ccm.is_default, 
+			ccm.communication_method_code, ccm.communication_method_label_code, cml.caption, ccm.format_value, ccm.status, ccm.is_default, 
 			ccm.created_at, ccm.modified_at, ccm.vers 
 		FROM contact_communication_method ccm
 		INNER JOIN communication_method_label cml ON ccm.contact_system_code=cml.contact_system_code
@@ -73,6 +73,7 @@ func (cm *contactCommunicationMethodRepository) DoRead(ctx context.Context, cont
 		&result.CommunicationMethodLabelCode,
 		&result.CommunicationMethodLabelCaption,
 		&result.FormatValue,
+		&result.Status,
 		&result.IsDefault,
 		&result.GetAudit().CreatedAt,
 		&result.GetAudit().ModifiedAt,
@@ -94,7 +95,7 @@ func (cm *contactCommunicationMethodRepository) DoReadAll(ctx context.Context, c
 
 	stmt, err := conn.PrepareContext(ctx,
 		`SELECT ccm.contact_system_code, ccm.contact_id, ccm.contact_communication_method_id, 
-			ccm.communication_method_code, ccm.communication_method_label_code, cml.caption, ccm.format_value, ccm.is_default, 
+			ccm.communication_method_code, ccm.communication_method_label_code, cml.caption, ccm.format_value, ccm.status, ccm.is_default, 
 			ccm.created_at, ccm.modified_at, ccm.vers 
 		FROM contact_communication_method ccm
 		INNER JOIN communication_method_label cml ON ccm.contact_system_code=cml.contact_system_code
@@ -132,6 +133,7 @@ func (cm *contactCommunicationMethodRepository) DoReadAll(ctx context.Context, c
 			&contactCommunicationMethod.CommunicationMethodLabelCode,
 			&contactCommunicationMethod.CommunicationMethodLabelCaption,
 			&contactCommunicationMethod.FormatValue,
+			&contactCommunicationMethod.Status,
 			&contactCommunicationMethod.IsDefault,
 			&contactCommunicationMethod.GetAudit().CreatedAt,
 			&contactCommunicationMethod.GetAudit().ModifiedAt,
@@ -154,15 +156,15 @@ func (cm *contactCommunicationMethodRepository) DoInsert(ctx context.Context, da
 
 	stmt, err := conn.PrepareContext(ctx,
 		`INSERT INTO contact_communication_method 
-			(contact_system_code, contact_id, communication_method_code, communication_method_label_code, format_value, is_default, 
+			(contact_system_code, contact_id, communication_method_code, communication_method_label_code, format_value, status, is_default, 
 			created_at, modified_at, vers) 
 		VALUES ($1, $2, $3, $4, $5, $6, 
-			$7, $8, 1)`)
+			$7, $8, $9, 1)`)
 	if err != nil {
 		return message.FailedPrepareInsert("Contact Communication Method", err)
 	}
 
-	result, err := stmt.ExecContext(ctx, data.GetContactSystemCode(), data.GetContactID(), data.GetCommunicationMethodCode(), data.GetCommunicationMethodLabelCode(), data.GetFormatValue(), data.GetIsDefault(), data.GetAudit().GetCreatedAt(), data.GetAudit().GetModifiedAt())
+	result, err := stmt.ExecContext(ctx, data.GetContactSystemCode(), data.GetContactID(), data.GetCommunicationMethodCode(), data.GetCommunicationMethodLabelCode(), data.GetFormatValue(), data.GetStatus(), data.GetIsDefault(), data.GetAudit().GetCreatedAt(), data.GetAudit().GetModifiedAt())
 	if err != nil {
 		return message.FailedInsert("Contact Communication Method", err)
 	}
@@ -184,8 +186,8 @@ func (cm *contactCommunicationMethodRepository) DoUpdate(ctx context.Context, da
 
 	stmt, err := conn.PrepareContext(ctx,
 		`UPDATE contact_communication_method 
-		SET communication_method_code=$4, communication_method_label_code=$5, format_value=$6, is_default=$7, 
-			modified_at=$8, vers=vers+1 
+		SET communication_method_code=$4, communication_method_label_code=$5, format_value=$6, status=$7, is_default=$8, 
+			modified_at=$9, vers=vers+1 
 		WHERE contact_system_code=$1 
 			AND contact_id=$2 
 			AND contact_communication_method_id=$3`)
@@ -193,7 +195,7 @@ func (cm *contactCommunicationMethodRepository) DoUpdate(ctx context.Context, da
 		return message.FailedPrepareUpdate("Contact Communication Method", err)
 	}
 
-	result, err := stmt.ExecContext(ctx, data.GetContactSystemCode(), data.GetContactID(), data.GetContactCommunicationMethodID(), data.GetCommunicationMethodCode(), data.GetCommunicationMethodLabelCode(), data.GetFormatValue(), data.GetIsDefault(), data.GetAudit().GetModifiedAt())
+	result, err := stmt.ExecContext(ctx, data.GetContactSystemCode(), data.GetContactID(), data.GetContactCommunicationMethodID(), data.GetCommunicationMethodCode(), data.GetCommunicationMethodLabelCode(), data.GetFormatValue(), data.GetStatus(), data.GetIsDefault(), data.GetAudit().GetModifiedAt())
 	if err != nil {
 		return message.FailedUpdate("Contact Communication Method", err)
 	}
