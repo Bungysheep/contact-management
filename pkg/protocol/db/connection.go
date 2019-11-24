@@ -2,7 +2,6 @@ package db
 
 import (
 	"database/sql"
-	"fmt"
 
 	"github.com/bungysheep/contact-management/pkg/config"
 	"github.com/bungysheep/contact-management/pkg/logger"
@@ -12,9 +11,7 @@ import (
 func OpenDbConn() (*sql.DB, error) {
 	logger.Log.Info("Database connection is opening...")
 
-	connStr := fmt.Sprintf("host=%s port=%s dbname=%s user=%s password=%s sslmode=%s", config.PGHOST, config.PGPORT, config.PGDATABASE, config.PGUSER, config.PGPASSWORD, config.PGSSLMODE)
-
-	db, err := sql.Open("postgres", connStr)
+	db, err := sql.Open("postgres", config.CONNECTIONSTRING)
 	if err != nil {
 		return nil, err
 	}
