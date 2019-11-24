@@ -22,11 +22,13 @@ message ContactCommunicationMethod {
 
     string format_value = 7;
 
-    bool is_default = 8;
+    string status = 8;
 
-    repeated v1.ContactCommunicationMethodField contact_communication_method_field = 9;
+    bool is_default = 9;
 
-    v1.Audit audit = 10;
+    repeated v1.ContactCommunicationMethodField contact_communication_method_field = 10;
+
+    v1.Audit audit = 11;
 }
 
 message DoReadContactCommunicationMethodRequest {

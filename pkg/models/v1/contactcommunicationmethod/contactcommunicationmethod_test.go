@@ -23,6 +23,7 @@ func TestCreateContactCommunicationMethod(t *testing.T) {
 	contactCommMethod.CommunicationMethodLabelCode = "HOME"
 	contactCommMethod.CommunicationMethodLabelCaption = "Home"
 	contactCommMethod.FormatValue = "test@gmail.com"
+	contactCommMethod.Status = "A"
 	contactCommMethod.IsDefault = true
 
 	contactCommMethodField := contactcommunicationmethodfield.NewContactCommunicationMethodField()
@@ -63,6 +64,10 @@ func TestCreateContactCommunicationMethod(t *testing.T) {
 
 	if contactCommMethod.GetFormatValue() != "test@gmail.com" {
 		t.Errorf("Expect format value %v, but got %v", "test@gmail.com", contactCommMethod.GetFormatValue())
+	}
+
+	if contactCommMethod.GetStatus() != "A" {
+		t.Errorf("Expect status %v, but got %v", "A", contactCommMethod.GetStatus())
 	}
 
 	if contactCommMethod.GetIsDefault() != true {
@@ -108,6 +113,7 @@ func TestValidate(t *testing.T) {
 	contactCommMethod.CommunicationMethodLabelCode = "HOME"
 	contactCommMethod.CommunicationMethodLabelCaption = "Home"
 	contactCommMethod.FormatValue = "test@gmail.com"
+	contactCommMethod.Status = "A"
 	contactCommMethod.IsDefault = true
 
 	contactCommMethodField := contactcommunicationmethodfield.NewContactCommunicationMethodField()
