@@ -12,6 +12,7 @@ import (
 	contactcommunicationmethodapi "github.com/bungysheep/contact-management/pkg/api/v1/contactcommunicationmethod"
 	contactsystemapi "github.com/bungysheep/contact-management/pkg/api/v1/contactsystem"
 	"github.com/bungysheep/contact-management/pkg/logger"
+	"github.com/bungysheep/contact-management/pkg/protocol/grpc/middleware"
 	communicationmethodservice "github.com/bungysheep/contact-management/pkg/service/v1/communicationmethod"
 	communicationmethodfieldservice "github.com/bungysheep/contact-management/pkg/service/v1/communicationmethodfield"
 	communicationmethodlabelservice "github.com/bungysheep/contact-management/pkg/service/v1/communicationmethodlabel"
@@ -63,6 +64,8 @@ func (s *Server) RunServer(ctx context.Context, db *sql.DB) error {
 	// Define server options
 	opts := []grpc.ServerOption{
 		grpc.Creds(creds),
+		middleware.AddLoggerUnaryInterceptor(logger.Log),
+		middleware.AddLoggerStreamInterceptor(logger.Log),
 	}
 
 	server := grpc.NewServer(opts...)
