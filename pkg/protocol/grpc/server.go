@@ -66,6 +66,8 @@ func (s *Server) RunServer(ctx context.Context, db *sql.DB) error {
 		grpc.Creds(creds),
 		middleware.AddLoggerUnaryInterceptor(logger.Log),
 		middleware.AddLoggerStreamInterceptor(logger.Log),
+		middleware.AddAuthenticationUnaryInterceptor(),
+		middleware.AddAuthenticationStreamInterceptor(),
 	}
 
 	server := grpc.NewServer(opts...)
