@@ -50,6 +50,10 @@ func (cntsys *contactSystemServiceServer) DoDelete(ctx context.Context, req *con
 }
 
 func contactSystemModelToAPI(dataModel *contactsystemmodel.ContactSystem) *contactsystemapi.ContactSystem {
+	if dataModel == nil {
+		return nil
+	}
+
 	contactSystem := &contactsystemapi.ContactSystem{Audit: &auditapi.Audit{}}
 	contactSystem.ContactSystemCode = dataModel.GetContactSystemCode()
 	contactSystem.Description = dataModel.GetDescription()
@@ -62,6 +66,10 @@ func contactSystemModelToAPI(dataModel *contactsystemmodel.ContactSystem) *conta
 }
 
 func contactSystemAPIToModel(data *contactsystemapi.ContactSystem) *contactsystemmodel.ContactSystem {
+	if data == nil {
+		return nil
+	}
+
 	contactSystem := contactsystemmodel.NewContactSystem()
 	contactSystem.ContactSystemCode = data.GetContactSystemCode()
 	contactSystem.Description = data.GetDescription()

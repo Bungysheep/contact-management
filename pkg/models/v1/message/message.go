@@ -40,5 +40,5 @@ func (m *Message) IsError() bool {
 }
 
 func (m *Message) Error() string {
-	return fmt.Sprintf("[%s] %s", m.code, fmt.Sprintf(m.definition, m.args))
+	return fmt.Sprintf("[%s] %s", m.code, fmt.Sprintf(m.definition, m.args...))
 }

@@ -8,3 +8,6 @@ protoc --proto_path=api/proto/v1 --proto_path=third_party --go_out=plugins=grpc:
 protoc --proto_path=api/proto/v1 --proto_path=third_party --go_out=plugins=grpc:. contact.proto
 protoc --proto_path=api/proto/v1 --proto_path=third_party --go_out=plugins=grpc:. contactcommunicationmethod.proto
 protoc --proto_path=api/proto/v1 --proto_path=third_party --go_out=plugins=grpc:. contactcommunicationmethodfield.proto
+
+protoc --proto_path=api/proto/v1 --proto_path=third_party --grpc-gateway_out=logtostderr=true:. audit.proto
+protoc --proto_path=api/proto/v1 --proto_path=third_party --grpc-gateway_out=logtostderr=true:. contactsystem.proto
