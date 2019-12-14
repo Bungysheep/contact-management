@@ -25,6 +25,7 @@ import (
 	contactserviceserver "github.com/bungysheep/contact-management/pkg/serviceserver/v1/contact"
 	contactcommunicationmethodserviceserver "github.com/bungysheep/contact-management/pkg/serviceserver/v1/contactcommunicationmethod"
 	contactsystemserviceserver "github.com/bungysheep/contact-management/pkg/serviceserver/v1/contactsystem"
+	"go.uber.org/zap"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials"
 	"google.golang.org/grpc/reflection"
@@ -52,12 +53,14 @@ func (s *Server) RunServer(ctx context.Context, db *sql.DB) error {
 
 	lis, err := net.Listen("tcp", "0.0.0.0:50051")
 	if err != nil {
+		logger.Log.Error("Failed to listen port 50051", zap.String("err", err.Error()))
 		return err
 	}
 
 	// Load ssl certificate
 	creds, err := credentials.NewServerTLSFromFile("./cert/server.crt", "./cert/server.pem")
 	if err != nil {
+		logger.Log.Error("Failed to load Server Ssl certificate", zap.String("err", err.Error()))
 		return err
 	}
 

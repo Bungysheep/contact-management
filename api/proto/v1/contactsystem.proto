@@ -4,6 +4,7 @@ package v1;
 
 option go_package = "github.com/bungysheep/contact-management/pkg/api/v1/contactsystem";
 
+import "google/api/annotations.proto";
 import "audit.proto";
 
 message ContactSystem {
@@ -49,11 +50,28 @@ message DoDeleteContactSystemResponse {
 }
 
 service ContactSystemService { 
-    rpc DoRead (DoReadContactSystemRequest) returns (DoReadContactSystemResponse);
+    rpc DoRead (DoReadContactSystemRequest) returns (DoReadContactSystemResponse) {
+        option (google.api.http) = {
+            get: "/contactsystem/{contact_system_code}"
+        };
+    };
 
-    rpc DoReadAll (DoReadAllContactSystemRequest) returns (DoReadAllContactSystemResponse);
+    rpc DoReadAll (DoReadAllContactSystemRequest) returns (DoReadAllContactSystemResponse) {
+        option (google.api.http) = {
+            get: "/contactsystem"
+        };
+    };
 
-    rpc DoSave (DoSaveContactSystemRequest) returns (DoSaveContactSystemResponse);
+    rpc DoSave (DoSaveContactSystemRequest) returns (DoSaveContactSystemResponse) {
+        option (google.api.http) = {
+            post: "/contactsystem"
+            body: "*"
+        };
+    };
 
-    rpc DoDelete (DoDeleteContactSystemRequest) returns (DoDeleteContactSystemResponse);
+    rpc DoDelete (DoDeleteContactSystemRequest) returns (DoDeleteContactSystemResponse) {
+        option (google.api.http) = {
+            delete: "/contactsystem/{contact_system_code}"
+        };
+    };
 }

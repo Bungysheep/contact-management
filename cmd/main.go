@@ -9,6 +9,7 @@ import (
 	"github.com/bungysheep/contact-management/pkg/logger"
 	"github.com/bungysheep/contact-management/pkg/protocol/db"
 	"github.com/bungysheep/contact-management/pkg/protocol/grpc"
+	"github.com/bungysheep/contact-management/pkg/protocol/rest"
 	_ "github.com/lib/pq"
 )
 
@@ -32,12 +33,16 @@ func runServer() error {
 	}
 
 	grpcServer := &grpc.Server{}
+	httpServer := &rest.Server{}
 
 	c := make(chan os.Signal, 1)
 	signal.Notify(c, os.Interrupt)
 
 	go func() {
 		for range c {
+			logger.Log.Info("Http server is shutting down...")
+			httpServer.GetHTTPServer().Shutdown(ctx)
+
 			logger.Log.Info("gRpc server is shutting down...")
 			grpcServer.GetGrpcServer().GracefulStop()
 
@@ -49,6 +54,10 @@ func runServer() error {
 
 			<-ctx.Done()
 		}
+	}()
+
+	go func() {
+		_ = httpServer.RunServer(ctx)
 	}()
 
 	if err := grpcServer.RunServer(ctx, db); err != nil {
