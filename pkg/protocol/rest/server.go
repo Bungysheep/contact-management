@@ -6,6 +6,7 @@ import (
 
 	contactsystemapi "github.com/bungysheep/contact-management/pkg/api/v1/contactsystem"
 	"github.com/bungysheep/contact-management/pkg/logger"
+	"github.com/bungysheep/contact-management/pkg/protocol/rest/middleware"
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
@@ -49,7 +50,7 @@ func (svr *Server) RunServer(ctx context.Context) error {
 
 	s := &http.Server{
 		Addr:    ":3000",
-		Handler: mux,
+		Handler: middleware.AddLogger(middleware.AddAuthentication(mux)),
 	}
 
 	svr.httpServer = s
