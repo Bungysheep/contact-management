@@ -25,6 +25,7 @@ import (
 	contactserviceserver "github.com/bungysheep/contact-management/pkg/serviceserver/v1/contact"
 	contactcommunicationmethodserviceserver "github.com/bungysheep/contact-management/pkg/serviceserver/v1/contactcommunicationmethod"
 	contactsystemserviceserver "github.com/bungysheep/contact-management/pkg/serviceserver/v1/contactsystem"
+	grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials"
@@ -67,10 +68,14 @@ func (s *Server) RunServer(ctx context.Context, db *sql.DB) error {
 	// Define server options
 	opts := []grpc.ServerOption{
 		grpc.Creds(creds),
-		middleware.AddLoggerUnaryInterceptor(logger.Log),
-		middleware.AddLoggerStreamInterceptor(logger.Log),
-		middleware.AddAuthenticationUnaryInterceptor(),
-		middleware.AddAuthenticationStreamInterceptor(),
+		grpc_middleware.WithUnaryServerChain(
+			middleware.AddLoggerUnaryInterceptor(),
+			middleware.AddAuthenticationUnaryInterceptor(),
+		),
+		grpc_middleware.WithStreamServerChain(
+			middleware.AddLoggerStreamInterceptor(),
+			middleware.AddAuthenticationStreamInterceptor(),
+		),
 	}
 
 	server := grpc.NewServer(opts...)

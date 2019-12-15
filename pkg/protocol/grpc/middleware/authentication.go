@@ -13,16 +13,16 @@ import (
 )
 
 // AddAuthenticationUnaryInterceptor add authentication unary interceptor
-func AddAuthenticationUnaryInterceptor() grpc.ServerOption {
-	return grpc_middleware.WithUnaryServerChain(
+func AddAuthenticationUnaryInterceptor() grpc.UnaryServerInterceptor {
+	return grpc_middleware.ChainUnaryServer(
 		grpc_auth.UnaryServerInterceptor(auth()),
 	)
 }
 
 // AddAuthenticationStreamInterceptor add authentication stream interceptor
-func AddAuthenticationStreamInterceptor() grpc.ServerOption {
-	return grpc_middleware.WithUnaryServerChain(
-		grpc_auth.UnaryServerInterceptor(auth()),
+func AddAuthenticationStreamInterceptor() grpc.StreamServerInterceptor {
+	return grpc_middleware.ChainStreamServer(
+		grpc_auth.StreamServerInterceptor(auth()),
 	)
 }
 
@@ -30,7 +30,7 @@ func auth() func(ctx context.Context) (context.Context, error) {
 	return func(ctx context.Context) (context.Context, error) {
 		token, err := grpc_auth.AuthFromMD(ctx, "bearer")
 		if err != nil {
-			return nil, err
+			return nil, grpc.Errorf(codes.Unauthenticated, "Invalid auth token: %v", err)
 		}
 		tokenInfo, err := parseToken(token)
 		if err != nil {
