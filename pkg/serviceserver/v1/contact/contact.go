@@ -6,8 +6,11 @@ import (
 	auditapi "github.com/bungysheep/contact-management/pkg/api/v1/audit"
 	contactapi "github.com/bungysheep/contact-management/pkg/api/v1/contact"
 	contactmodel "github.com/bungysheep/contact-management/pkg/models/v1/contact"
+	messagemodel "github.com/bungysheep/contact-management/pkg/models/v1/message"
 	contactservice "github.com/bungysheep/contact-management/pkg/service/v1/contact"
 	"github.com/golang/protobuf/ptypes"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 )
 
 type contactService struct {
@@ -22,7 +25,7 @@ func NewContactServiceServer(svc contactservice.IContactService) contactapi.Cont
 func (cnt *contactService) DoRead(ctx context.Context, req *contactapi.DoReadContactRequest) (*contactapi.DoReadContactResponse, error) {
 	result, err := cnt.svc.DoRead(ctx, req.GetContactSystemCode(), req.GetContactId())
 
-	return &contactapi.DoReadContactResponse{Contact: contactModelToAPI(result)}, err
+	return &contactapi.DoReadContactResponse{Contact: contactModelToAPI(result)}, status.Error(codes.OK, messagemodel.GetMessage(err))
 }
 
 func (cnt *contactService) DoReadAll(ctx context.Context, req *contactapi.DoReadAllContactRequest) (*contactapi.DoReadAllContactResponse, error) {
@@ -34,22 +37,26 @@ func (cnt *contactService) DoReadAll(ctx context.Context, req *contactapi.DoRead
 		resp = append(resp, contactModelToAPI(item))
 	}
 
-	return &contactapi.DoReadAllContactResponse{Contact: resp}, err
+	return &contactapi.DoReadAllContactResponse{Contact: resp}, status.Error(codes.OK, messagemodel.GetMessage(err))
 }
 
 func (cnt *contactService) DoSave(ctx context.Context, req *contactapi.DoSaveContactRequest) (*contactapi.DoSaveContactResponse, error) {
 	err := cnt.svc.DoSave(ctx, contactAPIToModel(req.GetContact()))
 
-	return &contactapi.DoSaveContactResponse{Result: err == nil}, err
+	return &contactapi.DoSaveContactResponse{Result: err == nil}, status.Error(codes.OK, messagemodel.GetMessage(err))
 }
 
 func (cnt *contactService) DoDelete(ctx context.Context, req *contactapi.DoDeleteContactRequest) (*contactapi.DoDeleteContactResponse, error) {
 	err := cnt.svc.DoDelete(ctx, req.GetContactSystemCode(), req.GetContactId())
 
-	return &contactapi.DoDeleteContactResponse{Result: err == nil}, err
+	return &contactapi.DoDeleteContactResponse{Result: err == nil}, status.Error(codes.OK, messagemodel.GetMessage(err))
 }
 
 func contactModelToAPI(dataModel *contactmodel.Contact) *contactapi.Contact {
+	if dataModel == nil {
+		return nil
+	}
+
 	contact := &contactapi.Contact{Audit: &auditapi.Audit{}}
 	contact.ContactSystemCode = dataModel.GetContactSystemCode()
 	contact.ContactId = dataModel.GetContactID()
@@ -63,6 +70,10 @@ func contactModelToAPI(dataModel *contactmodel.Contact) *contactapi.Contact {
 }
 
 func contactAPIToModel(data *contactapi.Contact) *contactmodel.Contact {
+	if data == nil {
+		return nil
+	}
+
 	contact := contactmodel.NewContact()
 	contact.ContactSystemCode = data.GetContactSystemCode()
 	contact.ContactID = data.GetContactId()

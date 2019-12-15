@@ -1,0 +1,27 @@
+syntax = "proto3";
+
+package v1;
+
+option go_package = "github.com/bungysheep/contact-management/pkg/api/v1/message";
+
+message Message {
+    string code = 1;
+
+    enum MessageType {
+        INFORMATION = 0;
+
+        WARNING = 1;
+
+        ERROR = 2;
+    }
+
+    MessageType type = 2;
+
+    bool is_error = 3;
+
+    bool is_warning = 4;
+
+    string short_description = 5;
+
+    string long_description = 6;
+}

@@ -6,8 +6,11 @@ import (
 	auditapi "github.com/bungysheep/contact-management/pkg/api/v1/audit"
 	communicationmethodapi "github.com/bungysheep/contact-management/pkg/api/v1/communicationmethod"
 	communicationmethodmodel "github.com/bungysheep/contact-management/pkg/models/v1/communicationmethod"
+	messagemodel "github.com/bungysheep/contact-management/pkg/models/v1/message"
 	communicationmethodservice "github.com/bungysheep/contact-management/pkg/service/v1/communicationmethod"
 	"github.com/golang/protobuf/ptypes"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 )
 
 type communicationMethodServiceServer struct {
@@ -22,7 +25,7 @@ func NewCommunicationMethodServiceServer(svc communicationmethodservice.ICommuni
 func (cm *communicationMethodServiceServer) DoRead(ctx context.Context, req *communicationmethodapi.DoReadCommunicationMethodRequest) (*communicationmethodapi.DoReadCommunicationMethodResponse, error) {
 	result, err := cm.svc.DoRead(ctx, req.GetContactSystemCode(), req.GetCommunicationMethodCode())
 
-	return &communicationmethodapi.DoReadCommunicationMethodResponse{CommunicationMethod: communicationMethodModelToAPI(result)}, err
+	return &communicationmethodapi.DoReadCommunicationMethodResponse{CommunicationMethod: communicationMethodModelToAPI(result)}, status.Error(codes.OK, messagemodel.GetMessage(err))
 }
 
 func (cm *communicationMethodServiceServer) DoReadAll(ctx context.Context, req *communicationmethodapi.DoReadAllCommunicationMethodRequest) (*communicationmethodapi.DoReadAllCommunicationMethodResponse, error) {
@@ -34,22 +37,26 @@ func (cm *communicationMethodServiceServer) DoReadAll(ctx context.Context, req *
 		resp = append(resp, communicationMethodModelToAPI(item))
 	}
 
-	return &communicationmethodapi.DoReadAllCommunicationMethodResponse{CommunicationMethod: resp}, err
+	return &communicationmethodapi.DoReadAllCommunicationMethodResponse{CommunicationMethod: resp}, status.Error(codes.OK, messagemodel.GetMessage(err))
 }
 
 func (cm *communicationMethodServiceServer) DoSave(ctx context.Context, req *communicationmethodapi.DoSaveCommunicationMethodRequest) (*communicationmethodapi.DoSaveCommunicationMethodResponse, error) {
 	err := cm.svc.DoSave(ctx, communicationMethodAPIToModel(req.GetCommunicationMethod()))
 
-	return &communicationmethodapi.DoSaveCommunicationMethodResponse{Result: err == nil}, err
+	return &communicationmethodapi.DoSaveCommunicationMethodResponse{Result: err == nil}, status.Error(codes.OK, messagemodel.GetMessage(err))
 }
 
 func (cm *communicationMethodServiceServer) DoDelete(ctx context.Context, req *communicationmethodapi.DoDeleteCommunicationMethodRequest) (*communicationmethodapi.DoDeleteCommunicationMethodResponse, error) {
 	err := cm.svc.DoDelete(ctx, req.GetContactSystemCode(), req.GetCommunicationMethodCode())
 
-	return &communicationmethodapi.DoDeleteCommunicationMethodResponse{Result: err == nil}, err
+	return &communicationmethodapi.DoDeleteCommunicationMethodResponse{Result: err == nil}, status.Error(codes.OK, messagemodel.GetMessage(err))
 }
 
 func communicationMethodModelToAPI(dataModel *communicationmethodmodel.CommunicationMethod) *communicationmethodapi.CommunicationMethod {
+	if dataModel == nil {
+		return nil
+	}
+
 	communicationMethod := &communicationmethodapi.CommunicationMethod{Audit: &auditapi.Audit{}}
 	communicationMethod.ContactSystemCode = dataModel.GetContactSystemCode()
 	communicationMethod.CommunicationMethodCode = dataModel.GetCommunicationMethodCode()
@@ -64,6 +71,10 @@ func communicationMethodModelToAPI(dataModel *communicationmethodmodel.Communica
 }
 
 func communicationMethodAPIToModel(data *communicationmethodapi.CommunicationMethod) *communicationmethodmodel.CommunicationMethod {
+	if data == nil {
+		return nil
+	}
+
 	communicationMethod := communicationmethodmodel.NewCommunicationMethod()
 	communicationMethod.ContactSystemCode = data.GetContactSystemCode()
 	communicationMethod.CommunicationMethodCode = data.GetCommunicationMethodCode()

@@ -6,6 +6,7 @@ option go_package = "github.com/bungysheep/contact-management/pkg/api/v1/contact
 
 import "google/api/annotations.proto";
 import "audit.proto";
+import "message.proto";
 
 message ContactSystem {
     string contact_system_code = 1;
@@ -25,12 +26,16 @@ message DoReadContactSystemRequest {
 
 message DoReadContactSystemResponse {
     ContactSystem contact_system = 1;
+
+    v1.Message message = 2;
 }
 
 message DoReadAllContactSystemRequest { }
 
 message DoReadAllContactSystemResponse {
     repeated ContactSystem contact_systems = 1;
+
+    v1.Message message = 2;
 }
 
 message DoSaveContactSystemRequest { 
@@ -39,6 +44,8 @@ message DoSaveContactSystemRequest {
 
 message DoSaveContactSystemResponse {
     bool result = 1;
+
+    v1.Message message = 2;
 }
 
 message DoDeleteContactSystemRequest {
@@ -47,6 +54,8 @@ message DoDeleteContactSystemRequest {
 
 message DoDeleteContactSystemResponse {
     bool result = 1;
+
+    v1.Message message = 2;
 }
 
 service ContactSystemService { 

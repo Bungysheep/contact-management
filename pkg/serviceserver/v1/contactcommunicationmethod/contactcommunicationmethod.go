@@ -6,8 +6,11 @@ import (
 	auditapi "github.com/bungysheep/contact-management/pkg/api/v1/audit"
 	contactcommunicationmethodapi "github.com/bungysheep/contact-management/pkg/api/v1/contactcommunicationmethod"
 	contactcommunicationmethodmodel "github.com/bungysheep/contact-management/pkg/models/v1/contactcommunicationmethod"
+	messagemodel "github.com/bungysheep/contact-management/pkg/models/v1/message"
 	contactcommunicationmethodservice "github.com/bungysheep/contact-management/pkg/service/v1/contactcommunicationmethod"
 	"github.com/golang/protobuf/ptypes"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 )
 
 type contactcommunicationmethodServiceServer struct {
@@ -22,7 +25,7 @@ func NewContactCommunicationMethodServiceServer(svc contactcommunicationmethodse
 func (cmm *contactcommunicationmethodServiceServer) DoRead(ctx context.Context, req *contactcommunicationmethodapi.DoReadContactCommunicationMethodRequest) (*contactcommunicationmethodapi.DoReadContactCommunicationMethodResponse, error) {
 	result, err := cmm.svc.DoRead(ctx, req.GetContactSystemCode(), req.GetContactId(), req.GetContactCommunicationMethodId())
 
-	return &contactcommunicationmethodapi.DoReadContactCommunicationMethodResponse{ContactCommunicationMethod: contactCommunicationMethodModelToAPI(result)}, err
+	return &contactcommunicationmethodapi.DoReadContactCommunicationMethodResponse{ContactCommunicationMethod: contactCommunicationMethodModelToAPI(result)}, status.Error(codes.OK, messagemodel.GetMessage(err))
 }
 
 func (cmm *contactcommunicationmethodServiceServer) DoReadAll(ctx context.Context, req *contactcommunicationmethodapi.DoReadAllContactCommunicationMethodRequest) (*contactcommunicationmethodapi.DoReadAllContactCommunicationMethodResponse, error) {
@@ -34,22 +37,26 @@ func (cmm *contactcommunicationmethodServiceServer) DoReadAll(ctx context.Contex
 		resp = append(resp, contactCommunicationMethodModelToAPI(item))
 	}
 
-	return &contactcommunicationmethodapi.DoReadAllContactCommunicationMethodResponse{ContactCommunicationMethod: resp}, err
+	return &contactcommunicationmethodapi.DoReadAllContactCommunicationMethodResponse{ContactCommunicationMethod: resp}, status.Error(codes.OK, messagemodel.GetMessage(err))
 }
 
 func (cmm *contactcommunicationmethodServiceServer) DoSave(ctx context.Context, req *contactcommunicationmethodapi.DoSaveContactCommunicationMethodRequest) (*contactcommunicationmethodapi.DoSaveContactCommunicationMethodResponse, error) {
 	err := cmm.svc.DoSave(ctx, contactCommunicationMethodAPIToModel(req.GetContactCommunicationMethod()))
 
-	return &contactcommunicationmethodapi.DoSaveContactCommunicationMethodResponse{Result: err == nil}, err
+	return &contactcommunicationmethodapi.DoSaveContactCommunicationMethodResponse{Result: err == nil}, status.Error(codes.OK, messagemodel.GetMessage(err))
 }
 
 func (cmm *contactcommunicationmethodServiceServer) DoDelete(ctx context.Context, req *contactcommunicationmethodapi.DoDeleteContactCommunicationMethodRequest) (*contactcommunicationmethodapi.DoDeleteContactCommunicationMethodResponse, error) {
 	err := cmm.svc.DoDelete(ctx, req.GetContactSystemCode(), req.GetContactId(), req.GetContactCommunicationMethodId())
 
-	return &contactcommunicationmethodapi.DoDeleteContactCommunicationMethodResponse{Result: err == nil}, err
+	return &contactcommunicationmethodapi.DoDeleteContactCommunicationMethodResponse{Result: err == nil}, status.Error(codes.OK, messagemodel.GetMessage(err))
 }
 
 func contactCommunicationMethodModelToAPI(dataModel *contactcommunicationmethodmodel.ContactCommunicationMethod) *contactcommunicationmethodapi.ContactCommunicationMethod {
+	if dataModel == nil {
+		return nil
+	}
+
 	contactCommMethod := &contactcommunicationmethodapi.ContactCommunicationMethod{Audit: &auditapi.Audit{}}
 	contactCommMethod.ContactSystemCode = dataModel.GetContactSystemCode()
 	contactCommMethod.ContactId = dataModel.GetContactID()
@@ -67,6 +74,10 @@ func contactCommunicationMethodModelToAPI(dataModel *contactcommunicationmethodm
 }
 
 func contactCommunicationMethodAPIToModel(data *contactcommunicationmethodapi.ContactCommunicationMethod) *contactcommunicationmethodmodel.ContactCommunicationMethod {
+	if data == nil {
+		return nil
+	}
+
 	contactCommMethod := contactcommunicationmethodmodel.NewContactCommunicationMethod()
 	contactCommMethod.ContactSystemCode = data.GetContactSystemCode()
 	contactCommMethod.ContactID = data.GetContactId()
