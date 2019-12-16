@@ -11,4 +11,6 @@ protoc --proto_path=api/proto/v1 --proto_path=third_party --go_out=plugins=grpc:
 protoc --proto_path=api/proto/v1 --proto_path=third_party --go_out=plugins=grpc:. message.proto
 
 protoc --proto_path=api/proto/v1 --proto_path=third_party --grpc-gateway_out=logtostderr=true:. audit.proto
+protoc --proto_path=api/proto/v1 --proto_path=third_party --grpc-gateway_out=logtostderr=true:. communicationmethod.proto
 protoc --proto_path=api/proto/v1 --proto_path=third_party --grpc-gateway_out=logtostderr=true:. contactsystem.proto
+protoc --proto_path=api/proto/v1 --proto_path=third_party --grpc-gateway_out=logtostderr=true:. message.proto

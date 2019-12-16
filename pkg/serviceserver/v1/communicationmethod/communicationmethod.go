@@ -5,6 +5,7 @@ import (
 
 	auditapi "github.com/bungysheep/contact-management/pkg/api/v1/audit"
 	communicationmethodapi "github.com/bungysheep/contact-management/pkg/api/v1/communicationmethod"
+	messageapi "github.com/bungysheep/contact-management/pkg/api/v1/message"
 	communicationmethodmodel "github.com/bungysheep/contact-management/pkg/models/v1/communicationmethod"
 	messagemodel "github.com/bungysheep/contact-management/pkg/models/v1/message"
 	communicationmethodservice "github.com/bungysheep/contact-management/pkg/service/v1/communicationmethod"
@@ -25,7 +26,7 @@ func NewCommunicationMethodServiceServer(svc communicationmethodservice.ICommuni
 func (cm *communicationMethodServiceServer) DoRead(ctx context.Context, req *communicationmethodapi.DoReadCommunicationMethodRequest) (*communicationmethodapi.DoReadCommunicationMethodResponse, error) {
 	result, err := cm.svc.DoRead(ctx, req.GetContactSystemCode(), req.GetCommunicationMethodCode())
 
-	return &communicationmethodapi.DoReadCommunicationMethodResponse{CommunicationMethod: communicationMethodModelToAPI(result)}, status.Error(codes.OK, messagemodel.GetMessage(err))
+	return &communicationmethodapi.DoReadCommunicationMethodResponse{CommunicationMethod: communicationMethodModelToAPI(result), Message: messageModelToAPI(err)}, status.Error(codes.OK, messagemodel.GetMessage(err))
 }
 
 func (cm *communicationMethodServiceServer) DoReadAll(ctx context.Context, req *communicationmethodapi.DoReadAllCommunicationMethodRequest) (*communicationmethodapi.DoReadAllCommunicationMethodResponse, error) {
@@ -37,19 +38,34 @@ func (cm *communicationMethodServiceServer) DoReadAll(ctx context.Context, req *
 		resp = append(resp, communicationMethodModelToAPI(item))
 	}
 
-	return &communicationmethodapi.DoReadAllCommunicationMethodResponse{CommunicationMethod: resp}, status.Error(codes.OK, messagemodel.GetMessage(err))
+	return &communicationmethodapi.DoReadAllCommunicationMethodResponse{CommunicationMethod: resp, Message: messageModelToAPI(err)}, status.Error(codes.OK, messagemodel.GetMessage(err))
 }
 
 func (cm *communicationMethodServiceServer) DoSave(ctx context.Context, req *communicationmethodapi.DoSaveCommunicationMethodRequest) (*communicationmethodapi.DoSaveCommunicationMethodResponse, error) {
 	err := cm.svc.DoSave(ctx, communicationMethodAPIToModel(req.GetCommunicationMethod()))
 
-	return &communicationmethodapi.DoSaveCommunicationMethodResponse{Result: err == nil}, status.Error(codes.OK, messagemodel.GetMessage(err))
+	return &communicationmethodapi.DoSaveCommunicationMethodResponse{Result: err == nil, Message: messageModelToAPI(err)}, status.Error(codes.OK, messagemodel.GetMessage(err))
 }
 
 func (cm *communicationMethodServiceServer) DoDelete(ctx context.Context, req *communicationmethodapi.DoDeleteCommunicationMethodRequest) (*communicationmethodapi.DoDeleteCommunicationMethodResponse, error) {
 	err := cm.svc.DoDelete(ctx, req.GetContactSystemCode(), req.GetCommunicationMethodCode())
 
-	return &communicationmethodapi.DoDeleteCommunicationMethodResponse{Result: err == nil}, status.Error(codes.OK, messagemodel.GetMessage(err))
+	return &communicationmethodapi.DoDeleteCommunicationMethodResponse{Result: err == nil, Message: messageModelToAPI(err)}, status.Error(codes.OK, messagemodel.GetMessage(err))
+}
+
+func messageModelToAPI(messageModel messagemodel.IMessage) *messageapi.Message {
+	if messageModel == nil {
+		return nil
+	}
+
+	message := &messageapi.Message{}
+	message.Code = messageModel.Code()
+	message.Type = messageapi.Message_MessageType(messageModel.Type())
+	message.IsError = messageModel.IsError()
+	message.IsWarning = messageModel.IsWarning()
+	message.ShortDescription = messageModel.ShortDescription()
+	message.LongDescription = messageModel.LongDescription()
+	return message
 }
 
 func communicationMethodModelToAPI(dataModel *communicationmethodmodel.CommunicationMethod) *communicationmethodapi.CommunicationMethod {
