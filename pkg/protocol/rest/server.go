@@ -4,6 +4,7 @@ import (
 	"context"
 	"net/http"
 
+	communicationmethodapi "github.com/bungysheep/contact-management/pkg/api/v1/communicationmethod"
 	contactsystemapi "github.com/bungysheep/contact-management/pkg/api/v1/contactsystem"
 	"github.com/bungysheep/contact-management/pkg/logger"
 	"github.com/bungysheep/contact-management/pkg/protocol/rest/middleware"
@@ -44,6 +45,11 @@ func (svr *Server) RunServer(ctx context.Context) error {
 	mux := runtime.NewServeMux()
 
 	if err := contactsystemapi.RegisterContactSystemServiceHandlerFromEndpoint(ctx, mux, "localhost:50051", opts); err != nil {
+		logger.Log.Error("Failed to start Http server", zap.String("err", err.Error()))
+		return err
+	}
+
+	if err := communicationmethodapi.RegisterCommunicationMethodServiceHandlerFromEndpoint(ctx, mux, "localhost:50051", opts); err != nil {
 		logger.Log.Error("Failed to start Http server", zap.String("err", err.Error()))
 		return err
 	}

@@ -4,7 +4,9 @@ package v1;
 
 option go_package = "github.com/bungysheep/contact-management/pkg/api/v1/communicationmethod";
 
+import "google/api/annotations.proto";
 import "audit.proto";
+import "message.proto";
 
 message CommunicationMethod {
     string contact_system_code = 1;
@@ -30,6 +32,8 @@ message DoReadCommunicationMethodRequest {
 
 message DoReadCommunicationMethodResponse {
     CommunicationMethod communication_method = 1;
+
+    v1.Message message = 2;
 }
 
 message DoReadAllCommunicationMethodRequest { 
@@ -38,6 +42,8 @@ message DoReadAllCommunicationMethodRequest {
 
 message DoReadAllCommunicationMethodResponse {
     repeated CommunicationMethod communication_method = 1;
+
+    v1.Message message = 2;
 }
 
 message DoSaveCommunicationMethodRequest { 
@@ -46,6 +52,8 @@ message DoSaveCommunicationMethodRequest {
 
 message DoSaveCommunicationMethodResponse {
     bool result = 1;
+
+    v1.Message message = 2;
 }
 
 message DoDeleteCommunicationMethodRequest {
@@ -56,14 +64,33 @@ message DoDeleteCommunicationMethodRequest {
 
 message DoDeleteCommunicationMethodResponse {
     bool result = 1;
+
+    v1.Message message = 2;
 }
 
 service CommunicationMethodService { 
-    rpc DoRead (DoReadCommunicationMethodRequest) returns (DoReadCommunicationMethodResponse);
+    rpc DoRead (DoReadCommunicationMethodRequest) returns (DoReadCommunicationMethodResponse) {
+        option (google.api.http) = {
+            get: "/communicationmethod/{contact_system_code}/{communication_method_code}"
+        };
+    };
 
-    rpc DoReadAll (DoReadAllCommunicationMethodRequest) returns (DoReadAllCommunicationMethodResponse);
+    rpc DoReadAll (DoReadAllCommunicationMethodRequest) returns (DoReadAllCommunicationMethodResponse) {
+        option (google.api.http) = {
+            get: "/communicationmethod/{contact_system_code}"
+        };
+    };
 
-    rpc DoSave (DoSaveCommunicationMethodRequest) returns (DoSaveCommunicationMethodResponse);
+    rpc DoSave (DoSaveCommunicationMethodRequest) returns (DoSaveCommunicationMethodResponse) {
+        option (google.api.http) = {
+            post: "/communicationmethod"
+            body: "*"
+        };
+    };
 
-    rpc DoDelete (DoDeleteCommunicationMethodRequest) returns (DoDeleteCommunicationMethodResponse);
+    rpc DoDelete (DoDeleteCommunicationMethodRequest) returns (DoDeleteCommunicationMethodResponse) {
+        option (google.api.http) = {
+            delete: "/communicationmethod/{contact_system_code}/{communication_method_code}"
+        };
+    };
 }
